@@ -44,8 +44,17 @@ TagManager:
   - name: BG
     uniqueID: 1825904031
     locked: 0
+  - name: Tabs
+    uniqueID: 1023866063
+    locked: 0
   - name: FG
     uniqueID: 1485926751
+    locked: 0
+  - name: Buttons
+    uniqueID: 1273188341
+    locked: 0
+  - name: Details
+    uniqueID: 854008479
     locked: 0
   m_RenderingLayers:
   - Default
