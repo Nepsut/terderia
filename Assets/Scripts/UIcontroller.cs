@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class UIcontroller : MonoBehaviour
+public class UIController : MonoBehaviour
 {
     [SerializeField] private float duration = 1.0f;
     [SerializeField] Transform targetPosRight;
