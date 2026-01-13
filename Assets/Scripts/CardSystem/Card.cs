@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace CardSystem
 {
@@ -10,14 +11,15 @@ namespace CardSystem
         public readonly CardType cardType;
         public readonly DamageType damageType;
         public readonly SpellSchool spellSchool;
-        public readonly int strength;
-        public readonly int range;
+        public readonly Strength strength;
+        public readonly Range range;
         public readonly AreaOfEffect areaOfEffect;
         public readonly string[] otherTags;
+        public readonly Sprite sprite;
 
         public Card(string name, string id, string description, CardType cardType, DamageType damageType = DamageType.none,
-        SpellSchool spellSchool = SpellSchool.none, int strength = 0, int range = 0, AreaOfEffect areaOfEffect = AreaOfEffect.none,
-        string[] otherTags = null)
+        SpellSchool spellSchool = SpellSchool.none, Strength strength = Strength.none, Range range = Range.self,
+        AreaOfEffect areaOfEffect = AreaOfEffect.none, string[] otherTags = null)
         {
             this.name = name;
             this.id = id;
@@ -29,6 +31,8 @@ namespace CardSystem
             this.range = range;
             this.areaOfEffect = areaOfEffect;
             this.otherTags = otherTags ?? (new string[0]);
+            sprite = Resources.Load<Sprite>($"Cards/{id}");
+            if (sprite == null) Debug.LogWarning($"Sprite for card {this.id} couldn't be found and wasn't set.");
         }
 
         public enum CardType
@@ -49,6 +53,23 @@ namespace CardSystem
             poison,
             cutting,
             blunt
+        }
+
+        public enum Strength
+        {
+            none = 0,
+            low,
+            medium,
+            strong
+        }
+
+        public enum Range
+        {
+            self = 0,
+            melee,
+            low,
+            medium,
+            high
         }
 
         public enum SpellSchool

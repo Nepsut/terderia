@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace CardSystem
 {
-    public class CardManager : MonoBehaviour
+    public class CardManager : MonoSingleton<CardManager>
     {
         [SerializeField] private TextAsset cardTsvAsset;
         private const string indexHeader = "Index";
@@ -21,17 +20,16 @@ namespace CardSystem
         private const string tagsHeader = "Other Tags";
         private const string notesHeader = "Additional Notes";
 
-        public Card[] Cards { get; private set; }
+        public static Dictionary<string, Card> Cards { get; private set; }
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
-        private async void Start()
+        private void Start()
         {
-            string tsvAsString = cardTsvAsset.text;
-            await Task.Run(() => AssignCardDataFromTsv(tsvAsString));
+            AssignCardDataFromTsv(cardTsvAsset.text);
             
-            foreach(Card card in Cards)
+            foreach(var keyValuePair in Cards)
             {
-                Debug.Log(card.name);
+                Debug.Log($"{keyValuePair.Value.name}\t{keyValuePair.Value.description}");
             }
         }
 
@@ -51,29 +49,45 @@ namespace CardSystem
             int aoeIndex = Array.IndexOf(headers, aoeHeader);
             int tagsIndex = Array.IndexOf(headers, tagsHeader);
             int notesIndex = Array.IndexOf(headers, notesHeader);
-            List<Card> tempCards = new();
+
+            Cards = new();
 
             for (int i = 1; i < cardDataAsStrings.Length; i++)
             {
                 string[] cardValues = cardDataAsStrings[i].Split('\t');
-                Card.SpellSchool cardSchool = cardValues[schoolIndex] != "" && cardValues[schoolIndex] != null ?
-                    Enum.Parse<Card.SpellSchool>(cardValues[schoolIndex], ignoreCase: true) : Card.SpellSchool.none;
-                Card.DamageType cardDamage = cardValues[damageIndex] != "" && cardValues[damageIndex] != null ?
-                    Enum.Parse<Card.DamageType>(cardValues[damageIndex], ignoreCase: true) : Card.DamageType.none;
-                if (!int.TryParse(cardValues[strengthIndex], out int cardStrength)) cardStrength = 0;
-                if (!int.TryParse(cardValues[rangeIndex], out int cardRange)) cardRange = 0;
-                Card.AreaOfEffect cardAoe = cardValues[aoeIndex] != "" && cardValues[aoeIndex] != null ?
-                    Enum.Parse<Card.AreaOfEffect>(cardValues[aoeIndex], ignoreCase: true) : Card.AreaOfEffect.none;
+                if (!Enum.TryParse<Card.SpellSchool>(cardValues[schoolIndex], ignoreCase: true, out var cardSchool)) cardSchool = Card.SpellSchool.none;
+                if (!Enum.TryParse<Card.DamageType>(cardValues[damageIndex], ignoreCase: true, out var cardDamage)) cardDamage = Card.DamageType.none;
+                if (!Enum.TryParse<Card.Strength>(cardValues[strengthIndex], ignoreCase: true, out var cardStrength)) cardStrength = Card.Strength.none;
+                if (!Enum.TryParse<Card.Range>(cardValues[rangeIndex], ignoreCase: true, out var cardRange)) cardRange = Card.Range.self;
+                if (!Enum.TryParse<Card.AreaOfEffect>(cardValues[aoeIndex], ignoreCase: true, out var cardAoe)) cardAoe = Card.AreaOfEffect.none;
                 string[] cardTags;
-                if (cardValues[tagsIndex] != "" && cardValues[tagsIndex] != null) cardTags = cardValues[tagsIndex].Split(',');
+                if (cardValues[tagsIndex] != "" && cardValues[tagsIndex] != null)
+                {
+                    cardTags = cardValues[tagsIndex].Split(',');
+                    for (int j = 0; j < cardTags.Length; j++)
+                    {
+                        cardTags[j] = cardTags[j].Replace("#", null);
+                        cardTags[j] = cardTags[j].Replace(" ", null);
+                    }
+                }
                 else cardTags = null;
 
-                tempCards.Add(new(name: cardValues[nameIndex], id: cardValues[idIndex], description: cardValues[descriptionIndex],
-                    cardType: Enum.Parse<Card.CardType>(cardValues[typeIndex], ignoreCase: true), damageType: cardDamage, spellSchool: cardSchool,
-                    strength: cardStrength, range: cardRange, areaOfEffect: cardAoe, otherTags: cardTags));
+                Cards.Add(cardValues[idIndex], new(name: cardValues[nameIndex], id: cardValues[idIndex].Replace("#", null),
+                    description: cardValues[descriptionIndex], cardType: Enum.Parse<Card.CardType>(cardValues[typeIndex],
+                    ignoreCase: true), damageType: cardDamage, spellSchool: cardSchool, strength: cardStrength, range: cardRange,
+                    areaOfEffect: cardAoe, otherTags: cardTags));
+            }
+        }
+
+        public static Sprite GetCardSprite(string cardId)
+        {
+            if (Cards == null) return null;
+            if (!Cards.ContainsKey(cardId))
+            {
+                Debug.LogError($"Card ID {cardId} couldn't be found in dictionary, did you make a typo?");
             }
 
-            Cards = tempCards.ToArray();
+            return Cards[cardId].sprite;
         }
     }
 }
