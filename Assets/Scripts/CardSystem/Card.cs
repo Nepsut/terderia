@@ -1,3 +1,5 @@
+using System;
+
 namespace CardSystem
 {
     public class Card
@@ -11,9 +13,11 @@ namespace CardSystem
         public readonly int strength;
         public readonly int range;
         public readonly AreaOfEffect areaOfEffect;
+        public readonly string[] otherTags;
 
-        public Card(string name, string id, string description, CardType cardType, DamageType damageType, SpellSchool spellSchool,
-        int strength = 0, int range = 0, AreaOfEffect areaOfEffect = AreaOfEffect.none)
+        public Card(string name, string id, string description, CardType cardType, DamageType damageType = DamageType.none,
+        SpellSchool spellSchool = SpellSchool.none, int strength = 0, int range = 0, AreaOfEffect areaOfEffect = AreaOfEffect.none,
+        string[] otherTags = null)
         {
             this.name = name;
             this.id = id;
@@ -24,6 +28,7 @@ namespace CardSystem
             this.strength = strength;
             this.range = range;
             this.areaOfEffect = areaOfEffect;
+            this.otherTags = otherTags ?? (new string[0]);
         }
 
         public enum CardType
@@ -40,6 +45,8 @@ namespace CardSystem
             fire,
             ice,
             lightning,
+            earth,
+            poison,
             cutting,
             blunt
         }
@@ -49,7 +56,9 @@ namespace CardSystem
             none = 0,
             elemental,
             trickery,
-            necromancy
+            conjuration,
+            protection,
+            swordcery
         }
 
         public enum AreaOfEffect
