@@ -5,6 +5,7 @@ namespace CardSystem
 {
     public class Card
     {
+        public readonly int index;
         public readonly string name;
         public readonly string id;
         public readonly string description;
@@ -17,10 +18,11 @@ namespace CardSystem
         public readonly string[] otherTags;
         public readonly Sprite sprite;
 
-        public Card(string name, string id, string description, CardType cardType, DamageType damageType = DamageType.none,
+        public Card(int index, string name, string id, string description, CardType cardType, DamageType damageType = DamageType.none,
         SpellSchool spellSchool = SpellSchool.none, Strength strength = Strength.none, Range range = Range.self,
         AreaOfEffect areaOfEffect = AreaOfEffect.none, string[] otherTags = null)
         {
+            this.index = index;
             this.name = name;
             this.id = id;
             this.description = description;

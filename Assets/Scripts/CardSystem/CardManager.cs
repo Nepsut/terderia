@@ -23,7 +23,7 @@ namespace CardSystem
         public static Dictionary<string, Card> Cards { get; private set; }
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
-        private void Start()
+        private void Awake()
         {
             AssignCardDataFromTsv(cardTsvAsset.text);
             
@@ -72,9 +72,10 @@ namespace CardSystem
                 }
                 else cardTags = null;
 
-                Cards.Add(cardValues[idIndex], new(name: cardValues[nameIndex], id: cardValues[idIndex].Replace("#", null),
-                    description: cardValues[descriptionIndex], cardType: Enum.Parse<Card.CardType>(cardValues[typeIndex],
-                    ignoreCase: true), damageType: cardDamage, spellSchool: cardSchool, strength: cardStrength, range: cardRange,
+                Cards.Add(cardValues[idIndex], new(index: int.Parse(cardValues[indexIndex]) , name: cardValues[nameIndex],
+                    id: cardValues[idIndex].Replace("#", null), description: cardValues[descriptionIndex],
+                    cardType: Enum.Parse<Card.CardType>(cardValues[typeIndex], ignoreCase: true),
+                    damageType: cardDamage, spellSchool: cardSchool, strength: cardStrength, range: cardRange,
                     areaOfEffect: cardAoe, otherTags: cardTags));
             }
         }
