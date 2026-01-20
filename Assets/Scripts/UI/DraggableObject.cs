@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -6,12 +7,17 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
 {
     [SerializeField] private float moveSpeed = 15f;
     [SerializeField] private float returnTime = 0.74f;
+    [HideInInspector] public int siblingIndex;
     private Vector2 mousePos => UIController.MousePosition;
     private bool _pointerOnObject = false;
     private bool _draggingOn = false;
     private Vector2 returnPosition;
     private int tweenId = -1;
     private Coroutine resetCoroutine;
+
+    public event Action OnDragStart;
+    public event Action OnDragEnd;
+    public event Action OnCardReturn;
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -36,6 +42,7 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
             if (tweenId != -1) LeanTween.cancel(tweenId);
             _draggingOn = true;
+            OnDragStart?.Invoke();
         }
     }
 
@@ -45,6 +52,7 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
         {
             tweenId = LeanTween.move(gameObject, returnPosition, returnTime).setEaseOutQuart().id;
             resetCoroutine = StartCoroutine(ResetTweenId());
+            OnDragEnd?.Invoke();
         }
         _draggingOn = false;
     }
@@ -52,6 +60,7 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
     private IEnumerator ResetTweenId()
     {
         yield return new WaitForSeconds(returnTime);
+        OnCardReturn?.Invoke();
         tweenId = -1;
         resetCoroutine = null;
     }

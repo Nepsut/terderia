@@ -14,7 +14,7 @@ public class TestCard : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        selfId = Random.Range(0, CardManager.Cards.Count);
+        selfId = Random.Range(1, CardManager.Cards.Count+1);
         selfCard = CardManager.Cards.Values.FirstOrDefault(card => card.index == selfId);
         titleText.text = selfCard.name;
         descriptionText.text = selfCard.description;
