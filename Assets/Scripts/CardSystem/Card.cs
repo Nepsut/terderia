@@ -19,7 +19,7 @@ namespace CardSystem
         public readonly Sprite sprite;
 
         public Card(int index, string name, string id, string description, CardType cardType, DamageType damageType = DamageType.none,
-        SpellSchool spellSchool = SpellSchool.none, Strength strength = Strength.none, Range range = Range.self,
+        SpellSchool spellSchool = SpellSchool.none, Strength strength = Strength.none, Range range = Range.touch,
         AreaOfEffect areaOfEffect = AreaOfEffect.none, string[] otherTags = null)
         {
             this.index = index;
@@ -33,7 +33,7 @@ namespace CardSystem
             this.range = range;
             this.areaOfEffect = areaOfEffect;
             this.otherTags = otherTags ?? (new string[0]);
-            sprite = Resources.Load<Sprite>($"Cards/{id}");
+            sprite = Resources.Load<Sprite>($"CardSystem/Cards/{id}");
             if (sprite == null) Debug.LogWarning($"Sprite for card {this.id} couldn't be found and wasn't set.");
         }
 
@@ -62,13 +62,12 @@ namespace CardSystem
             none = 0,
             low,
             medium,
-            strong
+            high
         }
 
         public enum Range
         {
-            self = 0,
-            melee,
+            touch = 0,
             low,
             medium,
             high

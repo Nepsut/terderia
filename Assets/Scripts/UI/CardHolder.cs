@@ -12,6 +12,7 @@ public class CardHolder : MonoBehaviour
     [SerializeField] private Button toggleButton;
     [SerializeField] private Image holderImage;
     [SerializeField] private float animDuration = 0.5f;
+    private const float holderOffset = -22f;
     private RectTransform selfRect;
     private DraggableObject[] draggableChildren;
     private bool isActive = false;
@@ -22,12 +23,15 @@ public class CardHolder : MonoBehaviour
     private int moveTweenId = -1;
     private Coroutine moveManagerCoroutine;
 
+    public event Action OnHolderShowDone;
+    public event Action OnHolderHideStarted;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         selfRect = GetComponent<RectTransform>();
         draggableChildren = holderRect.GetComponentsInChildren<DraggableObject>();
-        activePosY = selfRect.rect.height / 2f + transform.position.y;
+        activePosY = selfRect.rect.height + transform.position.y + holderOffset;
         inactivePosY = transform.position.y;
 
         foreach (DraggableObject childDrag in draggableChildren)
@@ -54,10 +58,12 @@ public class CardHolder : MonoBehaviour
                     StartCoroutine(DoAfterFrame(() => allCardsHome = true));
                 }
             };
+            OnHolderShowDone += () => childDrag.returnPosition = childDrag.transform.position;
         }
 
-        holderButton.onClick.AddListener(ActivateHolder);
-        toggleButton.onClick.AddListener(ActivateHolder);
+        ActivateHolder();
+        // holderButton.onClick.AddListener(ActivateHolder);
+        // toggleButton.onClick.AddListener(ActivateHolder);
     }
 
     private void ActivateHolder()
@@ -86,6 +92,7 @@ public class CardHolder : MonoBehaviour
         if (moveManagerCoroutine != null) StopCoroutine(moveManagerCoroutine);
         moveManagerCoroutine = null;
         moveManagerCoroutine = StartCoroutine(MoveManager(moveUp: false));
+        OnHolderHideStarted?.Invoke();
     }
 
     private IEnumerator DoAfterFrame(Action action)
@@ -106,5 +113,7 @@ public class CardHolder : MonoBehaviour
         }
         moveTweenId = -1;
         moveManagerCoroutine = null;
+
+        if (moveUp) OnHolderShowDone?.Invoke();
     }
 }

@@ -7,6 +7,27 @@ namespace CardSystem
     public class CardManager : MonoSingleton<CardManager>
     {
         [SerializeField] private TextAsset cardTsvAsset;
+
+        [Header("Card Base Sprite References")]
+        [field: SerializeField] public Sprite CardbaseSpeech { get; private set; }
+        [field: SerializeField] public Sprite CardbaseSpell { get; private set; }
+        [field: SerializeField] public Sprite CardbaseUtility { get; private set; }
+        [field: SerializeField] public Sprite CardbaseWeapon { get; private set; }
+
+        [Header("Damage Type Sprite References")]
+        [field: SerializeField] public Sprite DamageTypeBlunt { get; private set; }
+        [field: SerializeField] public Sprite DamageTypeCutting { get; private set; }
+        [field: SerializeField] public Sprite DamageTypeEarth { get; private set; }
+        [field: SerializeField] public Sprite DamageTypeFire { get; private set; }
+        [field: SerializeField] public Sprite DamageTypeIce { get; private set; }
+        [field: SerializeField] public Sprite DamageTypeLightning { get; private set; }
+        [field: SerializeField] public Sprite DamageTypePoison { get; private set; }
+
+        [Header("Card Variable References")]
+        [field: SerializeField] public Sprite EmptyDot { get; private set; }
+        [field: SerializeField] public Sprite FilledDot { get; private set; }
+
+        //Cards TSV file headers, do not alter if unsure
         private const string indexHeader = "Index";
         private const string nameHeader = "Name";
         private const string idHeader = "Unique Tag";
@@ -58,7 +79,7 @@ namespace CardSystem
                 if (!Enum.TryParse<Card.SpellSchool>(cardValues[schoolIndex], ignoreCase: true, out var cardSchool)) cardSchool = Card.SpellSchool.none;
                 if (!Enum.TryParse<Card.DamageType>(cardValues[damageIndex], ignoreCase: true, out var cardDamage)) cardDamage = Card.DamageType.none;
                 if (!Enum.TryParse<Card.Strength>(cardValues[strengthIndex], ignoreCase: true, out var cardStrength)) cardStrength = Card.Strength.none;
-                if (!Enum.TryParse<Card.Range>(cardValues[rangeIndex], ignoreCase: true, out var cardRange)) cardRange = Card.Range.self;
+                if (!Enum.TryParse<Card.Range>(cardValues[rangeIndex], ignoreCase: true, out var cardRange)) cardRange = Card.Range.touch;
                 if (!Enum.TryParse<Card.AreaOfEffect>(cardValues[aoeIndex], ignoreCase: true, out var cardAoe)) cardAoe = Card.AreaOfEffect.none;
                 string[] cardTags;
                 if (cardValues[tagsIndex] != "" && cardValues[tagsIndex] != null)

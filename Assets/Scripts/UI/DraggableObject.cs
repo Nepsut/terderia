@@ -7,72 +7,144 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
 {
     [SerializeField] private float moveSpeed = 15f;
     [SerializeField] private float returnTime = 0.74f;
+    [SerializeField] private float hoverOffsetHorizontal;
+    [SerializeField] private float hoverOffsetVertical;
+    [SerializeField] private float hoverAnimTime = 0.5f;
     [HideInInspector] public int siblingIndex;
+    public bool DraggingAllowed = true;
+    private bool hoverAllowed = true;
     private Vector2 mousePos => UIController.MousePosition;
     private bool _pointerOnObject = false;
     private bool _draggingOn = false;
-    private Vector2 returnPosition;
-    private int tweenId = -1;
-    private Coroutine resetCoroutine;
+    public Vector2 returnPosition;
+    private int hoverTweenId = -1;
+    private int dragTweenId = -1;
+    private Coroutine resetHoverCoroutine;
+    private Coroutine resetDragCoroutine;
 
     public event Action OnDragStart;
     public event Action OnDragEnd;
     public event Action OnCardReturn;
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public virtual void OnPointerEnter(PointerEventData eventData)
     {
         _pointerOnObject = true;
+
+        if (hoverAllowed && (hoverOffsetHorizontal != 0f || hoverOffsetVertical != 0))
+        {
+            StartHover();
+        }
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public virtual void OnPointerExit(PointerEventData eventData)
     {
         _pointerOnObject = false;
+
+        if (hoverAllowed && (hoverOffsetHorizontal != 0f || hoverOffsetVertical != 0))
+        {
+            EndHover();
+        }
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        if (!DraggingAllowed) return;
+
         if (_pointerOnObject)
         {
-            if (resetCoroutine != null)
+            if (resetDragCoroutine != null)
             {
-                StopCoroutine(resetCoroutine);
-                resetCoroutine = null;
+                StopCoroutine(resetDragCoroutine);
+                resetDragCoroutine = null;
             }
-            else returnPosition = transform.position;
+            if (resetHoverCoroutine != null)
+            {
+                StopCoroutine(resetHoverCoroutine);
+                resetHoverCoroutine = null;
+            }
 
-            if (tweenId != -1) LeanTween.cancel(tweenId);
+            hoverAllowed = false;
+
+            if (dragTweenId != -1) LeanTween.cancel(dragTweenId);
             _draggingOn = true;
+            hoverAllowed = false;
             OnDragStart?.Invoke();
         }
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
+        EndDrag();
+    }
+
+    private void StartHover()
+    {
+        if (resetHoverCoroutine != null)
+        {
+            StopCoroutine(resetHoverCoroutine);
+            resetHoverCoroutine = null;
+        }
+
+        if (hoverTweenId != -1) LeanTween.cancel(hoverTweenId);
+        hoverTweenId = LeanTween.move(gameObject,
+                                      new Vector2(returnPosition.x + hoverOffsetHorizontal,
+                                                  returnPosition.y + hoverOffsetVertical),
+                                      hoverAnimTime).setEaseInOutQuart().id;
+        StartCoroutine(ResetHoverTween());
+    }
+
+    private void EndHover()
+    {
+        if (resetHoverCoroutine != null)
+        {
+            StopCoroutine(resetHoverCoroutine);
+            resetHoverCoroutine = null;
+        }
+
+        if (hoverTweenId != -1) LeanTween.cancel(hoverTweenId);
+        hoverTweenId = LeanTween.move(gameObject, returnPosition, hoverAnimTime).setEaseInOutQuart().id;
+        StartCoroutine(ResetHoverTween());
+    }
+
+    private void EndDrag()
+    {
         if (_draggingOn)
         {
-            tweenId = LeanTween.move(gameObject, returnPosition, returnTime).setEaseOutQuart().id;
-            resetCoroutine = StartCoroutine(ResetTweenId());
+            dragTweenId = LeanTween.move(gameObject, returnPosition, returnTime).setEaseOutQuart().id;
+            resetDragCoroutine = StartCoroutine(ResetDragTween());
             OnDragEnd?.Invoke();
         }
         _draggingOn = false;
     }
 
-    private IEnumerator ResetTweenId()
+    private IEnumerator ResetHoverTween()
+    {
+        yield return new WaitForSeconds(hoverAnimTime);
+        hoverTweenId = -1;
+        resetHoverCoroutine = null;
+    }
+
+    private IEnumerator ResetDragTween()
     {
         yield return new WaitForSeconds(returnTime);
+        hoverAllowed = true;
+        dragTweenId = -1;
+        resetDragCoroutine = null;
+        if (_pointerOnObject == true) StartHover();
         OnCardReturn?.Invoke();
-        tweenId = -1;
-        resetCoroutine = null;
     }
 
     private void OnDisable()
     {
-        _draggingOn = false;
+        transform.position = returnPosition;
+        EndDrag();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!DraggingAllowed && _draggingOn) EndDrag();
+
         if (_draggingOn)
         {
             transform.position = Vector2.Lerp(transform.position, mousePos, moveSpeed * Time.unscaledDeltaTime);
