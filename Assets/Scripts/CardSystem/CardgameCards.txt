@@ -35,4 +35,4 @@ Index	Name	Unique Tag	Description	Type	Spell School	Damage Type	Strength	Range	A
 34	"Soup for my family"	#can-of-beans	Swing at them with the precius food item at the very bottom of your bag	Weapon		Blunt	low	melee	none	#silly	
 35	Rope	#rope	Jump a rope or lasso your opponents	Utility		Blunt	low	medium	none	#thrown	
 36	Tater-launcher 900	#tater-launcher	Take the unholy creation made out of pipe and demolish your enemy with green potatoes!	Weapon		Blunt	medium	high	small	#unholy, #silly	
-37	Spear	#spear	Get back to your roots and get that tetanus with this old and rusty friend!	Weapon		Cutting	high	medium	none	#infected	
+37	Spear	#spear	Get back to your roots and get that tetanus with this old and rusty friend!	Weapon		Cutting	low	low	none	#infected	
