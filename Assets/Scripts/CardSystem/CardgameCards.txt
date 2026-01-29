@@ -1,0 +1,38 @@
+Index	Name	Unique Tag	Description	Type	Spell School	Damage Type	Strength	Range	AoE	Other Tags	Additional Notes
+1	Fireball	#fireball	Unleash a powerful blast of fire to incinerate your targets!	Spell	Elemental	Fire	medium	medium	medium		
+2	Insult	#insult	Insult your target. 	Speech							
+3	Invisibility	#invisibility	Turn yourself invisible.	Spell	Trickery		medium	touch	none	#invisible, #stealth, #disengage	
+4	Dagger	#dagger	Strike your target with a dagger.	Weapon		Cutting	low	touch	none		
+5	Frying Pan	#frying-pan	Bonk your target with the power of a frying pan! Or just cook a meal with it.	Weapon		Blunt	medium	touch	none	#silly, #food	
+6	Glass Bottle	#glass-bottle	Concoct a potion to aid your target or heal yourself.	Utility			low	touch	none	#healing, #friendly	
+7	Glass Bottle (evil)	#evil-bottle	Concoct a vile poison to throw at your target! Or drink, if you're feeling crazy.	Utility		Poison	low	low	small	#silly, #thrown	
+8	Blade Dance	#blade-dance	Channel your inner swordcerer and unleash a flurry of strikes at your target!	Spell	Swordcery	Cutting	medium	touch	small	#ignore-retaliation	
+9	Apple	#apple	Throw the apple at your target! Or maybe eat it..?	Utility		Blunt	low	low	none	#food, #thrown	
+10	Longsword	#longsword	Strike your target with a long sword.	Weapon		Cutting	medium	touch	none		
+11	Deceive	#deceive	Try to deceive your target with lies or other misdirection	Speech							
+12	Banter	#banter	"Lovely weather we're having today, eh?	Speech						#silly, #friendly	
+13	Thunderlord's Wrath	#thunder-wrath	Call down a devastating thunderbolt to obliterate your target!	Spell	Elemental	Lightning	high	high	medium		
+14	Static Shock	#static-shock	Manifest sparks on your fingertips to shock your target!	Spell	Elemental	Lightning	low	touch	none		Could have a sprite where hands are rubbing at a cloth to build static electricity
+15	Snowball	#snowball	Fling a snowball at your target.	Spell	Elemental	Ice	low	low	none		
+16	Instant Quicksand	#quicksand	Manifest a pool of quicksand under your target, potentially sinking them	Spell	Elemental	Earth	medium	medium	large	#avoidable	
+17	Pocket Sand	#pocket-sand	Shoot sand at your target's eyes, potentially blinding them	Spell	Elemental	Earth	low	medium	none	#silly, #blinding, #sudden	
+18	Smokescreen	#smokescreen	Conjure a cloud of smoke to cover an area, obscuring it.	Spell	Trickery		low	medium	medium	#blinding, #sudden	Might cause you to cough
+19	Create Bonfire	#bonfire	Produce a roaring bonfire, perfect for roasting marshmallows... or other things	Spell	Elemental	Fire	low	low	small	#silly, #friendly	This isn't an actual spell, and the character just starts building up a big fire and roasts marshmallows with the target
+20	Mirror Guard	#mirror-guard	Reflect an enemy spellcaster's magic back at them! Can also be used for admiring oneself.	Spell	Protection					#reflect-spell	
+21	Hypnotize	#hypnotize	Hypnotize a target to calm them down or gain their favor (for a while).	Spell	Trickery		low	low	none	#hypnosis	
+22	Run!	#run	Try to flee from an encounter.	Utility			low			#disengage, #sudden	
+23	Teleport	#teleport	Teleport to another location, potentially ending an encounter.	Spell	Conjuration		high	high	none	#disengage	
+24	Factoid	#factoid	"Did you know that apple seeds contain cyanide?"	Speech						#silly	
+25	Telekinesis	#telekinesis	Move a target with your mind! (May fail if target is too large.)	Spell	Trickery	Blunt	low	medium	none		
+26	Soothsay	#soothsay	Imbue healing magic into your very words, causing a target to regain health.	Spell	Protection		low	medium	none	#healing	
+27	Praise	#praise	Praise your target	Speech						#friendly	
+28	Yell	#yell	Yell to flinch the target	Speech						#sudden	
+29	Sing	#sing	Sing a tune to confuse the target	Speech						#silly	
+30	Bribe	#bribe	Strike a deal for a good price	Speech						#disengage	
+31	Flirt	#flirt	Flirt with the target for the bit	Speech						#silly	
+32	Cool stick	#stick	Smack the target with the cool stick you found! Hopefully it doesn't break...	Weapon		Blunt	low	melee	none	#silly	
+33	Punch	#punch	"I cast punch!"	Weapon		Blunt	low	melee	none		
+34	"Soup for my family"	#can-of-beans	Swing at them with the precius food item at the very bottom of your bag	Weapon		Blunt	low	melee	none	#silly	
+35	Rope	#rope	Jump a rope or lasso your opponents	Utility		Blunt	low	medium	none	#thrown	
+36	Tater-launcher 900	#tater-launcher	Take the unholy creation made out of pipe and demolish your enemy with green potatoes!	Weapon		Blunt	medium	high	small	#unholy, #silly	
+37	Spear	#spear	Get back to your roots and get that tetanus with this old and rusty friend!	Weapon		Cutting	high	medium	none	#infected	

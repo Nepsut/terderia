@@ -1,0 +1,546 @@
+fileFormatVersion: 2
+guid: 27f57c96961680e418bdfb6ce5f893c5
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3064847660814073692
+    second: thunder-wrath_0
+  - first:
+      213: 3389522667864566320
+    second: thunder-wrath_1
+  - first:
+      213: -2497928712658317063
+    second: thunder-wrath_2
+  - first:
+      213: -8502313798400042566
+    second: thunder-wrath_3
+  - first:
+      213: -8195719203902000905
+    second: thunder-wrath_4
+  - first:
+      213: -7012875166110616795
+    second: thunder-wrath_5
+  - first:
+      213: -3140217298823977009
+    second: thunder-wrath_6
+  - first:
+      213: 834864061821349584
+    second: thunder-wrath_7
+  - first:
+      213: 7356550491639815081
+    second: thunder-wrath_8
+  - first:
+      213: 8701615739458136572
+    second: thunder-wrath_9
+  - first:
+      213: 6366960634951466121
+    second: thunder-wrath_10
+  - first:
+      213: -8217325451406237031
+    second: thunder-wrath_11
+  - first:
+      213: -8903523222995127916
+    second: thunder-wrath_12
+  - first:
+      213: -441697626632461524
+    second: thunder-wrath_13
+  - first:
+      213: -4035566818932386674
+    second: thunder-wrath_14
+  - first:
+      213: -7051096831482763169
+    second: thunder-wrath_15
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: thunder-wrath_0
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 91
+        width: 95
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5f728195b6888a20800000000000000
+      internalID: 3064847660814073692
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: thunder-wrath_1
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 74
+        width: 108
+        height: 115
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03aa33078e00a0f20800000000000000
+      internalID: 3389522667864566320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: thunder-wrath_2
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 133
+        width: 40
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f090c70213955dd0800000000000000
+      internalID: -2497928712658317063
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: thunder-wrath_3
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 144
+        width: 41
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab99675c5a6b10a80800000000000000
+      internalID: -8502313798400042566
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: thunder-wrath_4
+      rect:
+        serializedVersion: 2
+        x: 214
+        y: 84
+        width: 111
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f0f29c8ec4f24e80800000000000000
+      internalID: -8195719203902000905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: thunder-wrath_5
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 90
+        width: 51
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52371d531334dae90800000000000000
+      internalID: -7012875166110616795
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: thunder-wrath_6
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 89
+        width: 74
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc76f0a1105bb64d0800000000000000
+      internalID: -3140217298823977009
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: thunder-wrath_7
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 77
+        width: 37
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0dee990e078069b00800000000000000
+      internalID: 834864061821349584
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: thunder-wrath_8
+      rect:
+        serializedVersion: 2
+        x: 274
+        y: 99
+        width: 52
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ab9a6a02b7b71660800000000000000
+      internalID: 7356550491639815081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: thunder-wrath_9
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 10
+        width: 265
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf9a952796952c870800000000000000
+      internalID: 8701615739458136572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: thunder-wrath_10
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 82
+        width: 58
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98c7d21c6fcfb5850800000000000000
+      internalID: 6366960634951466121
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: thunder-wrath_11
+      rect:
+        serializedVersion: 2
+        x: 296
+        y: 80
+        width: 25
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 992a7290a0236fd80800000000000000
+      internalID: -8217325451406237031
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: thunder-wrath_12
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 12
+        width: 55
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4913fe33dc4507480800000000000000
+      internalID: -8903523222995127916
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: thunder-wrath_13
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 6
+        width: 49
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c23607a4956ced9f0800000000000000
+      internalID: -441697626632461524
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: thunder-wrath_14
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 5
+        width: 50
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e849e2a0c59cef7c0800000000000000
+      internalID: -4035566818932386674
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: thunder-wrath_15
+      rect:
+        serializedVersion: 2
+        x: 277
+        y: 9
+        width: 59
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5866924ac8752e90800000000000000
+      internalID: -7051096831482763169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      thunder-wrath_0: 3064847660814073692
+      thunder-wrath_1: 3389522667864566320
+      thunder-wrath_10: 6366960634951466121
+      thunder-wrath_11: -8217325451406237031
+      thunder-wrath_12: -8903523222995127916
+      thunder-wrath_13: -441697626632461524
+      thunder-wrath_14: -4035566818932386674
+      thunder-wrath_15: -7051096831482763169
+      thunder-wrath_2: -2497928712658317063
+      thunder-wrath_3: -8502313798400042566
+      thunder-wrath_4: -8195719203902000905
+      thunder-wrath_5: -7012875166110616795
+      thunder-wrath_6: -3140217298823977009
+      thunder-wrath_7: 834864061821349584
+      thunder-wrath_8: 7356550491639815081
+      thunder-wrath_9: 8701615739458136572
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
