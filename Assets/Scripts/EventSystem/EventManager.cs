@@ -1,35 +1,32 @@
+using CardSystem;
 using Ink.Runtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 [RequireComponent(typeof(EventFunctions))]
 public class EventManager : MonoSingleton<EventManager>
 {
     [Header("Engine Variables")]
-    // [SerializeField] private NPCData narratorData;
-    // [SerializeField] private NPCData[] npcDatas;
-    // [SerializeField] private InputReader input;
-    [SerializeField] private AudioSource voiceSource;
+    [SerializeField] private InputReader inputReader;
+    // [SerializeField] private AudioSource voiceSource;
 
-    [Header("Dialogue")]
+    [Header("Event UI")]
     [SerializeField] private TextAsset globalInkVariables;
     private Story inkVariablesStory;
     private List<string> functionsToCall = new();
     public EventVariables eventVariables { get; private set; }
     private EventFunctions eventFunctions;
-    [SerializeField] private Sprite fallbackPortrait;
-    [SerializeField] private AudioClip fallbackVoice;
-    [SerializeField] private GameObject portraitBG;
-    [SerializeField] private Image dialogueImage;
-    [SerializeField] private TextMeshProUGUI dialogueSpeaker;
+    // [SerializeField] private AudioClip fallbackVoice;
     [SerializeField] private GameObject dialoguePanel;
     [SerializeField] private TextMeshProUGUI dialogueText;
+    [SerializeField] private GameObject speakerPanel;
+    [SerializeField] private TextMeshProUGUI dialogueSpeaker;
+    [SerializeField] private GameObject cardTargetObject;
     public Story currentStory { get; private set; }
     [SerializeField] private float typeSpeed = 20f;
     private bool isTyping = false;
@@ -39,16 +36,9 @@ public class EventManager : MonoSingleton<EventManager>
     //Const values related to typing. Do not change.
     private const string alphaCode = "<color=#00000000>";
     private const float maxTypeTime = 0.1f;
-
-    [Header("Choices UI")]
-    [SerializeField] private GameObject choiceHandler;
-    [SerializeField] private GameObject choiceObject;
     private const float timeBeforeChoices = 0.2f;
-    private bool makingChoice = false;
-    private bool choiceWasMade = false;
 
-    [Header("Other Variables")]
-    private Action doAfterDialogue;
+    public static event Action<Card> OnCardUsed;
 
     private void Awake()
     {
@@ -63,16 +53,16 @@ public class EventManager : MonoSingleton<EventManager>
     private void Start()
     {
         dialoguePanel.SetActive(false);
+        Card.OnCardDragEnd += CheckForCardUse;
     }
 
     //this enters dialogue with the inkJSON file assigned to the npc
-    public void EnterDialogue(TextAsset _inkJSON, string[] _externalFunctions = null, Action _doAfterDialogue = null)
+    public void EnterEvent(TextAsset _inkJSON)
     {
         //first this sets the ink story as the active dialogue and activates dialogue panel
         currentStory = new Story(_inkJSON.text);
         eventVariables.StartListening(currentStory);
-        doAfterDialogue = _doAfterDialogue;
-
+        inputReader.OnSubmitEvent += HandleSubmit;
         dialoguePanel.SetActive(true);
 
         //continue story prints dialogue so it's called here
@@ -82,11 +72,10 @@ public class EventManager : MonoSingleton<EventManager>
     //dialogue printer
     private void ContinueStory()
     {
-        if (choiceWasMade && currentStory.canContinue)
+        if (currentStory.canContinue)
         {
-            choiceWasMade = false;
             currentStory.Continue();
-            if (currentStory.currentChoices.Count != 0) DisplayChoices();
+            if (currentStory.currentChoices.Count != 0) cardTargetObject.SetActive(true);
             else StartCoroutine(TypeDialogue());
         }
         else if (currentStory.canContinue)
@@ -105,61 +94,47 @@ public class EventManager : MonoSingleton<EventManager>
     {
         eventVariables.StopListening(currentStory);
 
-        doAfterDialogue?.Invoke();
         dialoguePanel.SetActive(false);
-        dialogueText.text = "";
-    }
-
-    //choice printer
-    private void DisplayChoices()
-    {
-        List<Choice> currentChoices = currentStory.currentChoices;
-        int index = 0;
-        //loop to instantiate a choice object onto the screen for every possible choice
-        foreach (Choice choice in currentChoices)
-        {
-            int capturedIndex = index;      //can't use raw index as that will increase for each loop
-
-            //instantiate object as child object of choice handler to let layoutgroup handle their positioning
-            GameObject _choiceObject = Instantiate(choiceObject, choiceHandler.transform);
-            //instantiated object's text is set to the text of the current choice in list
-            _choiceObject.GetComponentInChildren<TextMeshProUGUI>().text = choice.text;
-            //add listener to button so we can make choice based on... made choice
-            _choiceObject.GetComponent<Button>().onClick.AddListener(() => MakeChoice(capturedIndex));
-            index++;
-        }
-        disableInput = false;
-        //if there were choices, highlight choice and set makingChoice to true to disable inputs so story doesn't try to advance
-        if (index != 0)
-        {
-            StartCoroutine(SelectFirstChoice());
-            makingChoice = true;
-        }
-    }
-
-    private IEnumerator SelectFirstChoice()
-    {
-        //unity apparently requires you to wait for the end of a frame until you can highlight an option so we do that
-        EventSystem.current.SetSelectedGameObject(null);
-        yield return null;
-        EventSystem.current.SetSelectedGameObject(choiceHandler.transform.GetChild(0).gameObject);
+        dialogueText.text = "Dialogue Text";
+        dialogueSpeaker.text = "Speaker";
+        inputReader.OnSubmitEvent -= HandleSubmit;
     }
 
     //this is called when choice is made to advance ink story based on made choice
     public void MakeChoice(int choiceNumber)
     {
         currentStory.ChooseChoiceIndex(choiceNumber);
-        //choice is made, we are no longer making a choice and inputs are re-enabled
-        makingChoice = false;
-
-        //after choice is made, destroy active choice buttons
-        foreach (Transform child in choiceHandler.transform)
-        {
-            Destroy(child.gameObject);
-        }
-
-        choiceWasMade = true;
         ContinueStory();
+    }
+
+    private void ParseDialogueOptionFromCard(CardData usedCard, string targetString)
+    {
+        Debug.Log($"Card {usedCard.name} was used on {targetString}");
+
+        // if (currentStory.currentChoices.Count == 0) return;
+
+        // List<List<string>> choiceTags = new();
+        
+        // for (int i = 0; i < currentStory.currentChoices.Count; i++)
+        // {
+            
+        // }
+    }
+
+    private void CheckForCardUse(Card usedCard)
+    {
+        Vector2 mousePos = UIController.MousePosition;
+        RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(mousePos), Vector2.zero);
+
+        foreach (RaycastHit2D hit in hits)
+        {
+            if (hit.collider.TryGetComponent(out CardTarget target))
+            {
+                ParseDialogueOptionFromCard(usedCard.CardData, target.TargetName);
+                OnCardUsed?.Invoke(usedCard);
+                Destroy(usedCard.gameObject);
+            }
+        }
     }
 
     //this coroutine types the dialogue one letter at a time
@@ -173,7 +148,7 @@ public class EventManager : MonoSingleton<EventManager>
         WaitForSeconds realTypeTime = new(maxTypeTime / typeSpeed);
         functionsToCall = new();
 
-        SetSpeakerData();
+        HandleDialogueTags();
         TryCallFunctionsFromTags();
         // voiceSource.Play();
 
@@ -193,55 +168,48 @@ public class EventManager : MonoSingleton<EventManager>
         disableInput = true;
         // voiceSource.Stop();
         yield return new WaitForSeconds(timeBeforeChoices);
-        //this is called on advance in case there are choices, does nothing if there are none
-        DisplayChoices();
+
+        if (currentStory.currentChoices.Count != 0) cardTargetObject.SetActive(true);
     }
 
-    private void SetSpeakerData()
+    private void HandleDialogueTags()
     {
-        //grab tags from current line and show either player portrait or NPC portrait based on last tag in list
-        if (currentStory.currentTags.Any())
+        //if no tags, set fallbacks and return
+        if (!currentStory.currentTags.Any())
         {
-            bool lineIsNarrator = false;
-            string speakerId = "";
-
-            foreach (string tag in currentStory.currentTags)
-            {
-                if (tag.Contains("narrator"))
-                {
-                    Debug.Log("Found narrator tag");
-                    dialogueImage.sprite = fallbackPortrait;
-                    portraitBG.SetActive(false);
-                    lineIsNarrator = true;
-                }
-                else if (tag.Contains("speaker:"))
-                {
-                    //parse out clean speaker id from tag
-                    speakerId = tag.Replace("speaker:", null);
-                    speakerId = speakerId.Replace(" ", null);
-                    Debug.Log($"Found speaker tag: \"{speakerId}\"");
-                }
-                else if (tag.Contains("function:"))
-                {
-                    //parse out clean function name from tag
-                    string functionName = tag.Replace("function:", null);
-                    functionName = functionName.Replace(" ", null);
-                    functionsToCall.Add(functionName);
-                    Debug.Log($"Found function tag: \"{functionName}\"");
-                }
-            }
-
-            if (lineIsNarrator) return;
-        }
-        else
-        {
+            speakerPanel.SetActive(false);
             dialogueSpeaker.text = "";
-            dialogueImage.sprite = fallbackPortrait;
-            voiceSource.clip = fallbackVoice;
+            // voiceSource.clip = null;
             Debug.Log($"You have given me a dialogue line without tags, how dare you.");
+            return;
         }
 
-        portraitBG.SetActive(true);
+        //if tags, handle each tag appropriately
+        foreach (string tag in currentStory.currentTags)
+        {
+            if (tag.Contains("narrator"))
+            {
+                Debug.Log("Found narrator tag");
+                speakerPanel.SetActive(false);
+            }
+            else if (tag.Contains("speaker:"))
+            {
+                //parse out clean speaker id from tag
+                string speakerId = tag.Replace("speaker:", null);
+                speakerId = speakerId.Replace(" ", null);
+                Debug.Log($"Found speaker tag: \"{speakerId}\"");
+                speakerPanel.SetActive(true);
+                dialogueSpeaker.text = speakerId.FirstCharacterToUpper();
+            }
+            else if (tag.Contains("function:"))
+            {
+                //parse out clean function name from tag
+                string functionName = tag.Replace("function:", null);
+                functionName = functionName.Replace(" ", null);
+                functionsToCall.Add(functionName);
+                Debug.Log($"Found function tag: \"{functionName}\"");
+            }
+        }
     }
 
     private void TryCallFunctionsFromTags()
@@ -270,21 +238,8 @@ public class EventManager : MonoSingleton<EventManager>
             stopTyping = true;
             return;
         }
-        if (!makingChoice && !disableInput) ContinueStory();
+        if (!disableInput) ContinueStory();
     }
-
-    // private void CheckForDuplicateNPCIds()
-    // {
-    //     List<string> ids = new();
-    //     npcDatas.ToList().ForEach(data => ids.Add(data.speakerId));
-
-    //     ids.GroupBy(i => i).Where(g => g.Count() > 1).Select(g => g.Key).ToList().ForEach((id) =>
-    //     {
-    //         string error = $"Found NPCs with duplicate ID: {id}\nOn objects: ";
-    //         npcDatas.Where(uid => uid.speakerId == id).ToList().ForEach(uid => error += $"{uid.name} ");
-    //         Debug.LogError(error);
-    //     });
-    // }
 
     private const string dialogueVariablesKey = "dialogueVariables";
 

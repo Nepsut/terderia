@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: 35d3e47d66f9c3242a193f0b712b52e9
+guid: 68ebf1cbe73680542a840dbf430c11c4
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7943563670901088461
-    second: cardBase_damagetype_fire_0
-  - first:
-      213: 1264111690135201714
-    second: cardBase_damagetype_fire_1
+      213: 777460120139099270
+    second: cardBase_null_type_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -49,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -116,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: cardBase_damagetype_fire_0
+      name: cardBase_null_type_0
       rect:
         serializedVersion: 2
-        x: 5
-        y: 1
-        width: 56
-        height: 69
+        x: 0
+        y: 0
+        width: 550
+        height: 800
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,30 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 33f1e399deac2c190800000000000000
-      internalID: -7943563670901088461
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: cardBase_damagetype_fire_1
-      rect:
-        serializedVersion: 2
-        x: 35
-        y: 52
-        width: 10
-        height: 23
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2b76de672e60b8110800000000000000
-      internalID: 1264111690135201714
+      spriteID: 68c6cef2cd71aca00800000000000000
+      internalID: 777460120139099270
       vertices: []
       indices: 
       edges: []
@@ -163,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -173,8 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      cardBase_damagetype_fire_0: -7943563670901088461
-      cardBase_damagetype_fire_1: 1264111690135201714
+      cardBase_null_type_0: 777460120139099270
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

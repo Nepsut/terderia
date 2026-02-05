@@ -3,15 +3,17 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
+public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private float moveSpeed = 15f;
     [SerializeField] private float returnTime = 0.74f;
     [SerializeField] private float hoverOffsetHorizontal;
     [SerializeField] private float hoverOffsetVertical;
-    [SerializeField] private float hoverAnimTime = 0.5f;
+    private Vector2 hoverOffsetVector => new(hoverOffsetHorizontal, hoverOffsetVertical);
+    [SerializeField] private float hoverAnimTime = 0.32f;
     [HideInInspector] public int siblingIndex;
-    public bool DraggingAllowed = true;
+    private InputReader inputReader;
+    private bool draggingAllowed = true;
     private bool hoverAllowed = true;
     private Vector2 mousePos => UIController.MousePosition;
     private bool _pointerOnObject = false;
@@ -22,9 +24,11 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
     private Coroutine resetHoverCoroutine;
     private Coroutine resetDragCoroutine;
 
-    public event Action OnDragStart;
-    public event Action OnDragEnd;
-    public event Action OnCardReturn;
+    public event Action<DraggableObject> OnDragStart;
+    public event Action<DraggableObject> OnDragEnd;
+    public event Action<DraggableObject> OnReturn;
+    public event Action<DraggableObject> OnHoverStart;
+    public event Action<DraggableObject> OnHoverEnd;
 
     public virtual void OnPointerEnter(PointerEventData eventData)
     {
@@ -46,9 +50,9 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
         }
     }
 
-    public void OnPointerDown(PointerEventData eventData)
+    public void HandleClick()
     {
-        if (!DraggingAllowed) return;
+        if (!draggingAllowed) return;
 
         if (_pointerOnObject)
         {
@@ -66,13 +70,14 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
             hoverAllowed = false;
 
             if (dragTweenId != -1) LeanTween.cancel(dragTweenId);
+            if (hoverTweenId != -1) LeanTween.cancel(hoverTweenId);
             _draggingOn = true;
             hoverAllowed = false;
-            OnDragStart?.Invoke();
+            OnDragStart?.Invoke(this);
         }
     }
 
-    public void OnPointerUp(PointerEventData eventData)
+    public void HandleClickEnd()
     {
         EndDrag();
     }
@@ -90,7 +95,8 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
                                       new Vector2(returnPosition.x + hoverOffsetHorizontal,
                                                   returnPosition.y + hoverOffsetVertical),
                                       hoverAnimTime).setEaseInOutQuart().id;
-        StartCoroutine(ResetHoverTween());
+        resetHoverCoroutine = StartCoroutine(ResetHoverTween());
+        OnHoverStart?.Invoke(this);
     }
 
     private void EndHover()
@@ -103,16 +109,16 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
         if (hoverTweenId != -1) LeanTween.cancel(hoverTweenId);
         hoverTweenId = LeanTween.move(gameObject, returnPosition, hoverAnimTime).setEaseInOutQuart().id;
-        StartCoroutine(ResetHoverTween());
+        resetHoverCoroutine = StartCoroutine(ResetHoverTween());
     }
 
     private void EndDrag()
     {
         if (_draggingOn)
         {
-            dragTweenId = LeanTween.move(gameObject, returnPosition, returnTime).setEaseOutQuart().id;
+            dragTweenId = LeanTween.move(gameObject, returnPosition + hoverOffsetVector, returnTime).setEaseOutQuart().id;
             resetDragCoroutine = StartCoroutine(ResetDragTween());
-            OnDragEnd?.Invoke();
+            OnDragEnd?.Invoke(this);
         }
         _draggingOn = false;
     }
@@ -122,6 +128,7 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
         yield return new WaitForSeconds(hoverAnimTime);
         hoverTweenId = -1;
         resetHoverCoroutine = null;
+        OnHoverEnd?.Invoke(this);
     }
 
     private IEnumerator ResetDragTween()
@@ -130,20 +137,51 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
         hoverAllowed = true;
         dragTweenId = -1;
         resetDragCoroutine = null;
-        if (_pointerOnObject == true) StartHover();
-        OnCardReturn?.Invoke();
+        OnReturn?.Invoke(this);
+        if (!_pointerOnObject) EndHover();
     }
 
     private void OnDisable()
     {
+        _pointerOnObject = false;
         transform.position = returnPosition;
-        EndDrag();
+        StopAllCoroutines();
+        if (dragTweenId != -1) LeanTween.cancel(dragTweenId);
+        if (hoverTweenId != -1) LeanTween.cancel(hoverTweenId);
+    }
+
+    public void DisallowMovement()
+    {
+        draggingAllowed = false;
+        hoverAllowed = false;
+        StopAllCoroutines();
+        if (dragTweenId != -1) LeanTween.cancel(dragTweenId);
+        if (hoverTweenId != -1) LeanTween.cancel(hoverTweenId);
+    }
+
+    public void AllowMovement()
+    {
+        draggingAllowed = true;
+        hoverAllowed = true;
+    }
+
+    private void Start()
+    {
+        inputReader = UIController.Instance.MainInputReader;
+        inputReader.OnClickEvent += HandleClick;
+        inputReader.OnClickReleaseEvent += HandleClickEnd;
+    }
+
+    private void OnDestroy()
+    {
+        inputReader.OnClickEvent -= HandleClick;
+        inputReader.OnClickReleaseEvent -= HandleClickEnd;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!DraggingAllowed && _draggingOn) EndDrag();
+        if (!draggingAllowed && _draggingOn) EndDrag();
 
         if (_draggingOn)
         {
