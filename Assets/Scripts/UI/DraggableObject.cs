@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+[RequireComponent(typeof(RectTransform))]
 public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private float moveSpeed = 15f;
@@ -12,6 +13,7 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
     private Vector2 hoverOffsetVector => new(hoverOffsetHorizontal, hoverOffsetVertical);
     [SerializeField] private float hoverAnimTime = 0.32f;
     [HideInInspector] public int siblingIndex;
+    private RectTransform selfRect;
     private InputReader inputReader;
     private bool draggingAllowed = true;
     private bool hoverAllowed = true;
@@ -91,7 +93,7 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
         }
 
         if (hoverTweenId != -1) LeanTween.cancel(hoverTweenId);
-        hoverTweenId = LeanTween.move(gameObject,
+        hoverTweenId = LeanTween.move(selfRect,
                                       new Vector2(returnPosition.x + hoverOffsetHorizontal,
                                                   returnPosition.y + hoverOffsetVertical),
                                       hoverAnimTime).setEaseInOutQuart().id;
@@ -108,7 +110,7 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
         }
 
         if (hoverTweenId != -1) LeanTween.cancel(hoverTweenId);
-        hoverTweenId = LeanTween.move(gameObject, returnPosition, hoverAnimTime).setEaseInOutQuart().id;
+        hoverTweenId = LeanTween.move(selfRect, returnPosition, hoverAnimTime).setEaseInOutQuart().id;
         resetHoverCoroutine = StartCoroutine(ResetHoverTween());
     }
 
@@ -116,7 +118,7 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
     {
         if (_draggingOn)
         {
-            dragTweenId = LeanTween.move(gameObject, returnPosition + hoverOffsetVector, returnTime).setEaseOutQuart().id;
+            dragTweenId = LeanTween.move(selfRect, returnPosition + hoverOffsetVector, returnTime).setEaseOutQuart().id;
             resetDragCoroutine = StartCoroutine(ResetDragTween());
             OnDragEnd?.Invoke(this);
         }
@@ -165,8 +167,14 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
         hoverAllowed = true;
     }
 
+    public void SetReturnPosition()
+    {
+        returnPosition = selfRect.anchoredPosition;
+    }
+
     private void Start()
     {
+        selfRect = GetComponent<RectTransform>();
         inputReader = UIController.Instance.MainInputReader;
         inputReader.OnClickEvent += HandleClick;
         inputReader.OnClickReleaseEvent += HandleClickEnd;

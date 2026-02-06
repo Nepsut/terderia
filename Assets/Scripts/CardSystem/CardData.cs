@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace CardSystem
@@ -9,17 +10,18 @@ namespace CardSystem
         public readonly string id;
         public readonly string description;
         public readonly CardType cardType;
-        public readonly DamageType damageType;
         public readonly SpellSchool spellSchool;
+        public readonly DamageType damageType;
         public readonly Strength strength;
         public readonly Range range;
         public readonly AreaOfEffect areaOfEffect;
-        public readonly string[] otherTags;
+        public readonly List<string> otherTags;
         public readonly Sprite sprite;
 
-        public CardData(int index, string name, string id, string description, CardType cardType, DamageType damageType = DamageType.none,
-        SpellSchool spellSchool = SpellSchool.none, Strength strength = Strength.none, Range range = Range.touch,
-        AreaOfEffect areaOfEffect = AreaOfEffect.none, string[] otherTags = null)
+        public CardData(int index, string name, string id, string description, CardType cardType,
+        SpellSchool spellSchool = SpellSchool.none, DamageType damageType = DamageType.none, 
+        Strength strength = Strength.none, Range range = Range.touch,
+        AreaOfEffect areaOfEffect = AreaOfEffect.none, List<string> otherTags = null)
         {
             this.index = index;
             this.name = name;
@@ -31,7 +33,7 @@ namespace CardSystem
             this.strength = strength;
             this.range = range;
             this.areaOfEffect = areaOfEffect;
-            this.otherTags = otherTags ?? (new string[0]);
+            this.otherTags = otherTags ?? new();
             sprite = Resources.Load<Sprite>($"CardSystem/Cards/{id}");
             if (sprite == null) Debug.LogWarning($"Sprite for card {this.id} couldn't be found and wasn't set.");
         }
@@ -42,6 +44,16 @@ namespace CardSystem
             weapon,
             speech,
             utility
+        }
+
+        public enum SpellSchool
+        {
+            none = 0,
+            elemental,
+            trickery,
+            conjuration,
+            protection,
+            swordcery
         }
 
         public enum DamageType
@@ -70,16 +82,6 @@ namespace CardSystem
             low,
             medium,
             high
-        }
-
-        public enum SpellSchool
-        {
-            none = 0,
-            elemental,
-            trickery,
-            conjuration,
-            protection,
-            swordcery
         }
 
         public enum AreaOfEffect

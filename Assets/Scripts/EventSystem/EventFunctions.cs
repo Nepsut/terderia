@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class EventFunctions : MonoBehaviour
 {
-    private EventVariables eventVariables => EventManager.Instance.eventVariables;
+    private EventVariables eventVariables => EventManager.Instance.EventVariables;
     private EventManager eventManager => EventManager.Instance;
 
     public void TestFunction()

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace CardSystem
@@ -83,22 +84,23 @@ namespace CardSystem
                 if (!Enum.TryParse<CardData.Strength>(cardValues[strengthIndex], ignoreCase: true, out var cardStrength)) cardStrength = CardData.Strength.none;
                 if (!Enum.TryParse<CardData.Range>(cardValues[rangeIndex], ignoreCase: true, out var cardRange)) cardRange = CardData.Range.touch;
                 if (!Enum.TryParse<CardData.AreaOfEffect>(cardValues[aoeIndex], ignoreCase: true, out var cardAoe)) cardAoe = CardData.AreaOfEffect.none;
-                string[] cardTags;
+                string[] cardTagArray;
                 if (cardValues[tagsIndex] != "" && cardValues[tagsIndex] != null)
                 {
-                    cardTags = cardValues[tagsIndex].Split(',');
-                    for (int j = 0; j < cardTags.Length; j++)
+                    cardTagArray = cardValues[tagsIndex].Split(',');
+                    for (int j = 0; j < cardTagArray.Length; j++)
                     {
-                        cardTags[j] = cardTags[j].Replace("#", null);
-                        cardTags[j] = cardTags[j].Replace(" ", null);
+                        cardTagArray[j] = cardTagArray[j].Replace("#", null);
+                        cardTagArray[j] = cardTagArray[j].Replace(" ", null);
                     }
                 }
-                else cardTags = null;
+                else cardTagArray = null;
+                List<string> cardTags = cardTagArray == null ? new List<string>() : cardTagArray.ToList();
 
                 Cards.Add(cardValues[idIndex], new(index: int.Parse(cardValues[indexIndex]) , name: cardValues[nameIndex],
                     id: cardValues[idIndex].Replace("#", null), description: cardValues[descriptionIndex],
                     cardType: Enum.Parse<CardData.CardType>(cardValues[typeIndex], ignoreCase: true),
-                    damageType: cardDamage, spellSchool: cardSchool, strength: cardStrength, range: cardRange,
+                    spellSchool: cardSchool, damageType: cardDamage, strength: cardStrength, range: cardRange,
                     areaOfEffect: cardAoe, otherTags: cardTags));
             }
         }

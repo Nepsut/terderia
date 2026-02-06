@@ -19,17 +19,24 @@ public class EventManager : MonoSingleton<EventManager>
     [SerializeField] private TextAsset globalInkVariables;
     private Story inkVariablesStory;
     private List<string> functionsToCall = new();
-    public EventVariables eventVariables { get; private set; }
+    public EventVariables EventVariables { get; private set; }
     private EventFunctions eventFunctions;
     // [SerializeField] private AudioClip fallbackVoice;
+    [SerializeField] private CardHolder cardHolder;
     [SerializeField] private GameObject dialoguePanel;
     [SerializeField] private TextMeshProUGUI dialogueText;
     [SerializeField] private GameObject speakerPanel;
     [SerializeField] private TextMeshProUGUI dialogueSpeaker;
-    [SerializeField] private GameObject cardTargetObject;
-    public Story currentStory { get; private set; }
+    [SerializeField] private GameObject selfTargetObject;
+    [SerializeField] private Transform eventTargetGroupHolder;
     [SerializeField] private float typeSpeed = 20f;
+
+    [Header ("Debug variables")]
+    [SerializeField] private TextAsset demoEvent;
+    public Story CurrentStory { get; private set; }
+    private List<GameObject> activeEventTargets;
     private bool isTyping = false;
+    private bool choiceWasMade = false;
     private bool stopTyping = false;
     private bool disableInput = false;
 
@@ -40,10 +47,24 @@ public class EventManager : MonoSingleton<EventManager>
 
     public static event Action<Card> OnCardUsed;
 
+    public struct ChoiceTagHolder
+    {
+        public string TargetTag;
+        public string UniqueTag;
+        public List<string> OtherTags;
+
+        public ChoiceTagHolder(string targetTag, string uniqueTag, List<string> otherTags = null)
+        {
+            TargetTag = targetTag;
+            UniqueTag = uniqueTag;
+            OtherTags = otherTags; 
+        }
+    }
+
     private void Awake()
     {
         inkVariablesStory = new Story(globalInkVariables.text);
-        eventVariables = new(inkVariablesStory);
+        EventVariables = new(inkVariablesStory);
 
         eventFunctions = GetComponent<EventFunctions>();
 
@@ -53,15 +74,18 @@ public class EventManager : MonoSingleton<EventManager>
     private void Start()
     {
         dialoguePanel.SetActive(false);
+        selfTargetObject.SetActive(false);
         Card.OnCardDragEnd += CheckForCardUse;
+
+        EnterEvent(demoEvent);
     }
 
     //this enters dialogue with the inkJSON file assigned to the npc
     public void EnterEvent(TextAsset _inkJSON)
     {
         //first this sets the ink story as the active dialogue and activates dialogue panel
-        currentStory = new Story(_inkJSON.text);
-        eventVariables.StartListening(currentStory);
+        CurrentStory = new Story(_inkJSON.text);
+        EventVariables.StartListening(CurrentStory);
         inputReader.OnSubmitEvent += HandleSubmit;
         dialoguePanel.SetActive(true);
 
@@ -72,13 +96,19 @@ public class EventManager : MonoSingleton<EventManager>
     //dialogue printer
     private void ContinueStory()
     {
-        if (currentStory.canContinue)
+        if (choiceWasMade && CurrentStory.canContinue)
         {
-            currentStory.Continue();
-            if (currentStory.currentChoices.Count != 0) cardTargetObject.SetActive(true);
+            choiceWasMade = false;
+            // CurrentStory.Continue();
+            if (CurrentStory.currentChoices.Count != 0)
+            {
+                selfTargetObject.SetActive(true);
+                selfTargetObject.GetComponent<Collider2D>().enabled = true;
+                cardHolder.ActivateHolder();
+            }
             else StartCoroutine(TypeDialogue());
         }
-        else if (currentStory.canContinue)
+        else if (CurrentStory.canContinue)
         {
             StartCoroutine(TypeDialogue());
         }
@@ -92,18 +122,30 @@ public class EventManager : MonoSingleton<EventManager>
     //this sets dialogue panel inactive, empties dialogue text and sets input scheme back to gameplay
     private void ExitDialogue()
     {
-        eventVariables.StopListening(currentStory);
+        EventVariables.StopListening(CurrentStory);
 
         dialoguePanel.SetActive(false);
         dialogueText.text = "Dialogue Text";
         dialogueSpeaker.text = "Speaker";
+        activeEventTargets.ForEach(target => target.SetActive(false));
+        activeEventTargets = null;
         inputReader.OnSubmitEvent -= HandleSubmit;
     }
 
     //this is called when choice is made to advance ink story based on made choice
     public void MakeChoice(int choiceNumber)
     {
-        currentStory.ChooseChoiceIndex(choiceNumber);
+        CurrentStory.ChooseChoiceIndex(choiceNumber);
+        choiceWasMade = true;
+        activeEventTargets.ForEach(target =>
+        {
+            foreach (Transform child in target.transform)
+            {
+                child.GetComponent<Collider2D>().enabled = false;
+            }
+
+        });
+        selfTargetObject.GetComponent<Collider2D>().enabled = false;
         ContinueStory();
     }
 
@@ -111,14 +153,161 @@ public class EventManager : MonoSingleton<EventManager>
     {
         Debug.Log($"Card {usedCard.name} was used on {targetString}");
 
-        // if (currentStory.currentChoices.Count == 0) return;
+        if (CurrentStory.currentChoices.Count == 0) return;
 
-        // List<List<string>> choiceTags = new();
+        int[] matchingTagCounts = new int[CurrentStory.currentChoices.Count];
+        float[] matchingTagPercentage = new float[CurrentStory.currentChoices.Count];
+        int bestMatchIndex = -1;
         
-        // for (int i = 0; i < currentStory.currentChoices.Count; i++)
-        // {
-            
-        // }
+        //This looping if-else hell determines which dialogue option has the most matching
+        //tags with the used cards, and if a targetTag-uniqueTag match is found, exits with that
+        for (int i = 0; i < CurrentStory.currentChoices.Count && bestMatchIndex == -1; i++)
+        {
+            bool targetTagMatch = false;
+            bool uniqueTagMatch = false;
+            matchingTagCounts[i] = 0;
+
+            for (int j = 0; j < CurrentStory.currentChoices[i].tags.Count && bestMatchIndex == -1; j++)
+            {
+                string choiceTag = CurrentStory.currentChoices[i].tags[j];
+
+                if (choiceTag.Contains('@'))
+                {
+                    if (targetString.Equals(choiceTag.Replace("@", null)))
+                    {
+                        targetTagMatch = true;
+                    }
+                }
+                else if (choiceTag.Contains('!'))
+                {
+                    if (usedCard.id.Equals(choiceTag.Replace("!", null)))
+                    {
+                        uniqueTagMatch = true;
+                    }
+                }
+                else if (choiceTag.Contains("type:"))
+                {
+                    choiceTag = choiceTag.Replace("type:", null);
+                    if (!Enum.TryParse(choiceTag, ignoreCase: true, out CardData.CardType type))
+                    {
+                        string warning = string.Concat($"Error in \'type\' tag: event {CurrentStory.debugMetadata.fileName} ",
+                        $"on choice {CurrentStory.currentChoices[i].text}");
+                        Debug.LogWarning(warning);
+                        continue;
+                    }
+                    if (usedCard.cardType == type) matchingTagCounts[i]++;
+                }
+                else if (choiceTag.Contains("school:"))
+                {
+                    choiceTag = choiceTag.Replace("school:", null);
+                    if (!Enum.TryParse(choiceTag, ignoreCase: true, out CardData.SpellSchool school))
+                    {
+                        string warning = string.Concat($"Error in \'school\' tag: event {CurrentStory} ",
+                        $"on choice {CurrentStory.currentChoices[i].text}");
+                        Debug.LogWarning(warning);
+                        continue;
+                    }
+                    if (usedCard.spellSchool == school) matchingTagCounts[i]++;
+                }
+                else if (choiceTag.Contains("damage:"))
+                {
+                    choiceTag = choiceTag.Replace("damage:", null);
+                    if (!Enum.TryParse(choiceTag, ignoreCase: true, out CardData.DamageType damageType))
+                    {
+                        string warning = string.Concat($"Error in \'damage\' tag: event {CurrentStory} ",
+                        $"on choice {CurrentStory.currentChoices[i].text}");
+                        Debug.LogWarning(warning);
+                        continue;
+                    }
+                    if (usedCard.damageType == damageType) matchingTagCounts[i]++;
+                }
+                else if (choiceTag.Contains("range:"))
+                {
+                    choiceTag = choiceTag.Replace("range:", null);
+                    if (!Enum.TryParse(choiceTag, ignoreCase: true, out CardData.Range range))
+                    {
+                        string warning = string.Concat($"Error in \'range\' tag: event {CurrentStory} ",
+                        $"on choice {CurrentStory.currentChoices[i].text}");
+                        Debug.LogWarning(warning);
+                        continue;
+                    }
+                    if (usedCard.range == range) matchingTagCounts[i]++;
+                    else if ((int)usedCard.range < (int)range) matchingTagCounts[i]--;
+                }
+                else if (choiceTag.Contains("strength:"))
+                {
+                    choiceTag = choiceTag.Replace("strength:", null);
+                    if (!Enum.TryParse(choiceTag, ignoreCase: true, out CardData.Strength strength))
+                    {
+                        string warning = string.Concat($"Error in \'strength\' tag: event {CurrentStory} ",
+                        $"on choice {CurrentStory.currentChoices[i].text}");
+                        Debug.LogWarning(warning);
+                        continue;
+                    }
+                    if (usedCard.strength == strength) matchingTagCounts[i]++;
+                    else if ((int)usedCard.strength < (int)strength) matchingTagCounts[i]--;
+                }
+                else if (choiceTag.Contains("aoe:"))
+                {
+                    choiceTag = choiceTag.Replace("aoe:", null);
+                    if (!Enum.TryParse(choiceTag, ignoreCase: true, out CardData.AreaOfEffect aoe))
+                    {
+                        string warning = string.Concat($"Error in \'aoe\' tag: event {CurrentStory} ",
+                        $"on choice {CurrentStory.currentChoices[i].text}");
+                        Debug.LogWarning(warning);
+                        continue;
+                    }
+                    if (usedCard.areaOfEffect == aoe) matchingTagCounts[i]++;
+                    else if ((int)usedCard.areaOfEffect < (int)aoe) matchingTagCounts[i]--;
+                }
+                else if (choiceTag.Contains("other:"))
+                {
+                    if (usedCard.otherTags == null || usedCard.otherTags.Count == 0) continue;
+                    choiceTag = choiceTag.Replace("other:", null);
+                    if (usedCard.otherTags.Contains(choiceTag)) matchingTagCounts[i]++;
+                }
+
+                if (targetTagMatch && uniqueTagMatch)
+                {
+                    bestMatchIndex = i;
+                    break;
+                }
+            }
+            //if target didn't match, invalidate choice
+            if (!targetTagMatch)
+            {
+                matchingTagCounts[i] -= 100;
+                matchingTagPercentage[i] = -1f;
+            }
+            else
+            {
+                matchingTagPercentage[i] = matchingTagCounts[i] / (float)CurrentStory.currentChoices[i].tags.Count;
+            }
+        }
+
+        //code goes here if both target and unique tag matched on any dialogue option
+        //it then progresses the dialogue with the best choice and exits
+        if (bestMatchIndex != -1)
+        {
+            MakeChoice(bestMatchIndex);
+            return;
+        }
+
+        bestMatchIndex = 0;
+        //this thing finds the index of the option with the highest % of matching tags,
+        //using the highest count of matching tags if two or more options share a %
+        for (int i = 1; i < matchingTagCounts.Length; i++)
+        {
+            if (matchingTagPercentage[bestMatchIndex] < matchingTagPercentage[i] ||
+                (matchingTagPercentage[bestMatchIndex] == matchingTagPercentage[i] &&
+                matchingTagCounts[bestMatchIndex] < matchingTagCounts[i]))
+            {
+                bestMatchIndex = i;
+            }
+        }
+
+        MakeChoice(bestMatchIndex);
+        return;
     }
 
     private void CheckForCardUse(Card usedCard)
@@ -142,7 +331,7 @@ public class EventManager : MonoSingleton<EventManager>
     {
         isTyping = true;
         dialogueText.text = "";
-        string originalText = currentStory.Continue();
+        string originalText = CurrentStory.Continue();
         string displayedText;
         int alphaIndex = 0;
         WaitForSeconds realTypeTime = new(maxTypeTime / typeSpeed);
@@ -169,13 +358,24 @@ public class EventManager : MonoSingleton<EventManager>
         // voiceSource.Stop();
         yield return new WaitForSeconds(timeBeforeChoices);
 
-        if (currentStory.currentChoices.Count != 0) cardTargetObject.SetActive(true);
+        if (CurrentStory.currentChoices.Count != 0)
+        {
+            selfTargetObject.SetActive(true);
+            selfTargetObject.GetComponent<Collider2D>().enabled = true;
+            cardHolder.ActivateHolder();
+        }
+        else
+        {
+            cardHolder.DeactivateHolder();
+            selfTargetObject.SetActive(false);
+            activeEventTargets?.ForEach(target => target.SetActive(false));
+        }
     }
 
     private void HandleDialogueTags()
     {
         //if no tags, set fallbacks and return
-        if (!currentStory.currentTags.Any())
+        if (!CurrentStory.currentTags.Any())
         {
             speakerPanel.SetActive(false);
             dialogueSpeaker.text = "";
@@ -184,8 +384,9 @@ public class EventManager : MonoSingleton<EventManager>
             return;
         }
 
+        bool foundSpeakerTag = false;
         //if tags, handle each tag appropriately
-        foreach (string tag in currentStory.currentTags)
+        foreach (string tag in CurrentStory.currentTags)
         {
             if (tag.Contains("narrator"))
             {
@@ -194,22 +395,39 @@ public class EventManager : MonoSingleton<EventManager>
             }
             else if (tag.Contains("speaker:"))
             {
-                //parse out clean speaker id from tag
                 string speakerId = tag.Replace("speaker:", null);
-                speakerId = speakerId.Replace(" ", null);
                 Debug.Log($"Found speaker tag: \"{speakerId}\"");
+                foundSpeakerTag = true;
                 speakerPanel.SetActive(true);
                 dialogueSpeaker.text = speakerId.FirstCharacterToUpper();
             }
             else if (tag.Contains("function:"))
             {
-                //parse out clean function name from tag
                 string functionName = tag.Replace("function:", null);
-                functionName = functionName.Replace(" ", null);
                 functionsToCall.Add(functionName);
                 Debug.Log($"Found function tag: \"{functionName}\"");
             }
+            else if (tag.Contains("targets:"))
+            {
+                activeEventTargets ??= new();
+                string targetGroupName = tag.Replace("targets:", null);
+                activeEventTargets.Add(eventTargetGroupHolder.Find(targetGroupName).gameObject);
+                Debug.Log($"Found targets tag: \"{targetGroupName}\"");
+            }
         }
+        if (!foundSpeakerTag)
+        {
+            dialogueSpeaker.text = "";
+            speakerPanel.SetActive(false);
+        }
+        activeEventTargets?.ForEach(target => target.SetActive(true));
+        activeEventTargets?.ForEach(target =>
+        {
+            foreach (Transform child in target.transform)
+            {
+                child.GetComponent<Collider2D>().enabled = true;
+            }
+        });
     }
 
     private void TryCallFunctionsFromTags()
@@ -223,7 +441,7 @@ public class EventManager : MonoSingleton<EventManager>
 
     public Ink.Runtime.Object GetVariableState(string _variableName)
     {
-        eventVariables.dialogueVariables.TryGetValue(_variableName, out Ink.Runtime.Object _variableValue);
+        EventVariables.dialogueVariables.TryGetValue(_variableName, out Ink.Runtime.Object _variableValue);
         if (_variableValue == null)
         {
             Debug.LogWarning($"{_variableName} was null, did you mean to reference it?");
