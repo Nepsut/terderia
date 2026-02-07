@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace CardSystem
@@ -13,6 +14,7 @@ namespace CardSystem
         [field: SerializeField] public Sprite CardbaseSpell { get; private set; }
         [field: SerializeField] public Sprite CardbaseUtility { get; private set; }
         [field: SerializeField] public Sprite CardbaseWeapon { get; private set; }
+        [field: SerializeField] public Sprite CardbaseNull { get; private set; }
 
         [Header("Damage Type Sprite References")]
         [field: SerializeField] public Sprite DamageTypeBlunt { get; private set; }
@@ -22,6 +24,7 @@ namespace CardSystem
         [field: SerializeField] public Sprite DamageTypeIce { get; private set; }
         [field: SerializeField] public Sprite DamageTypeLightning { get; private set; }
         [field: SerializeField] public Sprite DamageTypePoison { get; private set; }
+        [field: SerializeField] public Sprite DamageTypeNone { get; private set; }
 
         [Header("Card Variable References")]
         [field: SerializeField] public Sprite EmptyDot { get; private set; }
@@ -41,7 +44,7 @@ namespace CardSystem
         private const string tagsHeader = "Other Tags";
         private const string notesHeader = "Additional Notes";
 
-        public static Dictionary<string, Card> Cards { get; private set; }
+        public static Dictionary<string, CardData> Cards { get; private set; }
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         private void Awake()
@@ -50,7 +53,7 @@ namespace CardSystem
             
             foreach(var keyValuePair in Cards)
             {
-                Debug.Log($"{keyValuePair.Value.name}\t{keyValuePair.Value.description}");
+                Debug.Log($"{keyValuePair.Value.name} - {keyValuePair.Value.description}");
             }
         }
 
@@ -76,27 +79,28 @@ namespace CardSystem
             for (int i = 1; i < cardDataAsStrings.Length; i++)
             {
                 string[] cardValues = cardDataAsStrings[i].Split('\t');
-                if (!Enum.TryParse<Card.SpellSchool>(cardValues[schoolIndex], ignoreCase: true, out var cardSchool)) cardSchool = Card.SpellSchool.none;
-                if (!Enum.TryParse<Card.DamageType>(cardValues[damageIndex], ignoreCase: true, out var cardDamage)) cardDamage = Card.DamageType.none;
-                if (!Enum.TryParse<Card.Strength>(cardValues[strengthIndex], ignoreCase: true, out var cardStrength)) cardStrength = Card.Strength.none;
-                if (!Enum.TryParse<Card.Range>(cardValues[rangeIndex], ignoreCase: true, out var cardRange)) cardRange = Card.Range.touch;
-                if (!Enum.TryParse<Card.AreaOfEffect>(cardValues[aoeIndex], ignoreCase: true, out var cardAoe)) cardAoe = Card.AreaOfEffect.none;
-                string[] cardTags;
+                if (!Enum.TryParse<CardData.SpellSchool>(cardValues[schoolIndex], ignoreCase: true, out var cardSchool)) cardSchool = CardData.SpellSchool.none;
+                if (!Enum.TryParse<CardData.DamageType>(cardValues[damageIndex], ignoreCase: true, out var cardDamage)) cardDamage = CardData.DamageType.none;
+                if (!Enum.TryParse<CardData.Strength>(cardValues[strengthIndex], ignoreCase: true, out var cardStrength)) cardStrength = CardData.Strength.none;
+                if (!Enum.TryParse<CardData.Range>(cardValues[rangeIndex], ignoreCase: true, out var cardRange)) cardRange = CardData.Range.touch;
+                if (!Enum.TryParse<CardData.AreaOfEffect>(cardValues[aoeIndex], ignoreCase: true, out var cardAoe)) cardAoe = CardData.AreaOfEffect.none;
+                string[] cardTagArray;
                 if (cardValues[tagsIndex] != "" && cardValues[tagsIndex] != null)
                 {
-                    cardTags = cardValues[tagsIndex].Split(',');
-                    for (int j = 0; j < cardTags.Length; j++)
+                    cardTagArray = cardValues[tagsIndex].Split(',');
+                    for (int j = 0; j < cardTagArray.Length; j++)
                     {
-                        cardTags[j] = cardTags[j].Replace("#", null);
-                        cardTags[j] = cardTags[j].Replace(" ", null);
+                        cardTagArray[j] = cardTagArray[j].Replace("#", null);
+                        cardTagArray[j] = cardTagArray[j].Replace(" ", null);
                     }
                 }
-                else cardTags = null;
+                else cardTagArray = null;
+                List<string> cardTags = cardTagArray == null ? new List<string>() : cardTagArray.ToList();
 
                 Cards.Add(cardValues[idIndex], new(index: int.Parse(cardValues[indexIndex]) , name: cardValues[nameIndex],
                     id: cardValues[idIndex].Replace("#", null), description: cardValues[descriptionIndex],
-                    cardType: Enum.Parse<Card.CardType>(cardValues[typeIndex], ignoreCase: true),
-                    damageType: cardDamage, spellSchool: cardSchool, strength: cardStrength, range: cardRange,
+                    cardType: Enum.Parse<CardData.CardType>(cardValues[typeIndex], ignoreCase: true),
+                    spellSchool: cardSchool, damageType: cardDamage, strength: cardStrength, range: cardRange,
                     areaOfEffect: cardAoe, otherTags: cardTags));
             }
         }

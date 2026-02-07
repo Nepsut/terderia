@@ -1,94 +1,106 @@
 using System;
+using System.Linq;
+using CardSystem;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
-namespace CardSystem
+[RequireComponent(typeof(DraggableObject))]
+public class Card : MonoBehaviour
 {
-    public class Card
+    [SerializeField] private TextMeshProUGUI titleText;
+    [SerializeField] private TextMeshProUGUI descriptionText;
+    [SerializeField] private TextMeshProUGUI damageText;
+    [SerializeField] private Image cardBack;
+    [SerializeField] private Image cardImage;
+    [SerializeField] private Image damageImage;
+    [SerializeField] private Transform StrDotHolder;
+    [SerializeField] private Transform RangeDotHolder;
+    [SerializeField] private Transform AoeDotHolder;
+
+    private DraggableObject selfDraggable;
+    public CardData CardData { get; private set; }
+
+    public static event Action<Card> OnCardDragStart;
+    public static event Action<Card> OnCardDragEnd;
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
     {
-        public readonly int index;
-        public readonly string name;
-        public readonly string id;
-        public readonly string description;
-        public readonly CardType cardType;
-        public readonly DamageType damageType;
-        public readonly SpellSchool spellSchool;
-        public readonly Strength strength;
-        public readonly Range range;
-        public readonly AreaOfEffect areaOfEffect;
-        public readonly string[] otherTags;
-        public readonly Sprite sprite;
+        selfDraggable = GetComponent<DraggableObject>();
+        selfDraggable.OnDragStart += _ => OnCardDragStart?.Invoke(this);
+        selfDraggable.OnDragEnd += _ => OnCardDragEnd?.Invoke(this);
 
-        public Card(int index, string name, string id, string description, CardType cardType, DamageType damageType = DamageType.none,
-        SpellSchool spellSchool = SpellSchool.none, Strength strength = Strength.none, Range range = Range.touch,
-        AreaOfEffect areaOfEffect = AreaOfEffect.none, string[] otherTags = null)
+        InitializeCard(UnityEngine.Random.Range(1, CardManager.Cards.Count+1));
+    }
+
+    public void InitializeCard(string uniqueTag)
+    {
+        if (!CardManager.Cards.ContainsKey(uniqueTag))
         {
-            this.index = index;
-            this.name = name;
-            this.id = id;
-            this.description = description;
-            this.cardType = cardType;
-            this.damageType = damageType;
-            this.spellSchool = spellSchool;
-            this.strength = strength;
-            this.range = range;
-            this.areaOfEffect = areaOfEffect;
-            this.otherTags = otherTags ?? (new string[0]);
-            sprite = Resources.Load<Sprite>($"CardSystem/Cards/{id}");
-            if (sprite == null) Debug.LogWarning($"Sprite for card {this.id} couldn't be found and wasn't set.");
+            Debug.LogWarning($"Tried to initialize card with flawed tag: {uniqueTag}");
         }
+        CardData = CardManager.Cards[uniqueTag];
+        SetAppearance();
+    }
 
-        public enum CardType
+    public void InitializeCard(int cardIndex)
+    {
+        CardData = CardManager.Cards.Values.FirstOrDefault(card => card.index == cardIndex);
+        SetAppearance();
+    }
+
+    private void SetAppearance()
+    {
+        titleText.text = CardData.name;
+        descriptionText.text = CardData.description;
+        UtilityManager.Instance.DoNextFrame(() =>
         {
-            spell = 0,
-            weapon,
-            speech,
-            utility
+            RectTransform textRect = descriptionText.GetComponent<RectTransform>();
+            if (textRect.rect.width > LayoutUtility.GetPreferredWidth(textRect))
+            {
+                descriptionText.alignment = TextAlignmentOptions.Midline;
+            }
+        });
+        cardImage.sprite = CardData.sprite;
+        damageText.text = CardData.damageType.ToString().FirstCharacterToUpper();
+
+        cardBack.sprite = CardData.cardType switch
+        {
+            CardData.CardType.speech => CardManager.Instance.CardbaseSpeech,
+            CardData.CardType.spell => CardManager.Instance.CardbaseSpell,
+            CardData.CardType.utility => CardManager.Instance.CardbaseUtility,
+            CardData.CardType.weapon => CardManager.Instance.CardbaseWeapon,
+            _ => CardManager.Instance.CardbaseNull,
+        };
+
+        damageImage.sprite = CardData.damageType switch
+        {
+            CardData.DamageType.blunt => CardManager.Instance.DamageTypeBlunt,
+            CardData.DamageType.cutting => CardManager.Instance.DamageTypeCutting,
+            CardData.DamageType.earth => CardManager.Instance.DamageTypeEarth,
+            CardData.DamageType.fire => CardManager.Instance.DamageTypeFire,
+            CardData.DamageType.ice => CardManager.Instance.DamageTypeIce,
+            CardData.DamageType.lightning => CardManager.Instance.DamageTypeLightning,
+            CardData.DamageType.poison => CardManager.Instance.DamageTypePoison,
+            _ => CardManager.Instance.DamageTypeNone,
+        };
+
+        for (int i = -1; i < (int)CardData.strength; i++)
+        {
+            if (i == -1) continue;
+            StrDotHolder.GetChild(i).GetComponent<Image>().sprite = CardManager.Instance.FilledDot;
         }
-
-        public enum DamageType
+        for (int i = -1; i < (int)CardData.range; i++)
         {
-            none = 0,
-            fire,
-            ice,
-            lightning,
-            earth,
-            poison,
-            cutting,
-            blunt
+            if (i == -1) continue;
+            RangeDotHolder.GetChild(i).GetComponent<Image>().sprite = CardManager.Instance.FilledDot;
         }
-
-        public enum Strength
+        for (int i = -1; i < (int)CardData.areaOfEffect; i++)
         {
-            none = 0,
-            low,
-            medium,
-            high
-        }
-
-        public enum Range
-        {
-            touch = 0,
-            low,
-            medium,
-            high
-        }
-
-        public enum SpellSchool
-        {
-            none = 0,
-            elemental,
-            trickery,
-            conjuration,
-            protection,
-            swordcery
-        }
-
-        public enum AreaOfEffect
-        {
-            none = 0,
-            small,
-            medium,
-            large
+            if (i == -1) continue;
+            AoeDotHolder.GetChild(i).GetComponent<Image>().sprite = CardManager.Instance.FilledDot;
         }
     }
 }
