@@ -14,6 +14,7 @@ public class CardHolder : MonoBehaviour
     [SerializeField] private Image holderImage;
     [SerializeField] private float animDuration = 0.5f;
     [SerializeField] private float cardRehomeTime = 0.32f;
+    private const float holderOffset = -40f;
     private float cardRowY = 0;
     private const float distanceBetweenCards = 315f;
     private const float centerCardX = 747.5f;
@@ -34,7 +35,7 @@ public class CardHolder : MonoBehaviour
     {
         selfRect = GetComponent<RectTransform>();
         draggableChildren = holderRect.GetComponentsInChildren<DraggableObject>().ToList();
-        activePosY = selfRect.rect.height + selfRect.anchoredPosition.y;
+        activePosY = selfRect.rect.height + selfRect.anchoredPosition.y + holderOffset;
         inactivePosY = selfRect.anchoredPosition.y;
     }
 

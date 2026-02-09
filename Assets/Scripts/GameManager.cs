@@ -1,8 +1,14 @@
+using System;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class GameManager : MonoSingleton<GameManager>
 {
     [SerializeField] private InputReader inputReader;
+    public int playerHealthMax = 5;
+    public int playerHealth = 5;
+
+    public static event Action<int> OnPlayerHealthLoss;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -14,10 +20,10 @@ public class GameManager : MonoSingleton<GameManager>
     {
         inputReader.DisableUiInputs();
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    public void DamagePlayer(int damageAmount)
     {
-        
+        playerHealth = math.clamp(playerHealth - damageAmount, 0, playerHealthMax);
+        OnPlayerHealthLoss?.Invoke(damageAmount);
     }
 }
