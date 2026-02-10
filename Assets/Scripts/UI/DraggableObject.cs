@@ -93,10 +93,7 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
         }
 
         if (hoverTweenId != -1) LeanTween.cancel(hoverTweenId);
-        hoverTweenId = LeanTween.move(selfRect,
-                                      new Vector2(returnPosition.x + hoverOffsetHorizontal,
-                                                  returnPosition.y + hoverOffsetVertical),
-                                      hoverAnimTime).setEaseInOutQuart().id;
+        hoverTweenId = LeanTween.move(selfRect, returnPosition + hoverOffsetVector, hoverAnimTime).setEaseInOutQuart().id;
         resetHoverCoroutine = StartCoroutine(ResetHoverTween());
         OnHoverStart?.Invoke(this);
     }
@@ -118,6 +115,11 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
     {
         if (_draggingOn)
         {
+            if (hoverTweenId != -1)
+            {
+                LeanTween.cancel(hoverTweenId);
+                hoverTweenId = -1;
+            }
             dragTweenId = LeanTween.move(selfRect, returnPosition + hoverOffsetVector, returnTime).setEaseOutQuart().id;
             resetDragCoroutine = StartCoroutine(ResetDragTween());
             OnDragEnd?.Invoke(this);
