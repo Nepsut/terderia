@@ -7,10 +7,12 @@ using UnityEngine.UI;
 public class HeartHolder : MonoBehaviour
 {
     [SerializeField] private AnimationClip heartSwingClip;
+    [SerializeField] private AnimationClip heartGrowClip;
     [SerializeField] private AnimationClip heartBreakClip;
     private RectTransform selfRect;
     private Vector2 homePosition;
     private int Health => GameManager.Instance.playerHealth;
+    private int MaxHealth => GameManager.Instance.playerHealthMax;
     private int activeHearts;
     private const float branchShakeFrequency = 0.1f;
     private const float branchShakeDuration = 0.4f;
@@ -30,13 +32,15 @@ public class HeartHolder : MonoBehaviour
     {
         selfRect = GetComponent<RectTransform>();
         homePosition = selfRect.anchoredPosition;
-        GameManager.OnPlayerHealthLoss += HandleHealthLoss;
         GameManager.OnPlayerHealthLoss += _ => ShakeBranch();
+        GameManager.OnPlayerHealthLoss += HandleHealthLoss;
+        GameManager.OnPlayerHealthGain += HandleHealthGain;
         activeHearts = heartAnimators.Length;
     }
 
     private void ShakeBranch()
     {
+        if (heartAnimsInProgress) return;
         if (branchShakeCoroutine != null) StopCoroutine(branchShakeCoroutine);
         StartCoroutine(BranchShaker());
     }
@@ -56,7 +60,7 @@ public class HeartHolder : MonoBehaviour
 
     private void HandleHealthLoss(int lostHealth)
     {
-        if (Health == GameManager.Instance.playerHealthMax || heartAnimsInProgress) return;
+        if (Health == MaxHealth || heartAnimsInProgress) return;
         if (lostHealth > activeHearts) lostHealth = activeHearts;
         heartAnimsInProgress = true;
 
@@ -87,5 +91,26 @@ public class HeartHolder : MonoBehaviour
         activeHearts -= lostHealth;
         heartAnimsInProgress = false;
         OnHealthAnimationDone?.Invoke();
+    }
+
+    private void HandleHealthGain(int gainedHealth)
+    {
+        if (heartAnimsInProgress) return;
+        if (gainedHealth + activeHearts > MaxHealth)
+            gainedHealth = MaxHealth - activeHearts;
+
+        for (int i = activeHearts; i < activeHearts + gainedHealth; i++)
+        {
+            heartImages[i].enabled = true;
+            heartAnimators[i].Play(heartGrowClip.name, -1, 0f);
+        }
+        activeHearts += gainedHealth;
+        StartCoroutine(HeartGrowHandler());
+    }
+
+    private IEnumerator HeartGrowHandler()
+    {
+        yield return new WaitForSeconds(heartGrowClip.length);
+        heartAnimsInProgress = false;
     }
 }
