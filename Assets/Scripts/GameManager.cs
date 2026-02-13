@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameManager : MonoSingleton<GameManager>
 {
     [SerializeField] private InputReader inputReader;
+    public PlayerData playerData;
     public int playerHealthMax = 5;
     public int playerHealth = 5;
 
