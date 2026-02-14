@@ -11,8 +11,8 @@ public class HeartHolder : MonoBehaviour
     [SerializeField] private AnimationClip heartBreakClip;
     private RectTransform selfRect;
     private Vector2 homePosition;
-    private int Health => GameManager.Instance.playerHealth;
-    private int MaxHealth => GameManager.Instance.playerHealthMax;
+    private int Health => GameManager.playerHealth;
+    private int MaxHealth => GameManager.playerHealthMax;
     private int activeHearts;
     private const float branchShakeFrequency = 0.1f;
     private const float branchShakeDuration = 0.4f;

@@ -6,8 +6,8 @@ public class GameManager : MonoSingleton<GameManager>
 {
     [SerializeField] private InputReader inputReader;
     public PlayerData playerData;
-    public int playerHealthMax = 5;
-    public int playerHealth = 5;
+    public static int playerHealthMax = 5;
+    public static int playerHealth = 5;
 
     public static event Action<int> OnPlayerHealthLoss;
     public static event Action<int> OnPlayerHealthGain;
@@ -23,7 +23,7 @@ public class GameManager : MonoSingleton<GameManager>
         inputReader.DisableUiInputs();
     }
     
-    public void DamagePlayer(int damageAmount)
+    public static void DamagePlayer(int damageAmount)
     {
         if (damageAmount < 1)
         {
