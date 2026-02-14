@@ -1,4 +1,5 @@
 using System.Collections;
+using CardSystem;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -56,6 +57,7 @@ public class CharacterCreation : MonoBehaviour
             startingWeapon = weaponHolder.GetChild(weaponHolder.childCount - 1).GetComponent<WeaponDataHolder>().StartingWeapon
         };
 
+        CardManager.UnlockCard(playerData.StartingWeaponAsString);
         GameManager.Instance.playerData = playerData;
     }
 

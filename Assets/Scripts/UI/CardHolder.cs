@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using CardSystem;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,16 +11,19 @@ public class CardHolder : MonoBehaviour
 {
     [SerializeField] private RectTransform holderRect;
     [SerializeField] private RectTransform draggedCardParent;
+    [SerializeField] private RectTransform deckRect;
     [SerializeField] private HorizontalLayoutGroup layoutGroup;
     [SerializeField] private Image holderImage;
+    [SerializeField] private GameObject cardPrefab;
     [SerializeField] private float animDuration = 0.5f;
     [SerializeField] private float cardRehomeTime = 0.32f;
     private const float holderOffset = -40f;
-    private float cardRowY = 0;
-    private const float distanceBetweenCards = 315f;
+    private float cardRowY = 220;
+    private const float distanceBetweenCards = 305f;
     private const float centerCardX = 747.5f;
     private RectTransform selfRect;
     private List<DraggableObject> draggableChildren;
+    private bool isInitialized = false;
     private bool isActive = false;
     private bool moveQueued = false;
     private bool moveUp = false;
@@ -34,7 +38,6 @@ public class CardHolder : MonoBehaviour
     private void Awake()
     {
         selfRect = GetComponent<RectTransform>();
-        draggableChildren = holderRect.GetComponentsInChildren<DraggableObject>().ToList();
         activePosY = selfRect.rect.height + selfRect.anchoredPosition.y + holderOffset;
         inactivePosY = selfRect.anchoredPosition.y;
     }
@@ -42,13 +45,6 @@ public class CardHolder : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        foreach (DraggableObject childDrag in draggableChildren)
-        {
-            childDrag.enabled = false;
-            SubscribeCardMoveEvents(childDrag);
-        }
-
-        // ActivateHolder();
         EventManager.OnCardUsed += usedCard =>
         {
             draggableChildren.Remove(usedCard.GetComponent<DraggableObject>());
@@ -122,20 +118,32 @@ public class CardHolder : MonoBehaviour
         else moveTweenId = LeanTween.moveY(selfRect, inactivePosY, animDuration).setEaseInOutCubic().id;
         layoutGroup.enabled = true;
         yield return new WaitForSeconds(animDuration);
-        foreach (DraggableObject childDrag in draggableChildren)
+        if (draggableChildren != null)
         {
-            childDrag.enabled = moveUp;
-            childDrag.SetReturnPosition();
+            foreach (DraggableObject childDrag in draggableChildren)
+            {
+                childDrag.enabled = moveUp;
+                childDrag.SetReturnPosition();
+            }
         }
         moveTweenId = -1;
         moveManagerCoroutine = null;
         layoutGroup.enabled = false;
-        layoutGroup.enabled = true;
 
-        if (moveUp)
+        if (moveUp && !isInitialized)
         {
-            if (cardRowY == 0) cardRowY = holderRect.GetChild(0).GetComponent<RectTransform>().rect.y;
+            foreach (Transform child in holderRect) Destroy(child.gameObject);
+            foreach (CardData cardData in CardManager.PlayerHand)
+            {
+                Card card = Instantiate(cardPrefab, deckRect.transform.position, Quaternion.identity, holderRect).GetComponent<Card>();
+                card.InitializeCard(cardData);
+            }
+            draggableChildren = holderRect.GetComponentsInChildren<DraggableObject>().ToList();
+            draggableChildren.ForEach(child => SubscribeCardMoveEvents(child));
+            RehomeCards();
+            isInitialized = true;
         }
+        else layoutGroup.enabled = true;
     }
 
     public void RehomeCards()
@@ -149,7 +157,6 @@ public class CardHolder : MonoBehaviour
     {
         cardRehomeTweens?.ForEach(tweenId => LeanTween.cancel(tweenId));
         cardRehomeTweens = new();
-
         int cardCount = holderRect.childCount;
         float firstX = centerCardX - distanceBetweenCards * (cardCount / 2);
         if (cardCount % 2 == 0) firstX += distanceBetweenCards / 2f;
@@ -164,15 +171,18 @@ public class CardHolder : MonoBehaviour
 
         yield return new WaitForSeconds(cardRehomeTime);
         layoutGroup.enabled = false;
-        draggableChildren.ForEach(child =>
+        layoutGroup.enabled = true;
+        yield return null;
+        draggableChildren?.ForEach(child =>
         {
             child.SetReturnPosition();
             child.enabled = true;
             child.AllowMovement();
         });
+        if (draggableChildren != null && holderRect.childCount != 0)
+            cardRowY = holderRect.GetChild(0).GetComponent<RectTransform>().rect.y; 
         allCardsHome = true;
         yield return null;
-        layoutGroup.enabled = true;
         if (moveQueued && moveUp) ActivateHolder();
         else if (moveQueued && !moveUp) DeactivateHolder();
         // layoutGroup.enabled = false;

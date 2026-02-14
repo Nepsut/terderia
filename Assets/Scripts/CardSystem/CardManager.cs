@@ -44,7 +44,34 @@ namespace CardSystem
         private const string tagsHeader = "Other Tags";
         private const string notesHeader = "Additional Notes";
 
+        public const int MaxCardsInHand = 5;
+        public const int MaxCardsInDeck = 20;
+        private static List<CardData> _playerHand;
+        public static List<CardData> PlayerHand
+        {
+            get
+            {
+                if (_playerHand != null) return _playerHand;
+                InitializePlayerHand();
+                return _playerHand;
+            }
+
+            private set
+            {
+                _playerHand = value;
+            }
+        }
+        public static List<string> ActiveDeck { get; private set; }
+        public static List<string> UnlockedCards { get; private set; }
         public static Dictionary<string, CardData> Cards { get; private set; }
+        public static List<string> CardIds { get; private set; }
+        public readonly string[] DefaultCards = 
+        {
+            "apple",
+            "bonfire",
+            "banter",
+            // "lockpick"
+        };
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         private void Awake()
@@ -54,6 +81,41 @@ namespace CardSystem
             foreach(var keyValuePair in Cards)
             {
                 Debug.Log($"{keyValuePair.Value.name} - {keyValuePair.Value.description}");
+            }
+
+            UnlockedCards = DefaultCards.ToList();
+            ActiveDeck = UnlockedCards;
+        }
+
+        public static void UnlockCard(string cardId)
+        {
+            if (!Cards.ContainsKey(cardId))
+            {
+                Debug.LogWarning($"Tried to unlock a card with a non-existent id: {cardId}");
+                return;
+            }
+            else if (UnlockedCards.Contains(cardId))
+            {
+                Debug.Log($"Tried to unlock an already-unlocked card: {cardId}");
+                return;
+            }
+            UnlockedCards.Add(cardId);
+        }
+
+        public static void InitializePlayerHand()
+        {
+            PlayerHand = new();
+
+            if (ActiveDeck.Count <= MaxCardsInHand)
+            {
+                ActiveDeck.ForEach(card => PlayerHand.Add(Cards[card]));
+                return;
+            }
+
+            while (PlayerHand.Count < MaxCardsInHand)
+            {
+                string idToAdd = CardIds[UnityEngine.Random.Range(0, CardIds.Count)];
+                PlayerHand.Add(Cards[idToAdd]);
             }
         }
 
@@ -75,10 +137,12 @@ namespace CardSystem
             int notesIndex = Array.IndexOf(headers, notesHeader);
 
             Cards = new();
+            CardIds = new();
 
             for (int i = 1; i < cardDataAsStrings.Length; i++)
             {
                 string[] cardValues = cardDataAsStrings[i].Split('\t');
+                string cardId = cardValues[idIndex].Replace("#", null);
                 if (!Enum.TryParse<CardData.SpellSchool>(cardValues[schoolIndex], ignoreCase: true, out var cardSchool)) cardSchool = CardData.SpellSchool.none;
                 if (!Enum.TryParse<CardData.DamageType>(cardValues[damageIndex], ignoreCase: true, out var cardDamage)) cardDamage = CardData.DamageType.none;
                 if (!Enum.TryParse<CardData.Strength>(cardValues[strengthIndex], ignoreCase: true, out var cardStrength)) cardStrength = CardData.Strength.none;
@@ -97,11 +161,12 @@ namespace CardSystem
                 else cardTagArray = null;
                 List<string> cardTags = cardTagArray == null ? new List<string>() : cardTagArray.ToList();
 
-                Cards.Add(cardValues[idIndex], new(index: int.Parse(cardValues[indexIndex]) , name: cardValues[nameIndex],
-                    id: cardValues[idIndex].Replace("#", null), description: cardValues[descriptionIndex],
+                Cards.Add(cardId, new(index: int.Parse(cardValues[indexIndex]) , name: cardValues[nameIndex],
+                    id: cardId, description: cardValues[descriptionIndex],
                     cardType: Enum.Parse<CardData.CardType>(cardValues[typeIndex], ignoreCase: true),
                     spellSchool: cardSchool, damageType: cardDamage, strength: cardStrength, range: cardRange,
                     areaOfEffect: cardAoe, otherTags: cardTags));
+                CardIds.Add(cardId);
             }
         }
 

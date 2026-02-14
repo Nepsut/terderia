@@ -31,8 +31,6 @@ public class EventManager : MonoSingleton<EventManager>
     [SerializeField] private Transform eventTargetGroupHolder;
     [SerializeField] private float typeSpeed = 20f;
 
-    [Header ("Debug variables")]
-    [SerializeField] private TextAsset demoEvent;
     public Story CurrentStory { get; private set; }
     private List<GameObject> activeEventTargets;
     private bool isTyping = false;
@@ -76,8 +74,6 @@ public class EventManager : MonoSingleton<EventManager>
         dialoguePanel.SetActive(false);
         selfTargetObject.SetActive(false);
         Card.OnCardDragEnd += CheckForCardUse;
-
-        EnterEvent(demoEvent);
     }
 
     //this enters dialogue with the inkJSON file assigned to the npc
