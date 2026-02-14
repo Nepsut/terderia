@@ -31,8 +31,6 @@ public class Card : MonoBehaviour
         selfDraggable = GetComponent<DraggableObject>();
         selfDraggable.OnDragStart += _ => OnCardDragStart?.Invoke(this);
         selfDraggable.OnDragEnd += _ => OnCardDragEnd?.Invoke(this);
-
-        InitializeCard(UnityEngine.Random.Range(1, CardManager.Cards.Count+1));
     }
 
     public void InitializeCard(string uniqueTag)
@@ -45,9 +43,9 @@ public class Card : MonoBehaviour
         SetAppearance();
     }
 
-    public void InitializeCard(int cardIndex)
+    public void InitializeCard(CardData cardData)
     {
-        CardData = CardManager.Cards.Values.FirstOrDefault(card => card.index == cardIndex);
+        CardData = cardData;
         SetAppearance();
     }
 

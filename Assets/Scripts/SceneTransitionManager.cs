@@ -14,6 +14,7 @@ public class SceneTransitionManager : MonoSingleton<SceneTransitionManager>
     private bool loadScreenOpen = false;
     private const float loadFadeTime = 0.32f;
     private event Action<Scene> OnSceneTransitionStart;
+    public static event Action OnSceneTransitionEnd;
 
     private void Start()
     {
@@ -66,6 +67,7 @@ public class SceneTransitionManager : MonoSingleton<SceneTransitionManager>
         LeanTween.alpha(loadingScreen, 0f, loadFadeTime).setEaseOutQuart();
         await Task.Delay(TimeSpan.FromSeconds(loadFadeTime));
         loadingScreen.gameObject.SetActive(false);
+        OnSceneTransitionEnd?.Invoke();
     }
 
     public void StartTransition(Scene newScene)

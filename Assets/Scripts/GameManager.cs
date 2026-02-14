@@ -33,7 +33,7 @@ public class GameManager : MonoSingleton<GameManager>
         OnPlayerHealthLoss?.Invoke(damageAmount);
     }
     
-    public void HealPlayer(int healAmount)
+    public static void HealPlayer(int healAmount)
     {
         if (healAmount < 1)
         {
