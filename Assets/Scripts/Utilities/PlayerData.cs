@@ -54,7 +54,7 @@ public class PlayerData
 
     public enum StartingWeapon
     {
-        bottle = 0,
+        glass_bottle = 0,
         dagger,
         frying_pan,
         staff

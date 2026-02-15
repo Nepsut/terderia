@@ -27,7 +27,7 @@ Index	Name	Unique Tag	Description	Type	Spell School	Damage Type	Strength	Range	A
 26	Soothsay	#soothsay	Imbue healing magic into your very words, causing a target to regain health.	Spell	Protection		low	medium	none	#healing	
 27	Praise	#praise	Praise your target	Speech						#friendly	
 28	Yell	#yell	Yell to flinch the target	Speech						#sudden	
-29	Sing	#sing	Sing a tune to confuse the target	Speech						#silly	
+29	Sing	#sing	Sing a tune to confuse the target	Speech						#friendly, #silly	
 30	Bribe	#bribe	Strike a deal for a good price	Speech						#disengage	
 31	Flirt	#flirt	Flirt with the target for the bit	Speech						#silly	
 32	Cool stick	#stick	Smack the target with the cool stick you found! Hopefully it doesn't break...	Weapon		Blunt	low	melee	none	#silly	
@@ -36,3 +36,5 @@ Index	Name	Unique Tag	Description	Type	Spell School	Damage Type	Strength	Range	A
 35	Rope	#rope	Jump a rope or lasso your opponents	Utility		Blunt	low	medium	none	#thrown	
 36	Tater-launcher 900	#tater-launcher	Take the unholy creation made out of pipe and demolish your enemy with green potatoes!	Weapon		Blunt	medium	high	small	#unholy, #silly	
 37	Spear	#spear	Get back to your roots and get that tetanus with this old and rusty friend!	Weapon		Cutting	low	low	none	#infected	
+38	Staff	#staff	Wizard's trusty staff, now mostly used for bashing enemies	Weapon		Blunt	low	melee	none		
+39	Lockpick	#lockpick	Best used when nobody is looking...	Utility			low	melee	none	#unlocking	

@@ -15,37 +15,37 @@ public class CharacterCreation : MonoBehaviour
     private void ScrollGenderLeft()
     {
         RectTransform rectToMove = genderHolder.GetChild(genderHolder.childCount - 1).GetComponent<RectTransform>();
-        StartCoroutine(HandleGenderScroll(rectToMove, left: true));
+        StartCoroutine(HandleGenderScroll(rectToMove, right: false));
     }
 
     private void ScrollGenderRight()
     {
         RectTransform rectToMove = genderHolder.GetChild(0).GetComponent<RectTransform>();
-        StartCoroutine(HandleGenderScroll(rectToMove, left: false));
+        StartCoroutine(HandleGenderScroll(rectToMove, right: true));
     }
 
     private void ScrollSubclassLeft()
     {
         RectTransform rectToMove = subclassHolder.GetChild(subclassHolder.childCount - 1).GetComponent<RectTransform>();
-        StartCoroutine(HandleSubclassScroll(rectToMove, left: true));
+        StartCoroutine(HandleSubclassScroll(rectToMove, right: false));
     }
 
     private void ScrollSubclassRight()
     {
         RectTransform rectToMove = subclassHolder.GetChild(0).GetComponent<RectTransform>();
-        StartCoroutine(HandleSubclassScroll(rectToMove, left: false));
+        StartCoroutine(HandleSubclassScroll(rectToMove, right: true));
     }
 
     private void ScrollWeaponLeft()
     {
         RectTransform rectToMove = weaponHolder.GetChild(weaponHolder.childCount - 1).GetComponent<RectTransform>();
-        StartCoroutine(HandleWeaponScroll(rectToMove, left: true));
+        StartCoroutine(HandleWeaponScroll(rectToMove, right: false));
     }
 
     private void ScrollWeaponRight()
     {
         RectTransform rectToMove = weaponHolder.GetChild(0).GetComponent<RectTransform>();
-        StartCoroutine(HandleWeaponScroll(rectToMove, left: false));
+        StartCoroutine(HandleWeaponScroll(rectToMove, right: true));
     }
 
     private void HandleContinue()
@@ -61,7 +61,7 @@ public class CharacterCreation : MonoBehaviour
         GameManager.Instance.playerData = playerData;
     }
 
-    private IEnumerator HandleGenderScroll(RectTransform rectToMove, bool left)
+    private IEnumerator HandleGenderScroll(RectTransform rectToMove, bool right)
     {
         genderLeftButton.interactable = false;
         genderRightButton.interactable = false;
@@ -69,12 +69,12 @@ public class CharacterCreation : MonoBehaviour
         scrollingGender = true;
         WaitForSeconds waitTime = new(scrollTime);
         float oldX = rectToMove.anchoredPosition.x;
-        float newX = left ? rectToMove.anchoredPosition.x + rectToMove.rect.width + scrollOffset :
+        float newX = right ? rectToMove.anchoredPosition.x + rectToMove.rect.width + scrollOffset :
             rectToMove.anchoredPosition.x - rectToMove.rect.width - scrollOffset;
         LeanTween.moveX(rectToMove, newX, scrollTime).setEaseOutQuart();
         yield return waitTime;
-        if (left) rectToMove.SetAsFirstSibling();
-        else rectToMove.SetAsLastSibling();
+        if (right) rectToMove.SetAsLastSibling();
+        else rectToMove.SetAsFirstSibling();
         LeanTween.moveX(rectToMove, oldX, scrollTime).setEaseOutQuart();
         yield return waitTime;
         genderLeftButton.interactable = true;
@@ -83,7 +83,7 @@ public class CharacterCreation : MonoBehaviour
         if (!scrollingSubclass && !scrollingWeapon) continueButton.interactable = true;
     }
 
-    private IEnumerator HandleSubclassScroll(RectTransform rectToMove, bool left)
+    private IEnumerator HandleSubclassScroll(RectTransform rectToMove, bool right)
     {
         subclassLeftButton.interactable = false;
         subclassRightButton.interactable = false;
@@ -91,12 +91,12 @@ public class CharacterCreation : MonoBehaviour
         scrollingSubclass = true;
         WaitForSeconds waitTime = new(scrollTime);
         float oldX = rectToMove.anchoredPosition.x;
-        float newX = left ? rectToMove.anchoredPosition.x + rectToMove.rect.width + scrollOffset :
+        float newX = right ? rectToMove.anchoredPosition.x + rectToMove.rect.width + scrollOffset :
             rectToMove.anchoredPosition.x - rectToMove.rect.width - scrollOffset;
         LeanTween.moveX(rectToMove, newX, scrollTime).setEaseOutQuart();
         yield return waitTime;
-        if (left) rectToMove.SetAsFirstSibling();
-        else rectToMove.SetAsLastSibling();
+        if (right) rectToMove.SetAsLastSibling();
+        else rectToMove.SetAsFirstSibling();
         LeanTween.moveX(rectToMove, oldX, scrollTime).setEaseOutQuart();
         yield return waitTime;
         subclassLeftButton.interactable = true;
@@ -105,7 +105,7 @@ public class CharacterCreation : MonoBehaviour
         if (!scrollingGender && !scrollingWeapon) continueButton.interactable = true;
     }
 
-    private IEnumerator HandleWeaponScroll(RectTransform rectToMove, bool left)
+    private IEnumerator HandleWeaponScroll(RectTransform rectToMove, bool right)
     {
         weaponLeftButton.interactable = false;
         weaponRightButton.interactable = false;
@@ -113,12 +113,12 @@ public class CharacterCreation : MonoBehaviour
         scrollingWeapon = true;
         WaitForSeconds waitTime = new(scrollTime);
         float oldX = rectToMove.anchoredPosition.x;
-        float newX = left ? rectToMove.anchoredPosition.x + rectToMove.rect.width + scrollOffset :
+        float newX = right ? rectToMove.anchoredPosition.x + rectToMove.rect.width + scrollOffset :
             rectToMove.anchoredPosition.x - rectToMove.rect.width - scrollOffset;
         LeanTween.moveX(rectToMove, newX, scrollTime).setEaseOutQuart();
         yield return waitTime;
-        if (left) rectToMove.SetAsFirstSibling();
-        else rectToMove.SetAsLastSibling();
+        if (right) rectToMove.SetAsLastSibling();
+        else rectToMove.SetAsFirstSibling();
         LeanTween.moveX(rectToMove, oldX, scrollTime).setEaseOutQuart();
         yield return waitTime;
         weaponLeftButton.interactable = true;

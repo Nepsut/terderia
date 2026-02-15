@@ -72,6 +72,7 @@ public class EventManager : MonoSingleton<EventManager>
     private void Start()
     {
         dialoguePanel.SetActive(false);
+        DontDestroyOnLoad(selfTargetObject);
         selfTargetObject.SetActive(false);
         Card.OnCardDragEnd += CheckForCardUse;
     }
