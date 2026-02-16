@@ -1869,7 +1869,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8305410616723020502}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e040b70ae25561848b4f77cb2eb08542, type: 3}
+  m_Script: {fileID: 11500000, guid: 9074fdd3a7da9774f88531a1fac7ef49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestCard
   titleText: {fileID: 6798618699203906099}

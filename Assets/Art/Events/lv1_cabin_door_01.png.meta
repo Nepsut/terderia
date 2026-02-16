@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 427961b8eecd017469a85c19994a8be6
+guid: 9638927e272c6d24dbffe7510532b97d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5552597438261393320
-    second: MainMenu_tab4_0
+      213: 2739635579286992723
+    second: lv1_cabin_door_01_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: MainMenu_tab4_0
+      name: lv1_cabin_door_01_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 69
-        height: 146
+        x: 2
+        y: 23
+        width: 75
+        height: 557
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8a7705083f9ce0d40800000000000000
-      internalID: 5552597438261393320
+      spriteID: 3573c6d4b04250620800000000000000
+      internalID: 2739635579286992723
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      MainMenu_tab4_0: 5552597438261393320
+      lv1_cabin_door_01_0: 2739635579286992723
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
