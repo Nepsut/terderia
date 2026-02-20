@@ -42,7 +42,6 @@ namespace CardSystem
         private const string rangeHeader = "Range";
         private const string aoeHeader = "AoE";
         private const string tagsHeader = "Other Tags";
-        private const string notesHeader = "Additional Notes";
 
         public const int MaxCardsInHand = 5;
         public const int MaxCardsInDeck = 20;
@@ -77,10 +76,11 @@ namespace CardSystem
         private void Awake()
         {
             AssignCardDataFromTsv(cardTsvAsset.text);
-            
-            foreach(var keyValuePair in Cards)
+
+            if (GameManager.Instance.DebugModeOn)
             {
-                Debug.Log($"{keyValuePair.Value.name} - {keyValuePair.Value.description}");
+                foreach (var keyValuePair in Cards)
+                    Debug.Log($"{keyValuePair.Value.name} - {keyValuePair.Value.description}");
             }
 
             UnlockedCards = DefaultCards.ToList();
@@ -134,7 +134,6 @@ namespace CardSystem
             int rangeIndex = Array.IndexOf(headers, rangeHeader);
             int aoeIndex = Array.IndexOf(headers, aoeHeader);
             int tagsIndex = Array.IndexOf(headers, tagsHeader);
-            int notesIndex = Array.IndexOf(headers, notesHeader);
 
             Cards = new();
             CardIds = new();
