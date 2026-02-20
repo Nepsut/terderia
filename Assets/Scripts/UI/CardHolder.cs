@@ -24,7 +24,7 @@ public class CardHolder : MonoBehaviour
     private RectTransform selfRect;
     private List<DraggableObject> draggableChildren;
     private bool isInitialized = false;
-    private bool isActive = false;
+    public bool IsActive { get; private set; } = false;
     private bool moveQueued = false;
     private bool moveUp = false;
     private bool allCardsHome = true;
@@ -81,14 +81,14 @@ public class CardHolder : MonoBehaviour
 
     public void ActivateHolder()
     {
-        if (isActive || !allCardsHome || moveTweenId != -1)
+        if (IsActive || !allCardsHome || moveTweenId != -1)
         {
             moveQueued = true;
             moveUp = true;
             return;
         }
 
-        isActive = true;
+        IsActive = true;
         holderImage.enabled = false;
         if (moveManagerCoroutine != null) StopCoroutine(moveManagerCoroutine);
         moveManagerCoroutine = null;
@@ -97,14 +97,14 @@ public class CardHolder : MonoBehaviour
 
     public void DeactivateHolder()
     {
-        if (!isActive || !allCardsHome || moveTweenId != -1)
+        if (!IsActive || !allCardsHome || moveTweenId != -1)
         {
             moveQueued = true;
             moveUp = false;
             return;
         }
 
-        isActive = false;
+        IsActive = false;
         holderImage.enabled = true;
         if (moveManagerCoroutine != null) StopCoroutine(moveManagerCoroutine);
         moveManagerCoroutine = null;

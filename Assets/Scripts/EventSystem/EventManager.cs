@@ -38,6 +38,7 @@ public class EventManager : MonoSingleton<EventManager>
     private List<GameObject> activeEventTargets;
     private bool isTyping = false;
     private bool choiceWasMade = false;
+    private bool pendingCardUse = false;
     private bool stopTyping = false;
     private bool disableInput = false;
 
@@ -50,20 +51,6 @@ public class EventManager : MonoSingleton<EventManager>
 
     //DEBUG VALUES. DO NOT TOUCH IF UNSURE.
     private string activeStoryName;
-
-    public struct ChoiceTagHolder
-    {
-        public string TargetTag;
-        public string UniqueTag;
-        public List<string> OtherTags;
-
-        public ChoiceTagHolder(string targetTag, string uniqueTag, List<string> otherTags = null)
-        {
-            TargetTag = targetTag;
-            UniqueTag = uniqueTag;
-            OtherTags = otherTags; 
-        }
-    }
 
     private void Awake()
     {
@@ -100,6 +87,7 @@ public class EventManager : MonoSingleton<EventManager>
         CurrentStory = new Story(_inkJSON.text);
         EventVariables.StartListening(CurrentStory);
         inputReader.OnSubmitEvent += HandleSubmit;
+        inputReader.OnClickEvent += HandleClick;
         dialoguePanel.SetActive(true);
 
         activeStoryName = _inkJSON.name;
@@ -111,12 +99,14 @@ public class EventManager : MonoSingleton<EventManager>
     //dialogue printer
     private void ContinueStory()
     {
+        if (pendingCardUse) return;
+
         if (choiceWasMade && CurrentStory.canContinue)
         {
             choiceWasMade = false;
-            // CurrentStory.Continue();
             if (CurrentStory.currentChoices.Count != 0)
             {
+                pendingCardUse = true;
                 selfTargetObject.SetActive(true);
                 selfTargetObject.GetComponent<Collider2D>().enabled = true;
                 cardHolder.ActivateHolder();
@@ -145,12 +135,14 @@ public class EventManager : MonoSingleton<EventManager>
         // activeEventTargets?.ForEach(target => target.SetActive(false));
         // activeEventTargets = null;
         inputReader.OnSubmitEvent -= HandleSubmit;
+        inputReader.OnClickEvent -= HandleClick;
     }
 
     //this is called when choice is made to advance ink story based on made choice
     public void MakeChoice(int choiceNumber)
     {
         CurrentStory.ChooseChoiceIndex(choiceNumber);
+        pendingCardUse = false;
         choiceWasMade = true;
         activeEventTargets.ForEach(target =>
         {
@@ -158,7 +150,6 @@ public class EventManager : MonoSingleton<EventManager>
             {
                 child.GetComponent<Collider2D>().enabled = false;
             }
-
         });
         selfTargetObject.GetComponent<Collider2D>().enabled = false;
         ContinueStory();
@@ -374,6 +365,7 @@ public class EventManager : MonoSingleton<EventManager>
         disableInput = true;
         // voiceSource.Stop();
         yield return new WaitForSeconds(timeBeforeChoices);
+        disableInput = false;
 
         if (CurrentStory.currentChoices.Count != 0)
         {
@@ -383,7 +375,7 @@ public class EventManager : MonoSingleton<EventManager>
         }
         else
         {
-            cardHolder.DeactivateHolder();
+            if (cardHolder.IsActive) cardHolder.DeactivateHolder();
             selfTargetObject.SetActive(false);
             // activeEventTargets?.ForEach(target => target.SetActive(false));
         }
@@ -478,9 +470,9 @@ public class EventManager : MonoSingleton<EventManager>
         functionsToCall.ForEach(func => eventFunctions.Invoke(func, 0f));
     }
 
-    public Ink.Runtime.Object GetVariableState(string _variableName)
+    public object GetVariableState(string _variableName)
     {
-        EventVariables.dialogueVariables.TryGetValue(_variableName, out Ink.Runtime.Object _variableValue);
+        EventVariables.DialogueVariables.TryGetValue(_variableName, out Ink.Runtime.Value _variableValue);
         if (_variableValue == null)
         {
             Debug.LogWarning($"{_variableName} was null, did you mean to reference it?");
@@ -490,6 +482,18 @@ public class EventManager : MonoSingleton<EventManager>
 
     private void HandleSubmit()
     {
+        if (isTyping)
+        {
+            stopTyping = true;
+            return;
+        }
+        if (!disableInput) ContinueStory();
+    }
+
+    private void HandleClick()
+    {
+        if (DraggableObject.DraggingOn) return;
+
         if (isTyping)
         {
             stopTyping = true;
@@ -549,22 +553,27 @@ public class EventManager : MonoSingleton<EventManager>
 
 public class EventVariables
 {
-    public Dictionary<string, Ink.Runtime.Object> dialogueVariables { get; set; }
+    public Dictionary<string, Ink.Runtime.Value> DialogueVariables { get; private set; }
     private int Health => GameManager.playerHealth;
-    private const string healthKey = "g_health";
+    private Story currentStory;
 
     // Variable change events
     public static event Action<int> OnHealthGained;
     public static event Action<int> OnHealthLost;
 
+    // Variable keys
+    public const string healthKey = "g_player_health";
+    public const string genderKey = "g_player_gender";
+    public const string subclassKey = "g_player_class";
+
     public EventVariables(Story _globalVariableStory)
     {
-        dialogueVariables = new();
+        DialogueVariables = new();
 
         foreach (string name in _globalVariableStory.variablesState)
         {
-            var value = _globalVariableStory.variablesState.GetVariableWithName(name);
-            dialogueVariables.Add(name, value);
+            Ink.Runtime.Value value = (Ink.Runtime.Value)_globalVariableStory.variablesState.GetVariableWithName(name);
+            DialogueVariables.Add(name, value);
             if (GameManager.Instance.DebugModeOn)
                 Debug.Log($"Variable global dialogue initialized: {name} = {value}");
         }
@@ -573,35 +582,77 @@ public class EventVariables
     public void StartListening(Story _story)
     {
         VariablesToStory(ref _story);
-        _story.variablesState.variableChangedEvent += VariableChanged;
+        _story.variablesState.variableChangedEvent += HandleVariableChange;
+        currentStory = _story;
     }
 
     public void StopListening(Story _story)
     {
-        _story.variablesState.variableChangedEvent -= VariableChanged;
+        _story.variablesState.variableChangedEvent -= HandleVariableChange;
+        currentStory = null;
     }
 
-    private void VariableChanged(string _varName, Ink.Runtime.Object _value)
+    private void HandleVariableChange(string _varName, Ink.Runtime.Object _value)
     {
-        if (!dialogueVariables.ContainsKey(_varName)) return;
+        if (!DialogueVariables.ContainsKey(_varName) || _value is not Ink.Runtime.Value) return;
 
+        Ink.Runtime.Value valueToChange = _value as Ink.Runtime.Value;
         if (GameManager.Instance.DebugModeOn) Debug.Log($"Variable changed: {_varName} = {_value}");
-        dialogueVariables[_varName] = _value;
-        if (int.TryParse(_value.ToString(), out int valueAsInt))
+        DialogueVariables[_varName] = valueToChange;
+        if (valueToChange.valueType == Ink.Runtime.ValueType.Int)
         {
-            HandleIntegerUpdates(_varName, valueAsInt);
+            Ink.Runtime.IntValue valueAsInt = (Ink.Runtime.IntValue)valueToChange;
+            HandleIntegerUpdate(_varName, valueAsInt.value);
         }
     }
 
     public void VariablesToStory(ref Story _story)
     {
-        foreach (var variable in dialogueVariables)
+        foreach (var kvp in DialogueVariables)
         {
-            _story.variablesState.SetGlobal(variable.Key, variable.Value);
+            Debug.Log($"Setting ink story variable {kvp.Key} to {kvp.Value}");
+            _story.variablesState.SetGlobal(kvp.Key, kvp.Value);
         }
     }
 
-    private void HandleIntegerUpdates(string varName, int value)
+    public bool TryChangeGlobalInkVariable(string _varName, object _value)
+    {
+        if (DialogueVariables == null || !DialogueVariables.ContainsKey(_varName))
+        {
+            if (GameManager.Instance.DebugModeOn)
+            {
+                string log = "Failed to update ink story variable due to ";
+                log += DialogueVariables == null ? $"DialogueVariables being null" : $"variable with name {_varName} not existing";
+                Debug.Log(log);
+            }
+            return false;
+        }
+        DialogueVariables[_varName] = Ink.Runtime.Value.Create(_value);
+        currentStory?.variablesState.SetGlobal(_varName, (Ink.Runtime.Object)_value);
+        if (GameManager.Instance.DebugModeOn)
+            Debug.Log($"Updated ink variable \"{_varName}\". New value: {_value}");
+        return true;
+    }
+
+    public bool TryChangeGlobalInkVariables(Dictionary<string, object> _variableDict)
+    {
+        if (_variableDict == null || _variableDict.Count == 0)
+        {
+            if (GameManager.Instance.DebugModeOn)
+            {
+                Debug.Log("Failed to update ink story variables due to method being called with empty or null Dictionary");
+            }
+            return false;
+        }
+        bool success = true;
+        foreach (var kvp in _variableDict)
+        {
+            if (!TryChangeGlobalInkVariable(kvp.Key, kvp.Value)) success = false;
+        }
+        return success;
+    }
+
+    private void HandleIntegerUpdate(string varName, int value)
     {
         switch (varName)
         {

@@ -4671,6 +4671,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   inputReader: {fileID: 11400000, guid: 6ebaf048bebd1bc4f9a363fede6742af, type: 2}
+  <DebugModeOn>k__BackingField: 0
 --- !u!4 &1510794221
 Transform:
   m_ObjectHideFlags: 0
