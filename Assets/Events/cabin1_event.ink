@@ -75,7 +75,7 @@ After looking around for {perhaps a bit too long, | a short while,} you decide t
         For a moment you consider smashing your head in, but refrain this time. #narrator #refundcard:frying-pan
         ~ considered_frying_bonk = true
         - else:
-        The temptation to crack your skull open with the frying pan proves too much, and you smash it on your head with surprising force! #narrator
+        The temptation to {g_player_gender =="hat": test the durability of your host body | crack your skull open} with the frying pan proves too much, and you smash it on your head with surprising force! #narrator
         ~ g_player_health--
         ~ considered_frying_bonk = false
     }

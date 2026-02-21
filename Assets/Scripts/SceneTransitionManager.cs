@@ -10,7 +10,11 @@ public class SceneTransitionManager : MonoSingleton<SceneTransitionManager>
     [SerializeField] private InputReader inputReader;
     private bool loadScreenOpen = false;
     private const float loadFadeTime = 0.32f;
-    private event Action<Scene> OnSceneTransitionStart;
+
+    //Events
+    public static event Action<Scene> OnSceneTransitionStart;
+    public static event Action OnSceneLoadStarted;
+    public static event Action<Scene> OnSceneLoadFinished;
     public static event Action OnSceneTransitionEnd;
 
     private void Start()
@@ -44,7 +48,9 @@ public class SceneTransitionManager : MonoSingleton<SceneTransitionManager>
     {
         LeanTween.alpha(loadingScreen, 1f, loadFadeTime).setEaseOutQuart();
         await Task.Delay(TimeSpan.FromSeconds(loadFadeTime));
+        OnSceneLoadStarted?.Invoke();
         await SceneManager.LoadSceneAsync(newScene.ToString());
+        OnSceneLoadFinished?.Invoke(newScene);
         HandleLoadCompleted();
     }
 

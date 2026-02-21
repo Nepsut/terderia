@@ -8,7 +8,7 @@ public class MapSceneManager : MonoBehaviour
     private void Start()
     {
         eventCanvas = GameObject.FindWithTag(EventCanvasTag);
-        eventCanvas.SetActive(false);
+        if (eventCanvas != null) eventCanvas.SetActive(false);
     }
 
     private void OnDestroy()
