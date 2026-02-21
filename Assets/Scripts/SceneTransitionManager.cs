@@ -8,9 +8,6 @@ public class SceneTransitionManager : MonoSingleton<SceneTransitionManager>
     [SerializeField] private RectTransform loadingScreen;
     [SerializeField] private GameObject continuePrompt;
     [SerializeField] private InputReader inputReader;
-
-    private bool fadeInProgress = false;
-    private bool loadInProgress = false;
     private bool loadScreenOpen = false;
     private const float loadFadeTime = 0.32f;
     private event Action<Scene> OnSceneTransitionStart;
@@ -19,14 +16,12 @@ public class SceneTransitionManager : MonoSingleton<SceneTransitionManager>
     private void Start()
     {
         DontDestroyOnLoad(gameObject);
-        OnSceneTransitionStart += SceneTransitionAnimator;
         OnSceneTransitionStart += SceneLoader;
     }
 
     private void OnApplicationQuit()
     {
         inputReader.OnClickEvent -= CloseLoadingScreen;
-        OnSceneTransitionStart -= SceneTransitionAnimator;
         OnSceneTransitionStart -= SceneLoader;
     }
 
@@ -45,24 +40,15 @@ public class SceneTransitionManager : MonoSingleton<SceneTransitionManager>
         inputReader.OnClickEvent += CloseLoadingScreen;
     }
 
-    public async void SceneLoader(Scene newScene)
+    private async void SceneLoader(Scene newScene)
     {
-        loadInProgress = true;
-        await SceneManager.LoadSceneAsync(newScene.ToString());
-        loadInProgress = false;
-        if (!fadeInProgress) HandleLoadCompleted();
-    }
-
-    public async void SceneTransitionAnimator(Scene _)
-    {
-        fadeInProgress = true;
         LeanTween.alpha(loadingScreen, 1f, loadFadeTime).setEaseOutQuart();
         await Task.Delay(TimeSpan.FromSeconds(loadFadeTime));
-        fadeInProgress = false;
-        if (!loadInProgress) HandleLoadCompleted();
+        await SceneManager.LoadSceneAsync(newScene.ToString());
+        HandleLoadCompleted();
     }
 
-    public async Awaitable FadeOutLoadScreen()
+    private async Awaitable FadeOutLoadScreen()
     {
         LeanTween.alpha(loadingScreen, 0f, loadFadeTime).setEaseOutQuart();
         await Task.Delay(TimeSpan.FromSeconds(loadFadeTime));

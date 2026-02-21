@@ -21,6 +21,7 @@ public class EventManager : MonoSingleton<EventManager>
     [SerializeField] private TextAsset globalInkVariables;
     private Story inkVariablesStory;
     private List<string> functionsToCall = new();
+    private string cardToRefund = "";
     public EventVariables EventVariables { get; private set; }
     private EventFunctions eventFunctions;
     // [SerializeField] private AudioClip fallbackVoice;
@@ -33,6 +34,7 @@ public class EventManager : MonoSingleton<EventManager>
     [SerializeField] private Transform eventTargetGroupHolder;
     [SerializeField] private float typeSpeed = 20f;
 
+    //Story variables
     public Story CurrentStory { get; private set; }
     private Dictionary<string, Sprite> eventSpriteAssets;
     private List<GameObject> activeEventTargets;
@@ -42,14 +44,15 @@ public class EventManager : MonoSingleton<EventManager>
     private bool stopTyping = false;
     private bool disableInput = false;
 
-    //Const values related to typing. Do not change.
+    //Const values related to typing. Do not change if unsure.
     private const string alphaCode = "<color=#00000000>";
     private const float maxTypeTime = 0.1f;
     private const float timeBeforeChoices = 0.2f;
 
+    //Events
     public static event Action<Card> OnCardUsed;
 
-    //DEBUG VALUES. DO NOT TOUCH IF UNSURE.
+    //DEBUG VARIABLES. DO NOT TOUCH IF UNSURE.
     private string activeStoryName;
 
     private void Awake()
@@ -87,7 +90,7 @@ public class EventManager : MonoSingleton<EventManager>
         CurrentStory = new Story(_inkJSON.text);
         EventVariables.StartListening(CurrentStory);
         inputReader.OnSubmitEvent += HandleSubmit;
-        inputReader.OnClickEvent += HandleClick;
+        inputReader.OnClickEvent += HandleClickWithDelay;
         dialoguePanel.SetActive(true);
 
         activeStoryName = _inkJSON.name;
@@ -135,7 +138,7 @@ public class EventManager : MonoSingleton<EventManager>
         // activeEventTargets?.ForEach(target => target.SetActive(false));
         // activeEventTargets = null;
         inputReader.OnSubmitEvent -= HandleSubmit;
-        inputReader.OnClickEvent -= HandleClick;
+        inputReader.OnClickEvent += HandleClickWithDelay;
     }
 
     //this is called when choice is made to advance ink story based on made choice
@@ -326,8 +329,8 @@ public class EventManager : MonoSingleton<EventManager>
         {
             if (hit.collider.TryGetComponent(out CardTarget target))
             {
-                ParseDialogueOptionFromCard(usedCard.CardData, target.TargetName);
                 OnCardUsed?.Invoke(usedCard);
+                ParseDialogueOptionFromCard(usedCard.CardData, target.TargetName);
                 Destroy(usedCard.gameObject);
                 break;
             }
@@ -340,6 +343,11 @@ public class EventManager : MonoSingleton<EventManager>
         isTyping = true;
         dialogueText.text = "";
         string originalText = CurrentStory.Continue();
+        if (originalText == null || originalText == "")
+        {
+            dialoguePanel.SetActive(false);
+        }
+        else dialoguePanel.SetActive(true);
         string displayedText;
         int alphaIndex = 0;
         WaitForSeconds realTypeTime = new(maxTypeTime / typeSpeed);
@@ -347,6 +355,11 @@ public class EventManager : MonoSingleton<EventManager>
 
         HandleDialogueTags();
         TryCallFunctionsFromTags();
+        if (cardToRefund != "")
+        {
+            CardManager.TryAddCardToHand(cardToRefund);
+            cardToRefund = "";
+        }
         // voiceSource.Play();
 
         foreach (char c in originalText.ToCharArray())
@@ -372,6 +385,7 @@ public class EventManager : MonoSingleton<EventManager>
             selfTargetObject.SetActive(true);
             selfTargetObject.GetComponent<Collider2D>().enabled = true;
             cardHolder.ActivateHolder();
+            pendingCardUse = true;
         }
         else
         {
@@ -424,6 +438,23 @@ public class EventManager : MonoSingleton<EventManager>
                 GameObject eventTarget = eventTargetGroupHolder.Find(targetGroupName).gameObject;
                 activeEventTargets.Add(eventTarget);
                 if (GameManager.Instance.DebugModeOn) Debug.Log($"Found targets tag: \"{targetGroupName}\"");
+            }
+            else if (tag.Contains("refundcard:"))
+            {
+                string cardName = tag.Replace("refundcard:", null);
+                if (cardToRefund == "")
+                {
+                    cardToRefund = cardName;
+                    if (GameManager.Instance.DebugModeOn)
+                        Debug.Log($"Found refundcard tag: trying to give player {cardName} card");
+                }
+                else if (GameManager.Instance.DebugModeOn)
+                {
+                    string warning = string.Concat($"One dialogue line can't have more than one card refund!",
+                    $"File {activeStoryName} line {CurrentStory.currentText} tries to give multiple cards!");
+                    Debug.LogWarning(warning);
+                }
+
             }
             else if (tag.Contains("setsprite:"))
             {
@@ -487,7 +518,12 @@ public class EventManager : MonoSingleton<EventManager>
             stopTyping = true;
             return;
         }
-        if (!disableInput) ContinueStory();
+        if (!disableInput && !pendingCardUse) ContinueStory();
+    }
+
+    private void HandleClickWithDelay()
+    {
+        Invoke(nameof(HandleClick), 0f);
     }
 
     private void HandleClick()
@@ -497,9 +533,9 @@ public class EventManager : MonoSingleton<EventManager>
         if (isTyping)
         {
             stopTyping = true;
-            return;
+            return;;
         }
-        if (!disableInput) ContinueStory();
+        if (!disableInput && !pendingCardUse) ContinueStory();
     }
 
     private void HandleSpriteChanges(Dictionary<string, string> objectNameSpriteNameDict)

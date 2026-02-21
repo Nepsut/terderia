@@ -18,7 +18,8 @@ public class CardHolder : MonoBehaviour
     [SerializeField] private float animDuration = 0.5f;
     [SerializeField] private float cardRehomeTime = 0.32f;
     private const float holderOffset = -40f;
-    private float cardRowY = 220;
+    private const float initialCardRowY = 220f;
+    private float cardRowY = initialCardRowY;
     private const float distanceBetweenCards = 305f;
     private const float centerCardX = 747.5f;
     private RectTransform selfRect;
@@ -50,6 +51,7 @@ public class CardHolder : MonoBehaviour
             draggableChildren.Remove(usedCard.GetComponent<DraggableObject>());
             RehomeCards();
         };
+        CardManager.OnCardAddedToHand += HandleCardAddition;
     }
 
     private void SubscribeCardMoveEvents(DraggableObject draggableObject)
@@ -146,7 +148,16 @@ public class CardHolder : MonoBehaviour
         else layoutGroup.enabled = true;
     }
 
-    public void RehomeCards()
+    private void HandleCardAddition(CardData addedCard)
+    {
+        Card card = Instantiate(cardPrefab, deckRect.transform.position, Quaternion.identity, holderRect).GetComponent<Card>();
+        card.InitializeCard(addedCard);
+        SubscribeCardMoveEvents(card.GetComponent<DraggableObject>());
+        draggableChildren = holderRect.GetComponentsInChildren<DraggableObject>().ToList();
+        if (IsActive) RehomeCards();
+    }
+
+    private void RehomeCards()
     {
         if (draggableChildren.Count == 0) return;
         if (cardRehomeCoroutine != null) StopCoroutine(cardRehomeCoroutine);
@@ -163,8 +174,9 @@ public class CardHolder : MonoBehaviour
 
         for (int i = 0; i < cardCount; i++)
         {
+            float realY = draggableChildren[i].isReturnPositionSet ? cardRowY : initialCardRowY;
             draggableChildren[i].DisallowMovement();
-            Vector2 targetPosition = new(firstX + i * distanceBetweenCards, cardRowY);
+            Vector2 targetPosition = new(firstX + i * distanceBetweenCards, realY);
             cardRehomeTweens.Add(LeanTween.move(draggableChildren[i].GetComponent<RectTransform>(), targetPosition, cardRehomeTime)
                                 .setEaseInOutQuart().id);
         }

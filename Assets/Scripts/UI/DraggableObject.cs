@@ -22,6 +22,7 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
     private bool _draggingOn = false;
     public static bool DraggingOn = false;
     public Vector2 returnPosition;
+    public bool isReturnPositionSet { get; private set; } = false;
     private int hoverTweenId = -1;
     private int dragTweenId = -1;
     private Coroutine resetHoverCoroutine;
@@ -175,6 +176,7 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
     public void SetReturnPosition()
     {
         returnPosition = selfRect.anchoredPosition;
+        isReturnPositionSet = true;
     }
 
     private void Start()

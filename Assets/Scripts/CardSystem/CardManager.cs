@@ -72,6 +72,9 @@ namespace CardSystem
             "lockpick"
         };
 
+        //Events
+        public static event Action<CardData> OnCardAddedToHand;
+
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         private void Awake()
         {
@@ -85,6 +88,11 @@ namespace CardSystem
 
             UnlockedCards = DefaultCards.ToList();
             ActiveDeck = UnlockedCards;
+        }
+
+        private void Start()
+        {
+            EventManager.OnCardUsed += RemoveCardFromHand;
         }
 
         public static void UnlockCard(string cardId)
@@ -117,6 +125,27 @@ namespace CardSystem
                 string idToAdd = CardIds[UnityEngine.Random.Range(0, CardIds.Count)];
                 PlayerHand.Add(Cards[idToAdd]);
             }
+        }
+
+        public static bool TryAddCardToHand(string cardId)
+        {
+            if (!UnlockedCards.Contains(cardId) || PlayerHand.Count >= MaxCardsInHand) return false;
+            
+            PlayerHand.Add(Cards[cardId]);
+            OnCardAddedToHand?.Invoke(Cards[cardId]);
+            return true;
+        }
+
+        private void RemoveCardFromHand(Card card)
+        {
+            if (PlayerHand.Contains(card.CardData))
+            {
+                PlayerHand.Remove(card.CardData);
+                if (GameManager.Instance.DebugModeOn)
+                    Debug.Log($"Removed card {card.CardData.id} from player hand");
+            }
+            else if (GameManager.Instance.DebugModeOn)
+                Debug.LogWarning($"Tried to remove card {card.CardData.id} from player hand but hand did not have said card!");
         }
 
         private void AssignCardDataFromTsv(string tsvAsString)
