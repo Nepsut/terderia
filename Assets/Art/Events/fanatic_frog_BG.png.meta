@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: df381a0d83d6d1e43acc90084cb70014
+guid: 1d153256d11bad2458fdbf00d25030a6
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -845157399820155499
-    second: lv1_cabin_BG_widescreen_0
+      213: -972872624491792327
+    second: fanatic_frog_BG_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: lv1_cabin_BG_widescreen_0
+      name: fanatic_frog_BG_0
       rect:
         serializedVersion: 2
         x: 0
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5954d6c92d56544f0800000000000000
-      internalID: -845157399820155499
+      spriteID: 938f675a089af72f0800000000000000
+      internalID: -972872624491792327
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      lv1_cabin_BG_widescreen_0: -845157399820155499
+      fanatic_frog_BG_0: -972872624491792327
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

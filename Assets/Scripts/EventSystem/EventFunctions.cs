@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 
@@ -10,9 +11,23 @@ public class EventFunctions : MonoBehaviour
     private EventVariables eventVariables => EventManager.Instance.EventVariables;
     private EventManager eventManager => EventManager.Instance;
 
+    //Misc setting variables
+    private const float eventEndTimeSeconds = 2f;
+
     public void TestFunction()
     {
         Debug.Log("Test function was called!");
         Debug.Log($"State of test variable: {eventManager.GetVariableState("g_test_seen")}");
+    }
+
+    public void LoadMap1Scene()
+    {
+        StartCoroutine(MapLoadDelayHandler(SceneTransitionManager.Scene.Map1));
+    }
+
+    private IEnumerator MapLoadDelayHandler(SceneTransitionManager.Scene sceneToLoad)
+    {
+        yield return new WaitForSeconds(eventEndTimeSeconds);
+        SceneTransitionManager.Instance.StartTransition(sceneToLoad);
     }
 }

@@ -42,7 +42,6 @@ namespace CardSystem
         private const string rangeHeader = "Range";
         private const string aoeHeader = "AoE";
         private const string tagsHeader = "Other Tags";
-        private const string notesHeader = "Additional Notes";
 
         public const int MaxCardsInHand = 5;
         public const int MaxCardsInDeck = 20;
@@ -73,18 +72,27 @@ namespace CardSystem
             "lockpick"
         };
 
+        //Events
+        public static event Action<CardData> OnCardAddedToHand;
+
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         private void Awake()
         {
             AssignCardDataFromTsv(cardTsvAsset.text);
-            
-            foreach(var keyValuePair in Cards)
+
+            if (GameManager.Instance.DebugModeOn)
             {
-                Debug.Log($"{keyValuePair.Value.name} - {keyValuePair.Value.description}");
+                foreach (var keyValuePair in Cards)
+                    Debug.Log($"{keyValuePair.Value.name} - {keyValuePair.Value.description}");
             }
 
             UnlockedCards = DefaultCards.ToList();
             ActiveDeck = UnlockedCards;
+        }
+
+        private void Start()
+        {
+            EventManager.OnCardUsed += RemoveCardFromHand;
         }
 
         public static void UnlockCard(string cardId)
@@ -119,6 +127,27 @@ namespace CardSystem
             }
         }
 
+        public static bool TryAddCardToHand(string cardId)
+        {
+            if (!UnlockedCards.Contains(cardId) || PlayerHand.Count >= MaxCardsInHand) return false;
+            
+            PlayerHand.Add(Cards[cardId]);
+            OnCardAddedToHand?.Invoke(Cards[cardId]);
+            return true;
+        }
+
+        private void RemoveCardFromHand(Card card)
+        {
+            if (PlayerHand.Contains(card.CardData))
+            {
+                PlayerHand.Remove(card.CardData);
+                if (GameManager.Instance.DebugModeOn)
+                    Debug.Log($"Removed card {card.CardData.id} from player hand");
+            }
+            else if (GameManager.Instance.DebugModeOn)
+                Debug.LogWarning($"Tried to remove card {card.CardData.id} from player hand but hand did not have said card!");
+        }
+
         private void AssignCardDataFromTsv(string tsvAsString)
         {
             string[] cardDataAsStrings = tsvAsString.Split('\n');
@@ -134,7 +163,6 @@ namespace CardSystem
             int rangeIndex = Array.IndexOf(headers, rangeHeader);
             int aoeIndex = Array.IndexOf(headers, aoeHeader);
             int tagsIndex = Array.IndexOf(headers, tagsHeader);
-            int notesIndex = Array.IndexOf(headers, notesHeader);
 
             Cards = new();
             CardIds = new();

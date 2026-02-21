@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: df381a0d83d6d1e43acc90084cb70014
+guid: 0482eb94e8d6bfa4993e91f2578cfbf4
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -845157399820155499
-    second: lv1_cabin_BG_widescreen_0
+      213: 1212510653898713327
+    second: swamp_map_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: lv1_cabin_BG_widescreen_0
+      name: swamp_map_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 3440
-        height: 1440
+        width: 2187
+        height: 1084
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5954d6c92d56544f0800000000000000
-      internalID: -845157399820155499
+      spriteID: fe8620cf304b3d010800000000000000
+      internalID: 1212510653898713327
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      lv1_cabin_BG_widescreen_0: -845157399820155499
+      swamp_map_0: 1212510653898713327
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

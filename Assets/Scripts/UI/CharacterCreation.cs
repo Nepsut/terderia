@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using CardSystem;
 using UnityEngine;
 using UnityEngine.UI;
@@ -59,6 +61,8 @@ public class CharacterCreation : MonoBehaviour
 
         CardManager.UnlockCard(playerData.StartingWeaponAsString);
         GameManager.Instance.playerData = playerData;
+        EventManager.Instance.EventVariables.TryChangeGlobalInkVariable(EventVariables.genderKey, playerData.GenderAsString);
+        EventManager.Instance.EventVariables.TryChangeGlobalInkVariable(EventVariables.subclassKey, playerData.SubclassAsString);
     }
 
     private IEnumerator HandleGenderScroll(RectTransform rectToMove, bool right)

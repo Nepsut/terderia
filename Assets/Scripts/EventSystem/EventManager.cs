@@ -11,6 +11,8 @@ using UnityEngine;
 [RequireComponent(typeof(EventFunctions))]
 public class EventManager : MonoSingleton<EventManager>
 {
+    private const string eventAssetPath = "EventSystem/EventSprites";
+
     [Header("Engine Variables")]
     [SerializeField] private InputReader inputReader;
     // [SerializeField] private AudioSource voiceSource;
@@ -19,6 +21,7 @@ public class EventManager : MonoSingleton<EventManager>
     [SerializeField] private TextAsset globalInkVariables;
     private Story inkVariablesStory;
     private List<string> functionsToCall = new();
+    private string cardToRefund = "";
     public EventVariables EventVariables { get; private set; }
     private EventFunctions eventFunctions;
     // [SerializeField] private AudioClip fallbackVoice;
@@ -31,33 +34,26 @@ public class EventManager : MonoSingleton<EventManager>
     [SerializeField] private Transform eventTargetGroupHolder;
     [SerializeField] private float typeSpeed = 20f;
 
+    //Story variables
     public Story CurrentStory { get; private set; }
+    private Dictionary<string, Sprite> eventSpriteAssets;
     private List<GameObject> activeEventTargets;
     private bool isTyping = false;
     private bool choiceWasMade = false;
+    private bool pendingCardUse = false;
     private bool stopTyping = false;
     private bool disableInput = false;
 
-    //Const values related to typing. Do not change.
+    //Const values related to typing. Do not change if unsure.
     private const string alphaCode = "<color=#00000000>";
     private const float maxTypeTime = 0.1f;
     private const float timeBeforeChoices = 0.2f;
 
+    //Events
     public static event Action<Card> OnCardUsed;
 
-    public struct ChoiceTagHolder
-    {
-        public string TargetTag;
-        public string UniqueTag;
-        public List<string> OtherTags;
-
-        public ChoiceTagHolder(string targetTag, string uniqueTag, List<string> otherTags = null)
-        {
-            TargetTag = targetTag;
-            UniqueTag = uniqueTag;
-            OtherTags = otherTags; 
-        }
-    }
+    //DEBUG VARIABLES. DO NOT TOUCH IF UNSURE.
+    private string activeStoryName;
 
     private void Awake()
     {
@@ -65,6 +61,16 @@ public class EventManager : MonoSingleton<EventManager>
         EventVariables = new(inkVariablesStory);
 
         eventFunctions = GetComponent<EventFunctions>();
+
+        //fetch event sprite assets
+        Sprite[] tempEventSprites = Resources.LoadAll<Sprite>(eventAssetPath);
+        eventSpriteAssets = new();
+
+        foreach(Sprite sprite in tempEventSprites)
+        {
+            eventSpriteAssets.Add(sprite.name, sprite);
+            if (GameManager.Instance.DebugModeOn) Debug.Log(sprite.name);
+        }
 
         // CheckForDuplicateNPCIds();
     }
@@ -84,7 +90,10 @@ public class EventManager : MonoSingleton<EventManager>
         CurrentStory = new Story(_inkJSON.text);
         EventVariables.StartListening(CurrentStory);
         inputReader.OnSubmitEvent += HandleSubmit;
+        inputReader.OnClickEvent += HandleClickWithDelay;
         dialoguePanel.SetActive(true);
+
+        activeStoryName = _inkJSON.name;
 
         //continue story prints dialogue so it's called here
         ContinueStory();
@@ -93,12 +102,14 @@ public class EventManager : MonoSingleton<EventManager>
     //dialogue printer
     private void ContinueStory()
     {
+        if (pendingCardUse) return;
+
         if (choiceWasMade && CurrentStory.canContinue)
         {
             choiceWasMade = false;
-            // CurrentStory.Continue();
             if (CurrentStory.currentChoices.Count != 0)
             {
+                pendingCardUse = true;
                 selfTargetObject.SetActive(true);
                 selfTargetObject.GetComponent<Collider2D>().enabled = true;
                 cardHolder.ActivateHolder();
@@ -124,15 +135,17 @@ public class EventManager : MonoSingleton<EventManager>
         dialoguePanel.SetActive(false);
         dialogueText.text = "Dialogue Text";
         dialogueSpeaker.text = "Speaker";
-        activeEventTargets.ForEach(target => target.SetActive(false));
-        activeEventTargets = null;
+        // activeEventTargets?.ForEach(target => target.SetActive(false));
+        // activeEventTargets = null;
         inputReader.OnSubmitEvent -= HandleSubmit;
+        inputReader.OnClickEvent += HandleClickWithDelay;
     }
 
     //this is called when choice is made to advance ink story based on made choice
     public void MakeChoice(int choiceNumber)
     {
         CurrentStory.ChooseChoiceIndex(choiceNumber);
+        pendingCardUse = false;
         choiceWasMade = true;
         activeEventTargets.ForEach(target =>
         {
@@ -140,7 +153,6 @@ public class EventManager : MonoSingleton<EventManager>
             {
                 child.GetComponent<Collider2D>().enabled = false;
             }
-
         });
         selfTargetObject.GetComponent<Collider2D>().enabled = false;
         ContinueStory();
@@ -148,7 +160,8 @@ public class EventManager : MonoSingleton<EventManager>
 
     private void ParseDialogueOptionFromCard(CardData usedCard, string targetString)
     {
-        Debug.Log($"Card {usedCard.name} was used on {targetString}");
+        if (GameManager.Instance.DebugModeOn)
+            Debug.Log($"Card {usedCard.name} was used on {targetString}");
 
         if (CurrentStory.currentChoices.Count == 0) return;
 
@@ -316,9 +329,10 @@ public class EventManager : MonoSingleton<EventManager>
         {
             if (hit.collider.TryGetComponent(out CardTarget target))
             {
-                ParseDialogueOptionFromCard(usedCard.CardData, target.TargetName);
                 OnCardUsed?.Invoke(usedCard);
+                ParseDialogueOptionFromCard(usedCard.CardData, target.TargetName);
                 Destroy(usedCard.gameObject);
+                break;
             }
         }
     }
@@ -329,6 +343,11 @@ public class EventManager : MonoSingleton<EventManager>
         isTyping = true;
         dialogueText.text = "";
         string originalText = CurrentStory.Continue();
+        if (originalText == null || originalText == "")
+        {
+            dialoguePanel.SetActive(false);
+        }
+        else dialoguePanel.SetActive(true);
         string displayedText;
         int alphaIndex = 0;
         WaitForSeconds realTypeTime = new(maxTypeTime / typeSpeed);
@@ -336,6 +355,11 @@ public class EventManager : MonoSingleton<EventManager>
 
         HandleDialogueTags();
         TryCallFunctionsFromTags();
+        if (cardToRefund != "")
+        {
+            CardManager.TryAddCardToHand(cardToRefund);
+            cardToRefund = "";
+        }
         // voiceSource.Play();
 
         foreach (char c in originalText.ToCharArray())
@@ -354,18 +378,20 @@ public class EventManager : MonoSingleton<EventManager>
         disableInput = true;
         // voiceSource.Stop();
         yield return new WaitForSeconds(timeBeforeChoices);
+        disableInput = false;
 
         if (CurrentStory.currentChoices.Count != 0)
         {
             selfTargetObject.SetActive(true);
             selfTargetObject.GetComponent<Collider2D>().enabled = true;
             cardHolder.ActivateHolder();
+            pendingCardUse = true;
         }
         else
         {
-            cardHolder.DeactivateHolder();
+            if (cardHolder.IsActive) cardHolder.DeactivateHolder();
             selfTargetObject.SetActive(false);
-            activeEventTargets?.ForEach(target => target.SetActive(false));
+            // activeEventTargets?.ForEach(target => target.SetActive(false));
         }
     }
 
@@ -381,19 +407,20 @@ public class EventManager : MonoSingleton<EventManager>
             return;
         }
 
+        Dictionary<string, string> spritesToSet = new();
         bool foundSpeakerTag = false;
         //if tags, handle each tag appropriately
         foreach (string tag in CurrentStory.currentTags)
         {
             if (tag.Contains("narrator"))
             {
-                Debug.Log("Found narrator tag");
+                if (GameManager.Instance.DebugModeOn) Debug.Log("Found narrator tag");
                 speakerPanel.SetActive(false);
             }
             else if (tag.Contains("speaker:"))
             {
                 string speakerId = tag.Replace("speaker:", null);
-                Debug.Log($"Found speaker tag: \"{speakerId}\"");
+                if (GameManager.Instance.DebugModeOn) Debug.Log($"Found speaker tag: \"{speakerId}\"");
                 foundSpeakerTag = true;
                 speakerPanel.SetActive(true);
                 dialogueSpeaker.text = speakerId.FirstCharacterToUpper();
@@ -402,24 +429,62 @@ public class EventManager : MonoSingleton<EventManager>
             {
                 string functionName = tag.Replace("function:", null);
                 functionsToCall.Add(functionName);
-                Debug.Log($"Found function tag: \"{functionName}\"");
+                if (GameManager.Instance.DebugModeOn) Debug.Log($"Found function tag: \"{functionName}\"");
             }
             else if (tag.Contains("targets:"))
             {
                 activeEventTargets ??= new();
                 string targetGroupName = tag.Replace("targets:", null);
-                activeEventTargets.Add(eventTargetGroupHolder.Find(targetGroupName).gameObject);
-                Debug.Log($"Found targets tag: \"{targetGroupName}\"");
+                GameObject eventTarget = eventTargetGroupHolder.Find(targetGroupName).gameObject;
+                activeEventTargets.Add(eventTarget);
+                if (GameManager.Instance.DebugModeOn) Debug.Log($"Found targets tag: \"{targetGroupName}\"");
+            }
+            else if (tag.Contains("refundcard:"))
+            {
+                string cardName = tag.Replace("refundcard:", null);
+                if (cardToRefund == "")
+                {
+                    cardToRefund = cardName;
+                    if (GameManager.Instance.DebugModeOn)
+                        Debug.Log($"Found refundcard tag: trying to give player {cardName} card");
+                }
+                else if (GameManager.Instance.DebugModeOn)
+                {
+                    string warning = string.Concat($"One dialogue line can't have more than one card refund!",
+                    $"File {activeStoryName} line {CurrentStory.currentText} tries to give multiple cards!");
+                    Debug.LogWarning(warning);
+                }
+
+            }
+            else if (tag.Contains("setsprite:"))
+            {
+                string setSpriteInfo = tag.Replace("setsprite:", null);
+                int splitIndex = setSpriteInfo.IndexOf('>');
+                string gameObjectName = setSpriteInfo[..splitIndex];
+                splitIndex++;
+                string spriteName = setSpriteInfo[splitIndex..];
+                if (!spritesToSet.TryAdd(gameObjectName, spriteName))
+                {
+                    string warning = string.Concat($"Dialogue line {CurrentStory.currentText}\n",
+                        $"tries to set game object {gameObjectName}'s sprite multiple times!");
+                    Debug.LogWarning(warning);
+                }
+                else if (GameManager.Instance.DebugModeOn)
+                    Debug.Log($"Found setsprite tag: setting \"{gameObjectName}\" image to sprite \"{spriteName}\"");
             }
         }
+
         if (!foundSpeakerTag)
         {
             dialogueSpeaker.text = "";
             speakerPanel.SetActive(false);
         }
-        activeEventTargets?.ForEach(target => target.SetActive(true));
+
+        if (spritesToSet.Count != 0) HandleSpriteChanges(spritesToSet);
+
         activeEventTargets?.ForEach(target =>
         {
+            target.SetActive(true);
             foreach (Transform child in target.transform)
             {
                 child.GetComponent<Collider2D>().enabled = true;
@@ -436,9 +501,9 @@ public class EventManager : MonoSingleton<EventManager>
         functionsToCall.ForEach(func => eventFunctions.Invoke(func, 0f));
     }
 
-    public Ink.Runtime.Object GetVariableState(string _variableName)
+    public object GetVariableState(string _variableName)
     {
-        EventVariables.dialogueVariables.TryGetValue(_variableName, out Ink.Runtime.Object _variableValue);
+        EventVariables.DialogueVariables.TryGetValue(_variableName, out Ink.Runtime.Value _variableValue);
         if (_variableValue == null)
         {
             Debug.LogWarning($"{_variableName} was null, did you mean to reference it?");
@@ -453,7 +518,52 @@ public class EventManager : MonoSingleton<EventManager>
             stopTyping = true;
             return;
         }
-        if (!disableInput) ContinueStory();
+        if (!disableInput && !pendingCardUse) ContinueStory();
+    }
+
+    private void HandleClickWithDelay()
+    {
+        Invoke(nameof(HandleClick), 0f);
+    }
+
+    private void HandleClick()
+    {
+        if (DraggableObject.DraggingOn) return;
+
+        if (isTyping)
+        {
+            stopTyping = true;
+            return;;
+        }
+        if (!disableInput && !pendingCardUse) ContinueStory();
+    }
+
+    private void HandleSpriteChanges(Dictionary<string, string> objectNameSpriteNameDict)
+    {
+        foreach (var kvp in objectNameSpriteNameDict)
+        {
+            if (!eventSpriteAssets.ContainsKey(kvp.Value))
+            {
+                string warning = string.Concat("Tried to set an event sprite via dialogue setsprite with erronous sprite name ",
+                $"{kvp.Value}. Check for tag typos in ink event file \"{activeStoryName}\" on line \"{CurrentStory.currentText}\".");
+                Debug.LogWarning(warning);
+                continue;
+            }
+            Transform targetTransform = eventTargetGroupHolder.Find(kvp.Key);
+            if (targetTransform == null)
+            {
+                string warning = string.Concat("Tried to set an event sprite via dialogue setsprite on non-existent object ",
+                $"{kvp.Key}. Check for tag typos in ink event file \"{activeStoryName}\" on line \"{CurrentStory.currentText}\".");
+                Debug.LogWarning(warning);
+                continue;
+            }
+            if (!targetTransform.TryGetComponent(out SpriteRenderer renderer))
+            {
+                Debug.LogWarning($"Could not find SpriteRenderer on event sprite object {kvp.Key}");
+                continue;
+            }
+            renderer.sprite = eventSpriteAssets[kvp.Value];
+        }
     }
 
     private const string dialogueVariablesKey = "dialogueVariables";
@@ -479,46 +589,119 @@ public class EventManager : MonoSingleton<EventManager>
 
 public class EventVariables
 {
-    public Dictionary<string, Ink.Runtime.Object> dialogueVariables { get; set; }
+    public Dictionary<string, Ink.Runtime.Value> DialogueVariables { get; private set; }
+    private int Health => GameManager.playerHealth;
+    private Story currentStory;
+
+    // Variable change events
+    public static event Action<int> OnHealthGained;
+    public static event Action<int> OnHealthLost;
+
+    // Variable keys
+    public const string healthKey = "g_player_health";
+    public const string genderKey = "g_player_gender";
+    public const string subclassKey = "g_player_class";
 
     public EventVariables(Story _globalVariableStory)
     {
-        dialogueVariables = new();
+        DialogueVariables = new();
 
         foreach (string name in _globalVariableStory.variablesState)
         {
-            var value = _globalVariableStory.variablesState.GetVariableWithName(name);
-            dialogueVariables.Add(name, value);
-            Debug.Log($"Variable global dialogue initialized: {name} = {value}");
+            Ink.Runtime.Value value = (Ink.Runtime.Value)_globalVariableStory.variablesState.GetVariableWithName(name);
+            DialogueVariables.Add(name, value);
+            if (GameManager.Instance.DebugModeOn)
+                Debug.Log($"Variable global dialogue initialized: {name} = {value}");
         }
     }
 
     public void StartListening(Story _story)
     {
         VariablesToStory(ref _story);
-        _story.variablesState.variableChangedEvent += VariableChanged;
+        _story.variablesState.variableChangedEvent += HandleVariableChange;
+        currentStory = _story;
     }
 
     public void StopListening(Story _story)
     {
-        _story.variablesState.variableChangedEvent -= VariableChanged;
+        _story.variablesState.variableChangedEvent -= HandleVariableChange;
+        currentStory = null;
     }
 
-    private void VariableChanged(string _varName, Ink.Runtime.Object _value)
+    private void HandleVariableChange(string _varName, Ink.Runtime.Object _value)
     {
-        Debug.Log($"Variable changed: {_varName} = {_value}");
+        if (!DialogueVariables.ContainsKey(_varName) || _value is not Ink.Runtime.Value) return;
 
-        if (dialogueVariables.ContainsKey(_varName))
+        Ink.Runtime.Value valueToChange = _value as Ink.Runtime.Value;
+        if (GameManager.Instance.DebugModeOn) Debug.Log($"Variable changed: {_varName} = {_value}");
+        DialogueVariables[_varName] = valueToChange;
+        if (valueToChange.valueType == Ink.Runtime.ValueType.Int)
         {
-            dialogueVariables[_varName] = _value;
+            Ink.Runtime.IntValue valueAsInt = (Ink.Runtime.IntValue)valueToChange;
+            HandleIntegerUpdate(_varName, valueAsInt.value);
         }
     }
 
     public void VariablesToStory(ref Story _story)
     {
-        foreach (var variable in dialogueVariables)
+        foreach (var kvp in DialogueVariables)
         {
-            _story.variablesState.SetGlobal(variable.Key, variable.Value);
+            Debug.Log($"Setting ink story variable {kvp.Key} to {kvp.Value}");
+            _story.variablesState.SetGlobal(kvp.Key, kvp.Value);
+        }
+    }
+
+    public bool TryChangeGlobalInkVariable(string _varName, object _value)
+    {
+        if (DialogueVariables == null || !DialogueVariables.ContainsKey(_varName))
+        {
+            if (GameManager.Instance.DebugModeOn)
+            {
+                string log = "Failed to update ink story variable due to ";
+                log += DialogueVariables == null ? $"DialogueVariables being null" : $"variable with name {_varName} not existing";
+                Debug.Log(log);
+            }
+            return false;
+        }
+        DialogueVariables[_varName] = Ink.Runtime.Value.Create(_value);
+        currentStory?.variablesState.SetGlobal(_varName, (Ink.Runtime.Object)_value);
+        if (GameManager.Instance.DebugModeOn)
+            Debug.Log($"Updated ink variable \"{_varName}\". New value: {_value}");
+        return true;
+    }
+
+    public bool TryChangeGlobalInkVariables(Dictionary<string, object> _variableDict)
+    {
+        if (_variableDict == null || _variableDict.Count == 0)
+        {
+            if (GameManager.Instance.DebugModeOn)
+            {
+                Debug.Log("Failed to update ink story variables due to method being called with empty or null Dictionary");
+            }
+            return false;
+        }
+        bool success = true;
+        foreach (var kvp in _variableDict)
+        {
+            if (!TryChangeGlobalInkVariable(kvp.Key, kvp.Value)) success = false;
+        }
+        return success;
+    }
+
+    private void HandleIntegerUpdate(string varName, int value)
+    {
+        switch (varName)
+        {
+            case healthKey:
+                if (value > Health) OnHealthGained?.Invoke(Health + value);
+                else if (value < Health) OnHealthLost?.Invoke(Health - value);
+                else
+                {
+                    string warning = string.Concat("Health was changed in ink variables but value stayed same. ",
+                        $"Check ink files altering variable {varName}");
+                    Debug.LogWarning(warning);
+                }
+                break;
         }
     }
 }

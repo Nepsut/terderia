@@ -20,7 +20,9 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
     private Vector2 mousePos => UIController.MousePosition;
     private bool _pointerOnObject = false;
     private bool _draggingOn = false;
+    public static bool DraggingOn = false;
     public Vector2 returnPosition;
+    public bool isReturnPositionSet { get; private set; } = false;
     private int hoverTweenId = -1;
     private int dragTweenId = -1;
     private Coroutine resetHoverCoroutine;
@@ -74,6 +76,7 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
             if (dragTweenId != -1) LeanTween.cancel(dragTweenId);
             if (hoverTweenId != -1) LeanTween.cancel(hoverTweenId);
             _draggingOn = true;
+            DraggingOn = true;
             hoverAllowed = false;
             OnDragStart?.Invoke(this);
         }
@@ -125,6 +128,7 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
             OnDragEnd?.Invoke(this);
         }
         _draggingOn = false;
+        DraggingOn = false;
     }
 
     private IEnumerator ResetHoverTween()
@@ -172,6 +176,7 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
     public void SetReturnPosition()
     {
         returnPosition = selfRect.anchoredPosition;
+        isReturnPositionSet = true;
     }
 
     private void Start()

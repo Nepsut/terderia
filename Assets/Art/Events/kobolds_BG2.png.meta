@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: df381a0d83d6d1e43acc90084cb70014
+guid: 38fe45c80b597d44cb548be88da27332
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -845157399820155499
-    second: lv1_cabin_BG_widescreen_0
+      213: 5515246272303593114
+    second: kobolds_BG2_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: lv1_cabin_BG_widescreen_0
+      name: kobolds_BG2_0
       rect:
         serializedVersion: 2
         x: 0
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5954d6c92d56544f0800000000000000
-      internalID: -845157399820155499
+      spriteID: a96f37d73471a8c40800000000000000
+      internalID: 5515246272303593114
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      lv1_cabin_BG_widescreen_0: -845157399820155499
+      kobolds_BG2_0: 5515246272303593114
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

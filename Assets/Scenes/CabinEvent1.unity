@@ -245,12 +245,12 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -845157399820155499, guid: cd2664502e4c765429a4bd16303f930c, type: 3}
+  m_Sprite: {fileID: -845157399820155499, guid: df381a0d83d6d1e43acc90084cb70014, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 19.3, y: 10.9}
+  m_Size: {x: 34.412136, y: 14.4}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -389,6 +389,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   inputReader: {fileID: 11400000, guid: 6ebaf048bebd1bc4f9a363fede6742af, type: 2}
+  <DebugModeOn>k__BackingField: 0
 --- !u!4 &537120496
 Transform:
   m_ObjectHideFlags: 0
@@ -757,7 +758,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 769bbd21c8759414eb94af5ed74c5280, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EventCaller
-  eventAsset: {fileID: 4900000, guid: 936c4d2eb4d427642b431c2311fa0c96, type: 3}
+  eventAsset: {fileID: 4900000, guid: 264a4c42fa43e0947aaf25267ef070f7, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

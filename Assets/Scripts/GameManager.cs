@@ -9,8 +9,16 @@ public class GameManager : MonoSingleton<GameManager>
     public static int playerHealthMax = 5;
     public static int playerHealth = 5;
 
+    [field: SerializeField] public bool DebugModeOn { get; private set; } = false;
+
     public static event Action<int> OnPlayerHealthLoss;
     public static event Action<int> OnPlayerHealthGain;
+
+    private void Awake()
+    {
+        EventVariables.OnHealthLost += DamagePlayer;
+        EventVariables.OnHealthGained += HealPlayer;
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

@@ -17,7 +17,7 @@ public class PlayerData
         set
         {
             _subclass = value;
-            _subclass.ToString().Replace('_', '-');
+            SubclassAsString = _subclass.ToString().Replace('_', '-');
         }
     }
     public StartingWeapon _startingWeapon;
@@ -34,7 +34,6 @@ public class PlayerData
     public string GenderAsString { get; private set; }
     public string SubclassAsString { get; private set; }
     public string StartingWeaponAsString { get; private set; }
-
 
     public enum Gender
     {
