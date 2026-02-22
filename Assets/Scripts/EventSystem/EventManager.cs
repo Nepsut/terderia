@@ -36,6 +36,7 @@ public class EventManager : MonoSingleton<EventManager>
 
     //Story variables
     public Story CurrentStory { get; private set; }
+    public bool IsEventActive { get; private set; } = false;
     private Dictionary<string, Sprite> eventSpriteAssets;
     private List<GameObject> activeEventTargets;
     private bool isTyping = false;
@@ -81,12 +82,14 @@ public class EventManager : MonoSingleton<EventManager>
         DontDestroyOnLoad(selfTargetObject);
         selfTargetObject.SetActive(false);
         Card.OnCardDragEnd += CheckForCardUse;
+        SceneTransitionManager.OnSceneLoadStarted += ClearActiveTargets;
     }
 
     //this enters dialogue with the inkJSON file assigned to the npc
     public void EnterEvent(TextAsset _inkJSON)
     {
         //first this sets the ink story as the active dialogue and activates dialogue panel
+        IsEventActive = true;
         CurrentStory = new Story(_inkJSON.text);
         EventVariables.StartListening(CurrentStory);
         inputReader.OnSubmitEvent += HandleSubmit;
@@ -102,7 +105,7 @@ public class EventManager : MonoSingleton<EventManager>
     //dialogue printer
     private void ContinueStory()
     {
-        if (pendingCardUse) return;
+        if (pendingCardUse || !IsEventActive) return;
 
         if (choiceWasMade && CurrentStory.canContinue)
         {
@@ -135,10 +138,20 @@ public class EventManager : MonoSingleton<EventManager>
         dialoguePanel.SetActive(false);
         dialogueText.text = "Dialogue Text";
         dialogueSpeaker.text = "Speaker";
-        // activeEventTargets?.ForEach(target => target.SetActive(false));
-        // activeEventTargets = null;
+        IsEventActive = false;
+        if (cardHolder.IsActive)
+        {
+            cardHolder.DeactivateHolder();
+            StartCoroutine(EmptyPlayerHand(new(CardHolder.HolderMoveDuration)));
+        }
+        else
+        {
+            cardHolder.ClearCards();
+            CardManager.InitializePlayerHand();
+        }
         inputReader.OnSubmitEvent -= HandleSubmit;
-        inputReader.OnClickEvent += HandleClickWithDelay;
+        inputReader.OnClickEvent -= HandleClickWithDelay;
+        Debug.Log($"Exited event {activeStoryName}");
     }
 
     //this is called when choice is made to advance ink story based on made choice
@@ -322,6 +335,8 @@ public class EventManager : MonoSingleton<EventManager>
 
     private void CheckForCardUse(Card usedCard)
     {
+        if (!IsEventActive) return;
+
         Vector2 mousePos = UIController.MousePosition;
         RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(mousePos), Vector2.zero);
 
@@ -391,7 +406,6 @@ public class EventManager : MonoSingleton<EventManager>
         {
             if (cardHolder.IsActive) cardHolder.DeactivateHolder();
             selfTargetObject.SetActive(false);
-            // activeEventTargets?.ForEach(target => target.SetActive(false));
         }
     }
 
@@ -564,6 +578,19 @@ public class EventManager : MonoSingleton<EventManager>
             }
             renderer.sprite = eventSpriteAssets[kvp.Value];
         }
+    }
+
+    private IEnumerator EmptyPlayerHand(WaitForSeconds wait = null)
+    {
+        yield return wait;
+        cardHolder.ClearCards();
+        CardManager.InitializePlayerHand();
+    }
+
+    private void ClearActiveTargets()
+    {
+        activeEventTargets?.ForEach(target => target.SetActive(false));
+        activeEventTargets = null;
     }
 
     private const string dialogueVariablesKey = "dialogueVariables";

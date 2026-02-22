@@ -116,7 +116,7 @@ After looking around for {perhaps a bit too long, | a short while,} you decide t
     You slam the frying pan on the handle, and it pops off exactly as planned, though the impact leaves your hand slightly sore. #narrator #setsprite:cabindoor1>cabindoor1_open
     -> CABIN_EPILOGUE("force_unlock")
  + You give your dagger a quick spin before unleashing a flurry of strikes at the door! #card #@cabindoor1 #!dagger
-    ... #speaker:Door
+    "..." #speaker:Door
     Now decorated with 24 shallow "stab wounds", the door doesn't budge. Damnit. #narrator
     -> CABIN_CARD_OPTIONS
  + You heft the staff in your hand, determined to pop the handle straight off the door, and the lock with it. #card #@cabindoor1 #!staff
@@ -128,7 +128,7 @@ After looking around for {perhaps a bit too long, | a short while,} you decide t
     }
  + You adjust the bottle for a better grip, and launch it at the door! #card #@cabindoor1 #!glass-bottle
     The bottle shatters against the door, sending glass flying everywhere! #narrator
-    As the glass shards settle, the potion splatter on the door drips onto the floor. It was an attempt to be certain. #narrator
+    As the glass shards settle, the potion splatter on the door drips onto the floor. It was an attempt, for certain. #narrator
     -> CABIN_CARD_OPTIONS
  
  === FILLET_RESULTS(lost_game) ===
@@ -156,7 +156,7 @@ After looking around for {perhaps a bit too long, | a short while,} you decide t
  {
     - !g_first_cabin_seen:
     As you give the cabin a hasty final once-over, you notice some cards on the table. #narrator
-    You have no idea how you missed these before, and you quickly pocket them. #narrator
+    You have no idea how you missed these before, and you quickly pocket them. #narrator #function:UnlockCabinCards
     You give the cabin another glance in hopes of finding something else you may have missed, but nothing turns up. #narrator
     - else:
     You quickly scour through the cabin again, hoping to find some cards again, but nothing turns up. #narrator

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +14,7 @@ public class CardHolder : MonoBehaviour
     [SerializeField] private HorizontalLayoutGroup layoutGroup;
     [SerializeField] private Image holderImage;
     [SerializeField] private GameObject cardPrefab;
-    [SerializeField] private float animDuration = 0.5f;
+    public const float HolderMoveDuration = 0.5f;
     [SerializeField] private float cardRehomeTime = 0.32f;
     private const float holderOffset = -40f;
     private const float initialCardRowY = 220f;
@@ -48,7 +47,9 @@ public class CardHolder : MonoBehaviour
     {
         EventManager.OnCardUsed += usedCard =>
         {
-            draggableChildren.Remove(usedCard.GetComponent<DraggableObject>());
+            DraggableObject draggableObject = usedCard.GetComponent<DraggableObject>();
+            UnsubscribeCardMoveEvents(draggableObject);
+            draggableChildren.Remove(draggableObject);
             RehomeCards();
         };
         CardManager.OnCardAddedToHand += HandleCardAddition;
@@ -116,10 +117,10 @@ public class CardHolder : MonoBehaviour
     private IEnumerator MoveManager(bool moveUp)
     {
         if (moveTweenId != -1) LeanTween.cancel(moveTweenId);
-        if (moveUp) moveTweenId = LeanTween.moveY(selfRect, activePosY, animDuration).setEaseInOutCubic().id;
-        else moveTweenId = LeanTween.moveY(selfRect, inactivePosY, animDuration).setEaseInOutCubic().id;
+        if (moveUp) moveTweenId = LeanTween.moveY(selfRect, activePosY, HolderMoveDuration).setEaseInOutCubic().id;
+        else moveTweenId = LeanTween.moveY(selfRect, inactivePosY, HolderMoveDuration).setEaseInOutCubic().id;
         layoutGroup.enabled = true;
-        yield return new WaitForSeconds(animDuration);
+        yield return new WaitForSeconds(HolderMoveDuration);
         if (draggableChildren != null)
         {
             foreach (DraggableObject childDrag in draggableChildren)
@@ -155,6 +156,17 @@ public class CardHolder : MonoBehaviour
         SubscribeCardMoveEvents(card.GetComponent<DraggableObject>());
         draggableChildren = holderRect.GetComponentsInChildren<DraggableObject>().ToList();
         if (IsActive) RehomeCards();
+    }
+
+    public void ClearCards()
+    {
+        isInitialized = false;
+        draggableChildren?.ForEach(child => UnsubscribeCardMoveEvents(child));
+        draggableChildren = null;
+        foreach (Transform child in holderRect)
+        {
+            Destroy(child.gameObject);
+        }
     }
 
     private void RehomeCards()

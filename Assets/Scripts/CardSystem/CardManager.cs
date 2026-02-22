@@ -71,6 +71,7 @@ namespace CardSystem
             "banter",
             "lockpick"
         };
+        //Cabin unlocks: static-shock, punch, insult, rope. ALSO based on class: snowball, smokescreen, can-of-beans, evil-bottle
 
         //Events
         public static event Action<CardData> OnCardAddedToHand;
@@ -95,7 +96,7 @@ namespace CardSystem
             EventManager.OnCardUsed += RemoveCardFromHand;
         }
 
-        public static void UnlockCard(string cardId)
+        public static void UnlockCard(string cardId, bool addToDeck = false)
         {
             if (!Cards.ContainsKey(cardId))
             {
@@ -108,6 +109,7 @@ namespace CardSystem
                 return;
             }
             UnlockedCards.Add(cardId);
+            if (addToDeck) ActiveDeck.Add(cardId);
         }
 
         public static void InitializePlayerHand()
@@ -120,11 +122,9 @@ namespace CardSystem
                 return;
             }
 
-            while (PlayerHand.Count < MaxCardsInHand)
-            {
-                string idToAdd = CardIds[UnityEngine.Random.Range(0, CardIds.Count)];
-                PlayerHand.Add(Cards[idToAdd]);
-            }
+            System.Random rnd = new();
+            List<string> newHandIds = ActiveDeck.OrderBy(x => rnd.Next()).Take(MaxCardsInHand).ToList();
+            newHandIds.ForEach(id => PlayerHand.Add(Cards[id]));
         }
 
         public static bool TryAddCardToHand(string cardId)

@@ -1,4 +1,5 @@
 using System.Collections;
+using CardSystem;
 using UnityEngine;
 
 
@@ -18,6 +19,15 @@ public class EventFunctions : MonoBehaviour
     {
         Debug.Log("Test function was called!");
         Debug.Log($"State of test variable: {eventManager.GetVariableState("g_test_seen")}");
+    }
+
+    //TEMPORARY, REMOVE LATER
+    public void UnlockCabinCards()
+    {
+        CardManager.UnlockCard("punch", addToDeck: true);
+        CardManager.UnlockCard("insult", addToDeck: true);
+        CardManager.UnlockCard("static-shock", addToDeck: true);
+        CardManager.UnlockCard("rope", addToDeck: true);
     }
 
     public void LoadMap1Scene()

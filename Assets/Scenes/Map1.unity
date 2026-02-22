@@ -3791,7 +3791,7 @@ PrefabInstance:
     - target: {fileID: 4488677606260920272, guid: 7152fa23552513943bf4bad94bc39740, type: 3}
       propertyPath: <MapEvent>k__BackingField
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 11400000, guid: 72574c59d7ff364458e4ef6798f76de4, type: 2}
     - target: {fileID: 4488677606260920272, guid: 7152fa23552513943bf4bad94bc39740, type: 3}
       propertyPath: <NeighborMarkers>k__BackingField.Array.size
       value: 3
@@ -6190,6 +6190,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4488677606260920272, guid: 7152fa23552513943bf4bad94bc39740, type: 3}
+      propertyPath: <MapEvent>k__BackingField
+      value: 
+      objectReference: {fileID: 11400000, guid: 82ffd5ce6bb2d3847a59921fb0747cf6, type: 2}
     - target: {fileID: 4488677606260920272, guid: 7152fa23552513943bf4bad94bc39740, type: 3}
       propertyPath: <NeighborMarkers>k__BackingField.Array.size
       value: 3
