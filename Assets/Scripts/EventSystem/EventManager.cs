@@ -189,9 +189,11 @@ public class EventManager : MonoSingleton<EventManager>
             bool targetTagMatch = false;
             bool uniqueTagMatch = false;
             matchingTagCounts[i] = 0;
+            if (CurrentStory.currentChoices[i].tags == null) continue;
 
             for (int j = 0; j < CurrentStory.currentChoices[i].tags.Count && bestMatchIndex == -1; j++)
             {
+
                 string choiceTag = CurrentStory.currentChoices[i].tags[j];
 
                 if (choiceTag.Contains('@'))

@@ -20,6 +20,24 @@ As you get even closer, you start to understand why this figure seems to struggl
 //TODO: ADD SELF OPTIONS, ADD AT LEAST THE 5 REWARD CARDS FROM CABIN
 
 === KOBOLDS_CARD_OPTIONS ===
+ + The apple crunches pleasantly as you bite into it. #card #@self #!apple
+  {
+    - g_player_health < g_player_max_health:
+    ~ g_player_health++
+  }
+  {
+    - kobolds_hostile:
+    The kobolds seem insulted that you think you have time to snack, and they take the opportunity to attack you!
+    The red kobold springs at you, its teeth sinking into {g_player_gender == "hat": your felted form! | your flesh!} Pain spreads through you as you tear the creature off of you.
+    ~ g_player_health--
+  }
+    -> KOBOLDS_CARD_OPTIONS
+ + This might not be the time to light yourself on fire, but when has that ever stopped you? #card #@self #!bonfire
+    The {kobolds_revealed: kobolds look | figure looks} shocked as you manifest a bonfire directly at your feet!
+    The pain is immense, and the smell of burnt flesh doesn't make the experience any more pleasant.
+        ~ g_player_health--
+    The {kobolds_revealed: kobolds share a brief look among each other, and bolt away, seemingly now terrified of you! | figure stumbles for a moment, before apparently deciding to take its own advice, as it starts walking away.}
+    -> KOBOLD_EVENT_EPILOGUE("kobolds_left")
  + Your generous offer of an apple seems to garner the respect of the {kobolds_revealed: kobolds! | figure!} #card #@kobolds #!apple
     -> HANDLE_APPLE_OUTCOME
  + You decide to roast {g_bonfire_marshmallows_seen: some marshmallows with the {kobolds_revealed: kobolds. | shady figure.} Better to have friends than enemies after all. | the {kobolds_revealed: kobolds. This has gone too far! | shady figure. No one calls you chip!}} #card #@kobolds #!bonfire

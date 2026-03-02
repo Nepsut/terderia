@@ -34,7 +34,7 @@ namespace CardSystem
             this.range = range;
             this.areaOfEffect = areaOfEffect;
             this.otherTags = otherTags ?? new();
-            sprite = Resources.Load<Sprite>($"CardSystem/Cards/{id}");
+            sprite = Resources.Load<Sprite>($"CardSystem/CardSprites/{id}");
             if (sprite == null) Debug.LogWarning($"Sprite for card {this.id} couldn't be found and wasn't set.");
         }
 
