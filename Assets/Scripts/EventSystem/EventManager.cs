@@ -379,18 +379,44 @@ public class EventManager : MonoSingleton<EventManager>
         }
         // voiceSource.Play();
 
+        bool skippingRichText = false;
+
         foreach (char c in originalText.ToCharArray())
         {
-            if (stopTyping) break;
-            alphaIndex++;
-            dialogueText.text = originalText;
-            displayedText = dialogueText.text.Insert(alphaIndex, alphaCode);
-            dialogueText.text = displayedText;
-            yield return realTypeTime;
+            if (stopTyping)
+            {
+                dialogueText.text = originalText;
+                stopTyping = false;
+                break;
+            }
+
+            if (c == '<')
+            {
+                skippingRichText = true;
+                alphaIndex++;
+                continue;
+            }
+            else if (c == '>')
+            {
+                skippingRichText = false;
+                alphaIndex++;
+                continue;
+            }
+            else if (skippingRichText)
+            {
+                alphaIndex++;
+                continue;
+            }
+            else
+            {
+                alphaIndex++;
+                dialogueText.text = originalText;
+                displayedText = dialogueText.text.Insert(alphaIndex, alphaCode);
+                dialogueText.text = displayedText;
+                yield return realTypeTime;
+            }
         }
 
-        if (stopTyping) dialogueText.text = originalText;
-        stopTyping = false;
         isTyping = false;
         disableInput = true;
         // voiceSource.Stop();

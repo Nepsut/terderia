@@ -2,6 +2,8 @@ INCLUDE global_vars.ink
 
 VAR kobolds_revealed = false
 VAR kobolds_hostile = false
+VAR considered_frying_bonk = false
+VAR considered_evil_bottle = false
 
 You're walking down a familiar path, enjoying the sounds of birds chirping and the trees rustling slightly in the wind. #narrator
 
@@ -20,6 +22,8 @@ As you get even closer, you start to understand why this figure seems to struggl
 //TODO: ADD SELF OPTIONS, ADD AT LEAST THE 5 REWARD CARDS FROM CABIN
 
 === KOBOLDS_CARD_OPTIONS ===
+
+/////// SELF OPTIONS START ///////
  + The apple crunches pleasantly as you bite into it. #card #@self #!apple
   {
     - g_player_health < g_player_max_health:
@@ -38,6 +42,146 @@ As you get even closer, you start to understand why this figure seems to struggl
         ~ g_player_health--
     The {kobolds_revealed: kobolds share a brief look among each other, and bolt away, seemingly now terrified of you! | figure stumbles for a moment, before apparently deciding to take its own advice, as it starts walking away.}
     -> KOBOLD_EVENT_EPILOGUE("kobolds_left")
+ + You decide to consult the smartest person you know, and you make some good points on how to handle this situation. #card #@self #!banter
+    The {kobolds_revealed: kobolds look | figure looks} at you as if you were insane, seemingly too stunned to react. #narrator
+    -> KOBOLDS_CARD_OPTIONS
+ + You ponder your lockpick for a moment. Good to have one of these, you think. #card #@self #!lockpick #refundcard:lockpick
+    ->KOBOLDS_CARD_OPTIONS
+ + You spin the dagger in your hand, skillfully twirling it around, and around again. Finally you flip it in the air and catch it. #card #@self #!dagger
+    The {kobolds_revealed: kobolds look | figure looks} flabbergasted. {kobolds_revealed: They | It} seemingly can't believe you just hit an emote on {kobolds_revealed: them. | it. } #narrator
+    -> KOBOLDS_CARD_OPTIONS
+ + You give the frying pan a spin. Cracking your head open right here would <i>for sure</i> alter the course of this {kobolds_revealed: group's | figure's} life. #card #@self #!frying-pan
+    But... perhaps it's better to not do that? #narrator
+    {
+        - considered_frying_bonk:
+        No. You've thought this through. Time to give in to the temptation. #narrator
+        \*CRACK* #narrator
+        ~ g_player_health--
+        Blood drips from your {g_player_gender == "hat": host body's} nose. {g_player_gender == "hat": Its | Your} head feels mushy now. Yess... #narrator
+        ~ considered_frying_bonk = false
+        The {kobolds_revealed: kobolds look | figure looks} horrified! #narrator
+        {
+            - kobolds_revealed:
+            "What the hell!? Why did you do that? Are you literally insane?" #speaker:Red Kobold
+            The kobolds frantically mutter between themselves, and seem to have decided something. #narrator
+            "You're crazy! We're not sticking around to find out <i>how</i> crazy! Bye, freak!" #speaker:Red Kobold
+            - else:
+            "What the hell, chip! Are you literally insane!?" #speaker:Shady Figure
+            The figure shifts strangely, then starts rapidly walking off. #narrator
+            You hear the figure's final words to you as it's making its exit: "let's never meet again." #narrator
+        }
+        All according to your plan. Heh. #narrator
+        -> KOBOLD_EVENT_EPILOGUE("kobolds_left")
+        - else:
+        Right. Not this time. Not yet, anyway. #narrator #refundcard:frying-pan
+        ~ considered_frying_bonk = true
+        -> KOBOLDS_CARD_OPTIONS
+    }
+ + You grasp your trusty staff with your dominant hand. It feels reassuring to hold. #card #@self #!staff
+    Can't really do much with it right now, though. #narrator #refundcard:staff
+    -> KOBOLDS_CARD_OPTIONS
+ + You quickly take a swig of the potion. #card #@self #!glass-bottle
+    {
+        - g_player_health >= g_player_max_health:
+        You were already at full health though. At least the potion tastes somewhat sweet. #narrator
+        - g_player_health < g_player_max_health - 1:
+        The healing properties quickly kick in, and you regain some health.
+        ~ g_player_health += 2
+        - else:
+        The healing properties quickly kick in, and you regain some health.
+        ~ g_player_health++
+    }
+    You acted so fast that the {kobolds_hostile: kobolds couldn't react in time to attack you! | figure couldn't really react, and it just looks slightly confused.} #narrator
+    -> KOBOLDS_CARD_OPTIONS
+ + Punching yourself would be a bit strange, even for you. #card #@self #!punch #refundcard:punch
+    -> KOBOLDS_CARD_OPTIONS
+ + "I'm such a failure, I don't even have a proper spellbook anymore. What kind of wizard even am I? Curse my stupid flumph life..." #card #@self #!insult #speaker:You
+    {
+        - kobolds_revealed:
+        The kobolds look at you with disdain and pity. You seem to have lost any respect they may have had of you. #narrator
+        "Um. We're just... gonna go. Good luck with all that?" #speaker:Red Kobold
+        "Go then, everyone just leaves me anyway..." #speaker:You
+        The kobolds are already walking away, not looking back. Victory. Of sorts, anyway. #narrator
+        - kobolds_hostile:
+        The kobolds look at you with disdain and pity. You seem to have lost any respect they may have had of you. #narrator
+        "Great, now fighting would be stupid awkward! Stupid loser wizard!" #speaker:Red Kobold
+        "C'mon, let's just go." #speaker:Red Kobold
+        "Go then, everyone just leaves me anyway..." #speaker:You
+        The kobolds are already walking away, not looking back. Victory. Of sorts, anyway. #narrator
+        - else:
+        The figure shifts strangely, its stoic expression failing, and turning to one of disdain. #narrator
+        "Right. I'm very busy so I'll just go. Good luck with all that." #speaker:Shady Figure
+        "Go then, everyone just leaves me anyway..." #speaker:You
+        The figure is already walking away, not looking back. Victory. Of sorts, anyway. #narrator
+    }
+    -> KOBOLD_EVENT_EPILOGUE("kobolds_left")
+ + Try as you might, giving yourself a static shock proves to be impossible. Damn it. #card #@self #!static-shock
+    -> KOBOLDS_CARD_OPTIONS
+ + For a moment you consider tying yourself up but... Maybe this isn't the time. Or the place, frankly. #card #@self #!rope #refundcard:rope
+    -> KOBOLDS_CARD_OPTIONS
+ + You drop a smokescreen at your feet, and bolt away! You're not dealing with this {kobolds_revealed: anymore! | for even a second!} #card #@self #!smokescreen
+    -> KOBOLD_EVENT_EPILOGUE("player_left")
+ + You consider the evil potion for a moment. Surely you shouldn't drink it? #card #@self #!evil-bottle
+    {
+        - considered_evil_bottle:
+        No. You're doing this. #narrator
+        You take a big swig from the bottle, and almost retch immediately. You only manage to finish it thanks to using all of your willpower. #narrator
+        You feel a burn spreading through your body as the foul liquid makes its way down. This can't be good for you. #narrator
+        ~ g_player_health--
+        And it isn't. You keel over, trying to make yourself smaller to somehow minimize the pain in your chest and stomach. It doesn't do much. #narrator
+        ~ considered_evil_bottle = false
+        {
+            - kobolds_hostile:
+            A pang of empathy seems to hit the previously hostile kobolds as they share a worried look between each other. #narrator #setsprite:kobolds1>kobolds1_revealed
+            "Uh, you don't look so good. Maybe let's finish this fight another time." #speaker:Red Kobold
+            You try to reply, but speaking feels impossible. You give a quick, pained nod, and the kobolds start making their exit. #narrator
+            This was not a good idea. #narrator
+            You whimper on the ground for several hours, but eventually the worst of the pain passes, and you feel like you could move on. #narrator
+            -> KOBOLD_EVENT_EPILOGUE("kobolds_left")
+            - kobolds_revealed:
+            The kobolds share a worried look between each other, before moving slightly closer. #narrator
+            "Uh, you good? No, right?" #speaker:Red Kobold
+            You barely manage a "nuh uh". #narrator
+            "You want us to go? We should probably go right?" #speaker:Red Kobold
+            A weak "mh" is all you manage. You'd rather suffer in private. #narrator
+            "Right, well. We'll go then. Good meeting you, {g_player_gender == "hat": wizard-hat | wizard} #narrator
+            The kobolds quickly make their exit.
+            You whimper on the ground for several hours, but eventually the worst of the pain passes, and you feel like you could move on. #narrator
+            -> KOBOLD_EVENT_EPILOGUE("kobolds_left")
+            - else:
+            The figure shifts strangely. #narrator
+            "You good, chip?" #speaker:Shady Figure
+            Speaking seems like it'd hurt a lot, so you just shake your head. #narrator
+            "Thought so. I'll just keep walking, chip. Good luck with recovering from that." #speaker:Shady Figure
+            The figure does as it says, and makes its exit.
+            You whimper on the ground for several hours, but eventually the worst of the pain passes, and you feel like you could move on. #narrator
+            -> KOBOLD_EVENT_EPILOGUE("kobolds_left")
+        }
+        - else:
+        Yeah maybe not. You brewed this yourself, and you know that it'd cause significant damage to your esophagus and stomach if ingested. #narrator
+        ~ considered_evil_bottle = true
+        -> KOBOLDS_CARD_OPTIONS
+    }
+ + You take out the can of soup and crack it open. Time for a little meal! #card #@self #!can-of-beans
+  {
+    - g_player_health < g_player_max_health:
+    ~ g_player_health++
+  }
+  {
+    - kobolds_hostile:
+    The kobolds seem insulted that you think you have time to have dinner, and they take the opportunity to attack you!
+    The red kobold springs at you, its teeth sinking into {g_player_gender == "hat": your felted form! | your flesh!} Pain spreads through you as you tear the creature off of you.
+    ~ g_player_health--
+    - else:
+    The {kobolds_revealed: kobolds look | figure looks} a bit confused, but {kobolds_revealed:they let|it lets} you finish eating.
+  }
+    -> KOBOLDS_CARD_OPTIONS
+ + You give the snowball a few tosses in your hand, but you can't really figure out what to do with it like this. So you give it a chomp. #card #@self #!snowball
+    Cold. Doesn't taste like much. Eh. #narrator
+    The {kobolds_revealed: kobolds look slightly jealous, but they quickly hide their feelings. | figure looks on as you chomp the snowball. You wonder what its thinking.}
+    -> KOBOLDS_CARD_OPTIONS
+/////// SELF OPTIONS END ///////
+    
  + Your generous offer of an apple seems to garner the respect of the {kobolds_revealed: kobolds! | figure!} #card #@kobolds #!apple
     -> HANDLE_APPLE_OUTCOME
  + You decide to roast {g_bonfire_marshmallows_seen: some marshmallows with the {kobolds_revealed: kobolds. | shady figure.} Better to have friends than enemies after all. | the {kobolds_revealed: kobolds. This has gone too far! | shady figure. No one calls you chip!}} #card #@kobolds #!bonfire
@@ -51,10 +195,16 @@ As you get even closer, you start to understand why this figure seems to struggl
     -> HANDLE_DAGGER_OUTCOME
  + You firmly grip the frying pan and swing straight at {kobolds_revealed: the kobold stack! | shady figure!} #card #@kobolds #!frying-pan
     -> HANDLE_BONK_OUTCOME
- + You grip the staff with both hands, and swing straight at {kobolds_revealed: the kobold stack! | shady figure!} #card #@kobolds #!staff
+ + You grip the staff with both hands, and swing straight at the {kobolds_revealed: kobold stack! | shady figure!} #card #@kobolds #!staff
     -> HANDLE_BONK_OUTCOME
  + You offer a healing potion to the {kobolds_revealed: kobolds, hoping to demonstrate that you mean no harm. | shady figure. Perhaps that'll gain you some respect.}! #card #@kobolds #!glass-bottle #type:utility #other:healing
     -> HANDLE_POTION_OUTCOME
+ + You form a fist with your hand, and swing at the {kobolds_revealed: kobold stack! | shady figure!} #card #@kobolds #!punch
+    -> HANDLE_BONK_OUTCOME
+ + "{kobolds_revealed: Are you three stacked because you're insecure about your height? Because you're all <i>really</i> short." | Your sunglasses don't fit you and the coat makes you look like a total creep!"} #card #@kobolds #!insult #speaker:You
+    -> HANDLE_INSULT_OUTCOME
+ + You rub your hands together, tiny sparks forming as you do. #card #@kobolds #!static-shock
+ //TODO
  
 -> DONE
 
@@ -284,6 +434,28 @@ Your strike connects with the head of {kobolds_revealed: the top kobold, | shady
     The three kobolds hop off of each other, before continuing on their way. Seems they forgot their coat. #narrator
 }
 -> KOBOLD_EVENT_EPILOGUE("kobolds_left")
+
+=== HANDLE_INSULT_OUTCOME ===
+{
+    - kobolds_hostile:
+    "We're not short!" #speaker:The Kobold Stack
+    "<i>So</i> insecure. #speaker:You
+    "That's it, now you're gonna get it!" #speaker:Red Kobold1>kobolds1_attackmode
+    The red kobold springs at you, its teeth digging right into {g_player_gender == "hat": your felted edge! | shoulder!} #narrator
+    ~ g_player_health--
+    You manage to tear the creature off of you, but the pain stays. Time to fight back! #narrator
+    - kobolds_revealed:
+    "We're not short!" #speaker:The Kobold Stack
+    "<i>So</i> insecure. #speaker:You
+    "That's it, now you're gonna get it!" #speaker:Red Kobold #setsprite:kobolds1>kobolds1_attackmode
+    The kobolds look pretty pissed off now. It seems your insult has gotten you into a fight! #narrator
+    - else:
+    The figure flings its coat off, revealing a stack of very pissed off kobolds! #narrator #setsprite:kobolds1>kobolds1_attackmode
+    "We're not creeps! And the sunglasses are cool!" #speaker:A Stack of Kobolds
+    "Cope more." #speaker:You
+    The stack starts growling at you. Seems you've gotten yourself into a fight! #narrator
+}
+    -> KOBOLDS_CARD_OPTIONS
 
 === KOBOLD_EVENT_EPILOGUE(exit_method) ===
 {
