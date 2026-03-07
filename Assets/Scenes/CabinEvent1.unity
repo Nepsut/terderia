@@ -300,6 +300,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIController
   inputReader: {fileID: 11400000, guid: 6ebaf048bebd1bc4f9a363fede6742af, type: 2}
+  cardRewardBackground: {fileID: 0}
+  cardRewardGroup: {fileID: 0}
+  cardRewardPanel: {fileID: 0}
+  cardRewardHolder: {fileID: 0}
+  cardRewardPanelFitter: {fileID: 0}
+  cardRewardHeader: {fileID: 0}
+  cardRewardMessage: {fileID: 0}
+  rewardCards: []
+  cardAnimParent: {fileID: 0}
+  cardDeckRect: {fileID: 0}
+  continueFromRewardsButton: {fileID: 0}
 --- !u!4 &364468967
 Transform:
   m_ObjectHideFlags: 0
@@ -759,6 +770,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EventCaller
   eventAsset: {fileID: 4900000, guid: 264a4c42fa43e0947aaf25267ef070f7, type: 3}
+  targetsToActivateOnStart:
+  - cabindoor1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

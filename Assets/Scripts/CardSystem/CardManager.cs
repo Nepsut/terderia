@@ -45,6 +45,7 @@ namespace CardSystem
 
         public const int MaxCardsInHand = 5;
         public const int MaxCardsInDeck = 20;
+        public static bool IsDeckFull => ActiveDeck.Count >= MaxCardsInDeck;
         private static List<CardData> _playerHand;
         public static List<CardData> PlayerHand
         {
@@ -70,6 +71,11 @@ namespace CardSystem
             "bonfire",
             "banter",
             "lockpick"
+        };
+        public static Dictionary<string, SubclassSpecificRewards> SubclassRewardDictionary { get; private set; } = new()
+        {
+            //                      in order: trickster, elemental, chef, alchemist
+            {"cabinSubclassReward", new("smokescreen", "snowball", "can-of-beans", "evil-bottle")}
         };
         //Cabin unlocks: static-shock, punch, insult, rope. ALSO based on class: snowball, smokescreen, can-of-beans, evil-bottle
 
@@ -109,7 +115,7 @@ namespace CardSystem
                 return;
             }
             UnlockedCards.Add(cardId);
-            if (addToDeck) ActiveDeck.Add(cardId);
+            if (addToDeck && !IsDeckFull) ActiveDeck.Add(cardId);
         }
 
         public static void InitializePlayerHand()
@@ -125,6 +131,11 @@ namespace CardSystem
             System.Random rnd = new();
             List<string> newHandIds = ActiveDeck.OrderBy(x => rnd.Next()).Take(MaxCardsInHand).ToList();
             newHandIds.ForEach(id => PlayerHand.Add(Cards[id]));
+        }
+
+        public static bool IsCardUnlocked(string cardId)
+        {
+            return UnlockedCards.Contains(cardId);
         }
 
         public static bool TryAddCardToHand(string cardId)
@@ -208,5 +219,22 @@ namespace CardSystem
 
             return Cards[cardId].sprite;
         }
+    }
+}
+
+public class SubclassSpecificRewards
+{
+    public readonly string TricksterReward;
+    public readonly string ElementalistReward;
+    public readonly string ChefReward;
+    public readonly string AlchemistReward;
+
+    public SubclassSpecificRewards(string tricksterReward, string elementalistReward,
+                                   string chefReward, string alchemistReward)
+    {
+        TricksterReward = tricksterReward;
+        ElementalistReward = elementalistReward;
+        ChefReward = chefReward;
+        AlchemistReward = alchemistReward;
     }
 }

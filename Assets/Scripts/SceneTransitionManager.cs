@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,6 +11,9 @@ public class SceneTransitionManager : MonoSingleton<SceneTransitionManager>
     [SerializeField] private InputReader inputReader;
     private bool loadScreenOpen = false;
     private const float loadFadeTime = 0.32f;
+    private const float loadDelayAmount = 0.5f;
+    private WaitForSeconds loadDelayWait;
+    private bool loadDelayActive = false;
 
     //Events
     public static event Action<Scene> OnSceneTransitionStart;
@@ -20,6 +24,7 @@ public class SceneTransitionManager : MonoSingleton<SceneTransitionManager>
     private void Start()
     {
         DontDestroyOnLoad(gameObject);
+        loadDelayWait = new(loadDelayAmount);
         OnSceneTransitionStart += SceneLoader;
     }
 
@@ -73,6 +78,20 @@ public class SceneTransitionManager : MonoSingleton<SceneTransitionManager>
         continuePrompt.SetActive(false);
         loadingScreen.gameObject.SetActive(true);
         OnSceneTransitionStart?.Invoke(newScene);
+    }
+
+    public void StartTransitionAfterDelay(Scene newScene)
+    {
+        if (!loadDelayActive && !loadScreenOpen)
+            StartCoroutine(TransitionStartWaiter(newScene));
+    }
+
+    private IEnumerator TransitionStartWaiter(Scene newScene)
+    {
+        loadDelayActive = true;
+        yield return loadDelayWait;
+        StartTransition(newScene);
+        loadDelayActive = false;
     }
 
     public enum Scene
