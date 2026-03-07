@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d331c92ae7679c946afafa8cd097a715, type: 3}
-  m_Name: LoadCabin1Scene
+  m_Name: LoadKobold1Scene
   m_EditorClassIdentifier: Assembly-CSharp::SceneLoadObject
-  <SceneToLoad>k__BackingField: 2
+  <SceneToLoad>k__BackingField: 3

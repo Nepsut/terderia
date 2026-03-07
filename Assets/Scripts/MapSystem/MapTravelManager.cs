@@ -1,4 +1,3 @@
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Splines;
 
@@ -56,15 +55,12 @@ public class MapTravelManager : MonoBehaviour
     {
         if (!TravelEnabled || PlayerMoving || UIController.IsMenuOpen) return;
 
-        Debug.Log("Checking if travel should start");
         RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(MousePos), Vector2.zero);
 
         foreach (RaycastHit2D hit in hits)
         {
-            Debug.Log("Processing hit");
             if (hit.collider.TryGetComponent(out MapMarker hitMarker))
             {
-                Debug.Log("Starting travel");
                 HandleTravelStart(hitMarker);
                 break;
             }
@@ -95,17 +91,17 @@ public class MapTravelManager : MonoBehaviour
                 Debug.Log("Could not find path from current marker to clicked marker");
             return;
         }
+        if (GameManager.Instance.DebugModeOn) Debug.Log("Starting travel");
         travelingToMarker = destinationMarker;
         playerSplineAnimate.Container = activeSpline;
         playerSplineAnimate.Completed += HandleTravelDone;
         playerSplineAnimate.Restart(true);
-        // playerSplineAnimate.Play();
         PlayerMoving = true;
     }
 
     private void HandleTravelDone()
     {
-        Debug.Log("Travel done");
+        if (GameManager.Instance.DebugModeOn) Debug.Log("Travel done");
         PlayerMoving = false;
         currentMarker = travelingToMarker;
         travelingToMarker = null;

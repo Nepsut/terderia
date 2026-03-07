@@ -83,6 +83,8 @@ public class SceneTransitionManager : MonoSingleton<SceneTransitionManager>
         Map1,
 
         //map 1 events below this point
-        CabinEvent1
+        CabinEvent1,
+        KoboldsEvent1,
+        FanaticFrogEvent1
     }
 }
