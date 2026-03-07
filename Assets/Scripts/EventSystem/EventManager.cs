@@ -8,7 +8,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
-[RequireComponent(typeof(EventFunctions))]
+[RequireComponent(typeof(EventFunctionCaller))]
 public class EventManager : MonoSingleton<EventManager>
 {
     private const string eventAssetPath = "EventSystem/EventSprites";
@@ -23,7 +23,7 @@ public class EventManager : MonoSingleton<EventManager>
     private List<string> functionsToCall = new();
     private string cardToRefund = "";
     public EventVariables EventVariables { get; private set; }
-    private EventFunctions eventFunctions;
+    private EventFunctionCaller eventFunctionCaller;
     // [SerializeField] private AudioClip fallbackVoice;
     [SerializeField] private CardHolder cardHolder;
     [SerializeField] private GameObject dialoguePanel;
@@ -31,6 +31,10 @@ public class EventManager : MonoSingleton<EventManager>
     [SerializeField] private GameObject speakerPanel;
     [SerializeField] private TextMeshProUGUI dialogueSpeaker;
     [SerializeField] private GameObject selfTargetObject;
+    private SpriteRenderer selfTargetSprite;
+    private Collider2D selfTargetCollider;
+    private Color selfTargetColorClear;
+    private const float selfTargetFadeTime = 0.32f;
     [SerializeField] private Transform eventTargetGroupHolder;
     [SerializeField] private float typeSpeed = 20f;
 
@@ -61,7 +65,11 @@ public class EventManager : MonoSingleton<EventManager>
         inkVariablesStory = new Story(globalInkVariables.text);
         EventVariables = new(inkVariablesStory);
 
-        eventFunctions = GetComponent<EventFunctions>();
+        eventFunctionCaller = GetComponent<EventFunctionCaller>();
+        selfTargetSprite = selfTargetObject.GetComponent<SpriteRenderer>();
+        selfTargetCollider = selfTargetObject.GetComponent<Collider2D>();
+        selfTargetColorClear = selfTargetSprite.color;
+        selfTargetColorClear.a = 0f;
 
         //fetch event sprite assets
         Sprite[] tempEventSprites = Resources.LoadAll<Sprite>(eventAssetPath);
@@ -105,7 +113,7 @@ public class EventManager : MonoSingleton<EventManager>
     //dialogue printer
     private void ContinueStory()
     {
-        if (pendingCardUse || !IsEventActive) return;
+        if (pendingCardUse || !IsEventActive || UIController.PauseEventProgression) return;
 
         if (choiceWasMade && CurrentStory.canContinue)
         {
@@ -114,7 +122,9 @@ public class EventManager : MonoSingleton<EventManager>
             {
                 pendingCardUse = true;
                 selfTargetObject.SetActive(true);
-                selfTargetObject.GetComponent<Collider2D>().enabled = true;
+                selfTargetSprite.color = selfTargetColorClear;
+                LeanTween.alpha(selfTargetObject, 1f, selfTargetFadeTime).setEaseInQuart();
+                selfTargetCollider.enabled = true;
                 cardHolder.ActivateHolder();
             }
             else StartCoroutine(TypeDialogue());
@@ -167,7 +177,7 @@ public class EventManager : MonoSingleton<EventManager>
                 child.GetComponent<Collider2D>().enabled = false;
             }
         });
-        selfTargetObject.GetComponent<Collider2D>().enabled = false;
+        selfTargetCollider.enabled = false;
         ContinueStory();
     }
 
@@ -426,14 +436,18 @@ public class EventManager : MonoSingleton<EventManager>
         if (CurrentStory.currentChoices.Count != 0)
         {
             selfTargetObject.SetActive(true);
-            selfTargetObject.GetComponent<Collider2D>().enabled = true;
+            selfTargetSprite.color = selfTargetColorClear;
+            LeanTween.alpha(selfTargetObject, 1f, selfTargetFadeTime).setEaseInQuart();
+            selfTargetCollider.enabled = true;
             cardHolder.ActivateHolder();
             pendingCardUse = true;
         }
         else
         {
             if (cardHolder.IsActive) cardHolder.DeactivateHolder();
-            selfTargetObject.SetActive(false);
+            LeanTween.alpha(selfTargetObject, 0f, selfTargetFadeTime)
+                .setEaseOutQuart()
+                .setOnComplete(() => selfTargetObject.SetActive(false));
         }
     }
 
@@ -477,7 +491,7 @@ public class EventManager : MonoSingleton<EventManager>
             {
                 activeEventTargets ??= new();
                 string targetGroupName = tag.Replace("targets:", null);
-                GameObject eventTarget = eventTargetGroupHolder.Find(targetGroupName).gameObject;
+                GameObject eventTarget = EventCardTargetManager.EventCardTargets[targetGroupName];
                 activeEventTargets.Add(eventTarget);
                 if (GameManager.Instance.DebugModeOn) Debug.Log($"Found targets tag: \"{targetGroupName}\"");
             }
@@ -496,7 +510,6 @@ public class EventManager : MonoSingleton<EventManager>
                     $"File {activeStoryName} line {CurrentStory.currentText} tries to give multiple cards!");
                     Debug.LogWarning(warning);
                 }
-
             }
             else if (tag.Contains("setsprite:"))
             {
@@ -538,9 +551,49 @@ public class EventManager : MonoSingleton<EventManager>
     {
         if (functionsToCall == null || functionsToCall.Count == 0) return;
 
-        //Invoke is relatively safe and doesn't produce errors even if func is misspelled
-        //So miraculously there's no need for error handling
-        functionsToCall.ForEach(func => eventFunctions.Invoke(func, 0f));
+        foreach (string func in functionsToCall)
+        {
+            string funcToCall;
+            List<object> funcParams = null;
+            int paramStartIndex = func.IndexOf('(');
+
+            if (paramStartIndex == -1)
+            {
+                funcToCall = func;
+            }
+            else
+            {
+                funcToCall = func[..paramStartIndex];
+                paramStartIndex++;
+                string paramString = func[paramStartIndex..^1];
+                string[] paramsToParse = paramString.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                funcParams = new();
+                foreach(string arg in paramsToParse)
+                {
+                    if (bool.TryParse(arg.Trim(), out bool parsedBool)) {
+                        funcParams.Add(parsedBool);
+                    } else if (int.TryParse(arg.Trim(), out int parsedInt)) {
+                        funcParams.Add(parsedInt);
+                    } else if (float.TryParse(arg.Trim(), out float parsedFloat)) {
+                        funcParams.Add(parsedFloat);
+                    } else if (char.TryParse(arg.Trim(), out char parsedChar)) {
+                        funcParams.Add(parsedChar);
+                    } else {
+                        funcParams.Add(arg.Replace("\"", null).Trim());
+                    }
+                }
+            }
+
+            if (!eventFunctionCaller.TryCallEventFunction(funcToCall, funcParams.ToArray()))
+            {
+                if (GameManager.Instance.DebugModeOn)
+                {
+                    string error = string.Concat($"Error while trying to call function \"{funcToCall}\" ",
+                    $"in event \"{activeStoryName}\" on line \"{CurrentStory.currentText}\"");
+                    Debug.LogError(error);
+                }
+            }
+        }
     }
 
     public object GetVariableState(string _variableName)

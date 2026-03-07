@@ -1,58 +1,104 @@
-using System.Collections;
+using System;
+using System.Collections.Generic;
 using CardSystem;
 using UnityEngine;
 
+//Command pattern solution for calling methods with parameters from ink files
+//This is the base class for all event functions
 
-/// <summary>
-/// ALL FUNCTIONS IN THIS CLASS MUST BE NAMED EXACTLY THE SAME AS THE INK TAG
-/// THAT IS USED TO CALL THEM, OTHERWISE EVERYTHING BREAKS AND I EXPLODE.
-/// </summary>
-public class EventFunctions : MonoBehaviour
+public abstract class EventFunction
 {
-    private EventVariables eventVariables => EventManager.Instance.EventVariables;
-    private EventManager eventManager => EventManager.Instance;
+    public abstract bool TryExecute(object[] args = null);
+}
 
-    //Misc setting variables
-    private const float eventEndTimeSeconds = 2f;
-
-    public void TestFunction()
+//UnlockCards expects all parameters to be strings
+public class RewardCards : EventFunction
+{
+    /// <summary>
+    /// Offers player a menu to choose some cards to unlock.
+    /// First arg should be an int that specifies how many cards the player can choose.
+    /// </summary>
+    /// <param name="args">UnlockCard expects first arg to be int and the rest to be strings</param>
+    public override bool TryExecute(object[] args = null)
     {
-        Debug.Log("Test function was called!");
-        Debug.Log($"State of test variable: {eventManager.GetVariableState("g_test_seen")}");
-    }
-
-    //TEMPORARY, REMOVE LATER
-    public void UnlockCabinCards()
-    {
-        CardManager.UnlockCard("punch", addToDeck: true);
-        CardManager.UnlockCard("insult", addToDeck: true);
-        CardManager.UnlockCard("static-shock", addToDeck: true);
-        CardManager.UnlockCard("rope", addToDeck: true);
-        switch (GameManager.Instance.playerData.subclass)
+        //If we didn't get enough args to figure out how many cards can be chosen
+        //and at least one card string, return without doing anything
+        if (args == null || args.Length < 2 || args[0] is not int)
         {
-            case PlayerData.Subclass.alchemist:
-                CardManager.UnlockCard("evil-bottle", addToDeck: true);
-                break;
-            case PlayerData.Subclass.trickster:
-                CardManager.UnlockCard("smokescreen", addToDeck: true);
-                break;
-            case PlayerData.Subclass.chef:
-                CardManager.UnlockCard("can-of-beans", addToDeck: true);
-                break;
-            case PlayerData.Subclass.elementalist:
-                CardManager.UnlockCard("snowball", addToDeck: true);
-                break;
+            Debug.LogError($"RewardCards call did not have sufficient args!");
+            return false;
         }
-    }
+        
+        int cardPickAmount = (int)args[0];
+        Array cardIdArray = Array.CreateInstance(typeof(string), args.Length - 1);
+        Array.Copy(args[1..], cardIdArray, args.Length - 1);
+        List<string> cardRewardIds = new();
 
-    public void LoadMap1Scene()
-    {
-        StartCoroutine(MapLoadDelayHandler(SceneTransitionManager.Scene.Map1));
-    }
+        foreach (string id in cardIdArray)
+        {
+            if (id[0] == '/')
+            {
+                if (!CardManager.SubclassRewardDictionary.ContainsKey(id[1..]))
+                {
+                    string error = string.Concat("Error while trying to add subclass-specific card rewards! ",
+                    $"Tried to use non-existent key {id[1..]}");
+                    Debug.LogError(error);
+                    continue;
 
-    private IEnumerator MapLoadDelayHandler(SceneTransitionManager.Scene sceneToLoad)
+                }
+
+                SubclassSpecificRewards subclassReward = CardManager.SubclassRewardDictionary[id[1..]];
+
+                switch (GameManager.Instance.playerData.subclass)
+                {
+                    case PlayerData.Subclass.trickster:
+                        cardRewardIds.Add(subclassReward.TricksterReward);
+                        break;
+                    case PlayerData.Subclass.elementalist:
+                        cardRewardIds.Add(subclassReward.ElementalistReward);
+                        break;
+                    case PlayerData.Subclass.chef:
+                        cardRewardIds.Add(subclassReward.ChefReward);
+                        break;
+                    case PlayerData.Subclass.alchemist:
+                        cardRewardIds.Add(subclassReward.AlchemistReward);
+                        break;
+                }
+            }
+            else cardRewardIds.Add(id);
+        }
+
+        if (GameManager.Instance.DebugModeOn)
+        {
+            foreach (string cardId in cardIdArray)
+            {
+                Debug.Log($"Choosable card id found {cardId}");
+            }
+            Debug.Log($"Choosable cards amount {cardPickAmount}");
+            Debug.Log($"RewardCards function was called during event");
+        }
+
+        UIController.Instance.HandleCardRewards(cardPickAmount, cardRewardIds.ToArray());
+
+        return true;
+    }
+}
+
+public class LoadScene : EventFunction
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="args">LoadScene expects one string that can be parsed to enum</param>
+    /// <returns></returns>
+    public override bool TryExecute(object[] args = null)
     {
-        yield return new WaitForSeconds(eventEndTimeSeconds);
-        SceneTransitionManager.Instance.StartTransition(sceneToLoad);
+        if (!Enum.TryParse<SceneTransitionManager.Scene>(args[0].ToString(), ignoreCase: true, out var scene))
+        {
+            Debug.LogError($"Could not parse LoadScene param to valid scene!");
+            return false;
+        }
+        SceneTransitionManager.Instance.StartTransitionAfterDelay(scene);
+        return true;
     }
 }

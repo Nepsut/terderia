@@ -10,7 +10,7 @@ VAR considered_frying_bonk = false
 You wake in a familiar cabin. Right back where you started. #narrator
 
 //TESTING LINE, REMOVE LATER
-//    -> CABIN_CARD_OPTIONS
+    -> CABIN_CARD_OPTIONS
 
 A nauseating cackle echoes in your head, sending shudders down your spine. Its mocking presence lingers in your mind. #narrator
 
@@ -156,18 +156,20 @@ After looking around for {perhaps a bit too long, | a short while,} you decide t
  {
     - !g_first_cabin_seen:
     As you give the cabin a hasty final once-over, you notice some cards on the table. #narrator
-    You have no idea how you missed these before, and you quickly pocket them. #narrator #function:UnlockCabinCards
+    You have no idea how you missed these before, and you quickly pocket them. #narrator #function:RewardCards(5, punch, insult, static-shock, rope, /cabinSubclassReward)
     You give the cabin another glance in hopes of finding something else you may have missed, but nothing turns up. #narrator
     - else:
     You quickly scour through the cabin again, hoping to find some cards again, but nothing turns up. #narrator
  }
  { exit_method:
     - "hole":
-    You hop out of the cabin through the hole in the door, {g_player_gender == "hat": making sure to have your host body hold on to you on the way. | taking in the fresh air as you go.}. #narrator #function:LoadMap1Scene
+    You hop out of the cabin through the hole in the door, {g_player_gender == "hat": making sure to have your host body hold on to you on the way. | taking in the fresh air as you go.}. #narrator
     - "unlock":
-    You step out of the cabin, taking in the beautiful nature view around you. Adventure awaits! #narrator #function:LoadMap1Scene
+    You step out of the cabin, taking in the beautiful nature view around you. Adventure awaits! #narrator
     - else:
-    You exit the cabin, bracing yourself for the coming adventure. #narrator #function:LoadMap1Scene
+    You exit the cabin, bracing yourself for the coming adventure. #narrator
  }
+ 
+ #function:LoadScene(Map1)
  
  -> DONE

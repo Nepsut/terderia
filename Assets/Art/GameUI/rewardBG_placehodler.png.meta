@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: cc44d56215eb00042a25ce28a4855d82
+guid: c8f06abf200ff65448b830e35988ca0d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3635082338257950804
-    second: gameMenuUI_cardbase_gray_0
+      213: -4870385320210219143
+    second: rewardBG_placehodler_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -52,7 +52,7 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
-  spriteBorder: {x: 52, y: 51, z: 52, w: 48}
+  spriteBorder: {x: 107, y: 92, z: 108, w: 92}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: gameMenuUI_cardbase_gray_0
+      name: rewardBG_placehodler_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 251
-        height: 350
+        width: 1268
+        height: 844
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ca7a6d27fd79d8dc0800000000000000
-      internalID: -3635082338257950804
+      spriteID: 97fb79d0b5ae86cb0800000000000000
+      internalID: -4870385320210219143
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      gameMenuUI_cardbase_gray_0: -3635082338257950804
+      rewardBG_placehodler_0: -4870385320210219143
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

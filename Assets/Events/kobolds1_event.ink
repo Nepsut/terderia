@@ -158,7 +158,7 @@ As you get even closer, you start to understand why this figure seems to struggl
             -> KOBOLD_EVENT_EPILOGUE("kobolds_left")
         }
         - else:
-        Yeah maybe not. You brewed this yourself, and you know that it'd cause significant damage to your esophagus and stomach if ingested. #narrator
+        Yeah maybe not. You brewed this yourself, and you know that it'd cause significant damage to your esophagus and stomach if ingested. #narrator #refundcard:evil-bottle
         ~ considered_evil_bottle = true
         -> KOBOLDS_CARD_OPTIONS
     }
@@ -191,7 +191,7 @@ As you get even closer, you start to understand why this figure seems to struggl
     -> HANDLE_BANTER_OUTCOME
  + You hand a lockpick to the {kobolds_revealed: kobolds. | figure.} #card #@kobolds #!lockpick
     -> HANDLE_LOCKPICK_OUTCOME
- + You whip out your dagger. {kobolds_hostile: Time to finish this. | {kobolds_revealed: You've had enough of these three. | No one calls you chip! }} #card #@kobolds #!dagger
+ + You whip out your dagger. {kobolds_hostile: Time to finish this. | {kobolds_revealed: You've had enough of these three. | No one calls you chip!}} #card #@kobolds #!dagger
     -> HANDLE_DAGGER_OUTCOME
  + You firmly grip the frying pan and swing straight at {kobolds_revealed: the kobold stack! | shady figure!} #card #@kobolds #!frying-pan
     -> HANDLE_BONK_OUTCOME
@@ -201,10 +201,11 @@ As you get even closer, you start to understand why this figure seems to struggl
     -> HANDLE_POTION_OUTCOME
  + You form a fist with your hand, and swing at the {kobolds_revealed: kobold stack! | shady figure!} #card #@kobolds #!punch
     -> HANDLE_BONK_OUTCOME
- + "{kobolds_revealed: Are you three stacked because you're insecure about your height? Because you're all <i>really</i> short." | Your sunglasses don't fit you and the coat makes you look like a total creep!"} #card #@kobolds #!insult #speaker:You
+ + "{kobolds_revealed: Are you three stacked because you're insecure about your height? Because you're all <i>really</i> short." |Your sunglasses don't fit you and the coat makes you look like a total creep!"} #card #@kobolds #!insult #speaker:You
     -> HANDLE_INSULT_OUTCOME
  + You rub your hands together, tiny sparks forming as you do. #card #@kobolds #!static-shock
- //TODO
+    You spring for the {kobolds_revealed: stack, | figure,} managing to land a shock directly on {kobolds_revealed: the red one's snout! | figure's face!} #narrator
+    -> HANDLE_SHOCK_OUTCOME
  
 -> DONE
 
@@ -443,19 +444,57 @@ Your strike connects with the head of {kobolds_revealed: the top kobold, | shady
     "That's it, now you're gonna get it!" #speaker:Red Kobold1>kobolds1_attackmode
     The red kobold springs at you, its teeth digging right into {g_player_gender == "hat": your felted edge! | shoulder!} #narrator
     ~ g_player_health--
-    You manage to tear the creature off of you, but the pain stays. Time to fight back! #narrator
+    You manage to tear the creature off of you, but the pain remains. Time to fight back! #narrator
     - kobolds_revealed:
     "We're not short!" #speaker:The Kobold Stack
     "<i>So</i> insecure. #speaker:You
     "That's it, now you're gonna get it!" #speaker:Red Kobold #setsprite:kobolds1>kobolds1_attackmode
     The kobolds look pretty pissed off now. It seems your insult has gotten you into a fight! #narrator
+    ~ kobolds_hostile = true
     - else:
     The figure flings its coat off, revealing a stack of very pissed off kobolds! #narrator #setsprite:kobolds1>kobolds1_attackmode
+    ~ kobolds_revealed = true
+    ~ kobolds_hostile = true
     "We're not creeps! And the sunglasses are cool!" #speaker:A Stack of Kobolds
     "Cope more." #speaker:You
     The stack starts growling at you. Seems you've gotten yourself into a fight! #narrator
 }
     -> KOBOLDS_CARD_OPTIONS
+    
+=== HANDLE_SHOCK_OUTCOME ===
+{
+    - kobolds_revealed:
+    The red kobold yelps loudly, falling dramatically off from on top of the stack! #narrator
+    The other two quickly de-stack as well, huddling around their injured friend. That should show them! #narrator
+    - else:
+    The figure quickly falls apart, revealing three kobolds, one of whom seems to already be knocked out! #narrator
+    The other two quickly huddle around their injured friend. That should show them? #narrator
+}
+{
+    - !kobolds_hostile:
+    The dark grey one gives you a seriously hostile look. #narrator
+    {
+        - g_player_gender == "female":
+        "What the hell, lady!? What was that for!" #speaker: Dark Grey Kobold
+        - g_player_gender == "male":
+        "What the hell, mister!? What was that for!" #speaker: Dark Grey Kobold
+        - g_player_gender == "non-binary":
+        "What the hell was that for!?" #speaker: Dark Grey Kobold
+        - g_player_gender == "hat":
+        "What the hell, hat!? What was that for!" #speaker: Dark Grey Kobold
+    }
+    It seems to have more pressing matters than revenge right now though, as the red kobold groans on the ground. #narrator
+}
+
+"Stay with us! Just focus on breathing!" #speaker:Dark Grey Kobold
+"I... I don't think I'll make it... Please... Take care of yourselves." #speaker:Red Kobold
+...Huh? That was a static shock, not anything seriously damaging! Is he pretending? #narrator
+Whatever the case, seems like you've won the day! #narrator
+The dark grey and white kobolds hoist their injured stackmate above their heads and start making an exit! #narrator
+"We'll definitely get you next time, you evil wizard! Definitely!" #speaker:Dark Grey Kobold
+The kobolds skitter away, leaving you to ponder what to do next. #narrator
+
+-> KOBOLD_EVENT_EPILOGUE("kobolds_left")
 
 === KOBOLD_EVENT_EPILOGUE(exit_method) ===
 {
@@ -471,10 +510,10 @@ Your strike connects with the head of {kobolds_revealed: the top kobold, | shady
         "Thanks again for the marshmallows, wizard-person! Good luck with the adventuring!" The group yells, their voices growing distant. #narrator
     }
     What a surprisingly nice group of kobolds. Even though the red one called you chip. #narrator
-    You suppose there's nothing left to do here, and resume traveling. #narrator #function:LoadMap1Scene
+    You suppose there's nothing left to do here, and resume traveling. #narrator #function:LoadScene(Map1)
     
     - exit_method == "kobolds_left":
-    You suppose there's nothing left to do here, and resume traveling. #narrator #function:LoadMap1Scene
+    You suppose there's nothing left to do here, and resume traveling. #narrator #function:LoadScene(Map1)
 }
 
 -> DONE
