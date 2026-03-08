@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 169572d3d78ed214bb20c81e1b5cbff6
+guid: db5a40051c7c4424ca57e8fed6781074
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5905956997785393324
-    second: kobolds_1_2_0
+      213: 4040620961369833174
+    second: kobolds_1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -49,7 +49,7 @@ TextureImporter:
   spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
-  alignment: 0
+  alignment: 7
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
@@ -113,11 +113,11 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: kobolds_1_2_0
+      name: kobolds_1_0
       rect:
         serializedVersion: 2
         x: 3
-        y: 1
+        y: 9
         width: 509
         height: 987
       alignment: 0
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ca81bbf299c26f150800000000000000
-      internalID: 5905956997785393324
+      spriteID: 6de32723b5b231830800000000000000
+      internalID: 4040620961369833174
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      kobolds_1_2_0: 5905956997785393324
+      kobolds_1_0: 4040620961369833174
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

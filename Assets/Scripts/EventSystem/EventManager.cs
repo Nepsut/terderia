@@ -156,8 +156,8 @@ public class EventManager : MonoSingleton<EventManager>
         }
         else
         {
-            cardHolder.ClearCards();
-            CardManager.InitializePlayerHand();
+            cardHolder.ClearHand();
+            CardManager.ReshufflePlayerHand();
         }
         inputReader.OnSubmitEvent -= HandleSubmit;
         inputReader.OnClickEvent -= HandleClickWithDelay;
@@ -358,7 +358,6 @@ public class EventManager : MonoSingleton<EventManager>
             {
                 OnCardUsed?.Invoke(usedCard);
                 ParseDialogueOptionFromCard(usedCard.CardData, target.TargetName);
-                Destroy(usedCard.gameObject);
                 break;
             }
         }
@@ -444,7 +443,7 @@ public class EventManager : MonoSingleton<EventManager>
         }
         else
         {
-            if (cardHolder.IsActive) cardHolder.DeactivateHolder();
+            if (cardHolder.IsActive && !cardHolder.IsMoving) cardHolder.DeactivateHolder();
             LeanTween.alpha(selfTargetObject, 0f, selfTargetFadeTime)
                 .setEaseOutQuart()
                 .setOnComplete(() => selfTargetObject.SetActive(false));
@@ -664,8 +663,8 @@ public class EventManager : MonoSingleton<EventManager>
     private IEnumerator EmptyPlayerHand(WaitForSeconds wait = null)
     {
         yield return wait;
-        cardHolder.ClearCards();
-        CardManager.InitializePlayerHand();
+        cardHolder.ClearHand();
+        CardManager.ReshufflePlayerHand();
     }
 
     private void ClearActiveTargets()

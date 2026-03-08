@@ -34,6 +34,18 @@ public class CardVisualsOnly : MonoBehaviour
         SetAppearance();
     }
 
+    public void ResetBackgroundImage()
+    {
+        cardBack.sprite = CardData.cardType switch
+        {
+            CardData.CardType.speech => CardManager.Instance.CardbaseSpeech,
+            CardData.CardType.spell => CardManager.Instance.CardbaseSpell,
+            CardData.CardType.utility => CardManager.Instance.CardbaseUtility,
+            CardData.CardType.weapon => CardManager.Instance.CardbaseWeapon,
+            _ => CardManager.Instance.CardbaseNull,
+        };
+    }
+
     private void SetAppearance()
     {
         titleText.text = CardData.name;

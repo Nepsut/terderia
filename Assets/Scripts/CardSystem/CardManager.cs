@@ -15,6 +15,7 @@ namespace CardSystem
         [field: SerializeField] public Sprite CardbaseUtility { get; private set; }
         [field: SerializeField] public Sprite CardbaseWeapon { get; private set; }
         [field: SerializeField] public Sprite CardbaseNull { get; private set; }
+        [field: SerializeField] public Sprite Cardback { get; private set; }
 
         [Header("Damage Type Sprite References")]
         [field: SerializeField] public Sprite DamageTypeBlunt { get; private set; }
@@ -61,7 +62,10 @@ namespace CardSystem
                 _playerHand = value;
             }
         }
+        public static List<string> SelectedDeck { get; private set; }
         public static List<string> ActiveDeck { get; private set; }
+        public static int DeckCardCount => ActiveDeck.Count;
+        public static int TotalCardCount => ActiveDeck.Count + PlayerHand.Count;
         public static List<string> UnlockedCards { get; private set; }
         public static Dictionary<string, CardData> Cards { get; private set; }
         public static List<string> CardIds { get; private set; }
@@ -93,8 +97,10 @@ namespace CardSystem
                     Debug.Log($"{keyValuePair.Value.name} - {keyValuePair.Value.description}");
             }
 
+            //temp
             UnlockedCards = DefaultCards.ToList();
-            ActiveDeck = UnlockedCards;
+            SelectedDeck = UnlockedCards.ToList();
+            ActiveDeck = SelectedDeck.ToList();
         }
 
         private void Start()
@@ -115,22 +121,51 @@ namespace CardSystem
                 return;
             }
             UnlockedCards.Add(cardId);
-            if (addToDeck && !IsDeckFull) ActiveDeck.Add(cardId);
+            if (GameManager.Instance.DebugModeOn) Debug.Log($"Unlocked card {cardId}");
+            if (addToDeck && !IsDeckFull)
+            {
+                ActiveDeck.Add(cardId);
+                if (GameManager.Instance.DebugModeOn) Debug.Log($"Added unlocked card {cardId} to ActiveDeck");
+            }
         }
 
         public static void InitializePlayerHand()
         {
             PlayerHand = new();
 
+            if (GameManager.Instance.DebugModeOn)
+            {
+                string message = "";
+                ActiveDeck.ForEach(card =>
+                {
+                    if (message != "") message += ", ";
+                    message += card;
+                });
+                message = string.Concat("Initializing player hand from ActiveDeck, which contains the following cards:\n", 
+                    message);
+                Debug.Log(message);
+            }
+
             if (ActiveDeck.Count <= MaxCardsInHand)
             {
                 ActiveDeck.ForEach(card => PlayerHand.Add(Cards[card]));
+                ActiveDeck.Clear();
                 return;
             }
 
             System.Random rnd = new();
             List<string> newHandIds = ActiveDeck.OrderBy(x => rnd.Next()).Take(MaxCardsInHand).ToList();
-            newHandIds.ForEach(id => PlayerHand.Add(Cards[id]));
+            newHandIds.ForEach(id => 
+            {
+                PlayerHand.Add(Cards[id]);
+                ActiveDeck.Remove(id);
+            });
+        }
+
+        public static void ReshufflePlayerHand()
+        {
+            PlayerHand.ForEach(card => ActiveDeck.Add(card.id));
+            InitializePlayerHand();
         }
 
         public static bool IsCardUnlocked(string cardId)

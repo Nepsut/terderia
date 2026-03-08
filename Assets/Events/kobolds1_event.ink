@@ -510,10 +510,15 @@ The kobolds skitter away, leaving you to ponder what to do next. #narrator
         "Thanks again for the marshmallows, wizard-person! Good luck with the adventuring!" The group yells, their voices growing distant. #narrator
     }
     What a surprisingly nice group of kobolds. Even though the red one called you chip. #narrator
-    You suppose there's nothing left to do here, and resume traveling. #narrator #function:LoadScene(Map1)
-    
-    - exit_method == "kobolds_left":
-    You suppose there's nothing left to do here, and resume traveling. #narrator #function:LoadScene(Map1)
+    As you prepare to leave as well, you notice a few cards where the kobolds were sitting! Did they leave these for you? #narrator
+    You figure they're safer in your binder than on the ground, so you gather up the intact ones. #narrator #function:RewardCards(2, stick, deceive, soothsay, run)
+    - else: 
+    As you prepare to leave as well, you notice a few cards on the ground! #narrator
+    You figure they're safer in your binder than on the ground, so you gather up the intact ones. #narrator #function:RewardCards(2, stick, deceive, soothsay, run)
 }
+
+You suppose there's nothing left to do here, and resume traveling. #narrator
+
+#function:LoadScene(Map1)
 
 -> DONE

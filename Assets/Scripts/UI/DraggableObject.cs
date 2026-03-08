@@ -2,27 +2,30 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(RectTransform))]
+[RequireComponent(typeof(Image))]
 public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private float moveSpeed = 15f;
     [SerializeField] private float returnTime = 0.74f;
     [SerializeField] private float hoverOffsetHorizontal;
     [SerializeField] private float hoverOffsetVertical;
-    private Vector2 hoverOffsetVector => new(hoverOffsetHorizontal, hoverOffsetVertical);
+    private Vector2 HoverOffsetVector => new(hoverOffsetHorizontal, hoverOffsetVertical);
     [SerializeField] private float hoverAnimTime = 0.32f;
     [HideInInspector] public int siblingIndex;
-    private RectTransform selfRect;
+    public RectTransform SelfRect { get; private set; }
+    public Image SelfImage { get; private set; }
     private InputReader inputReader;
     private bool draggingAllowed = true;
     private bool hoverAllowed = true;
-    private Vector2 mousePos => UIController.MousePosition;
+    private Vector2 MousePos => UIController.MousePosition;
     private bool _pointerOnObject = false;
     private bool _draggingOn = false;
     public static bool DraggingOn = false;
-    public Vector2 returnPosition;
-    public bool isReturnPositionSet { get; private set; } = false;
+    [HideInInspector] public Vector2 returnPosition;
+    public bool IsReturnPositionSet { get; private set; } = false;
     private int hoverTweenId = -1;
     private int dragTweenId = -1;
     private Coroutine resetHoverCoroutine;
@@ -96,7 +99,7 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
         }
 
         if (hoverTweenId != -1) LeanTween.cancel(hoverTweenId);
-        hoverTweenId = LeanTween.move(selfRect, returnPosition + hoverOffsetVector, hoverAnimTime).setEaseInOutQuart().id;
+        hoverTweenId = LeanTween.move(SelfRect, returnPosition + HoverOffsetVector, hoverAnimTime).setEaseInOutQuart().id;
         resetHoverCoroutine = StartCoroutine(ResetHoverTween());
         OnHoverStart?.Invoke(this);
     }
@@ -110,7 +113,7 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
         }
 
         if (hoverTweenId != -1) LeanTween.cancel(hoverTweenId);
-        hoverTweenId = LeanTween.move(selfRect, returnPosition, hoverAnimTime).setEaseInOutQuart().id;
+        hoverTweenId = LeanTween.move(SelfRect, returnPosition, hoverAnimTime).setEaseInOutQuart().id;
         resetHoverCoroutine = StartCoroutine(ResetHoverTween());
     }
 
@@ -123,7 +126,7 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
                 LeanTween.cancel(hoverTweenId);
                 hoverTweenId = -1;
             }
-            dragTweenId = LeanTween.move(selfRect, returnPosition + hoverOffsetVector, returnTime).setEaseOutQuart().id;
+            dragTweenId = LeanTween.move(SelfRect, returnPosition + HoverOffsetVector, returnTime).setEaseOutQuart().id;
             resetDragCoroutine = StartCoroutine(ResetDragTween());
             OnDragEnd?.Invoke(this);
         }
@@ -175,13 +178,19 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public void SetReturnPosition()
     {
-        returnPosition = selfRect.anchoredPosition;
-        isReturnPositionSet = true;
+        if (SelfRect == null) return;
+        returnPosition = SelfRect.anchoredPosition;
+        IsReturnPositionSet = true;
+    }
+
+    private void Awake()
+    {
+        SelfRect = GetComponent<RectTransform>();
+        SelfImage = GetComponent<Image>();
     }
 
     private void Start()
     {
-        selfRect = GetComponent<RectTransform>();
         inputReader = UIController.Instance.MainInputReader;
         inputReader.OnClickEvent += HandleClick;
         inputReader.OnClickReleaseEvent += HandleClickEnd;
@@ -200,7 +209,7 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
         if (_draggingOn)
         {
-            transform.position = Vector2.Lerp(transform.position, mousePos, moveSpeed * Time.unscaledDeltaTime);
+            transform.position = Vector2.Lerp(transform.position, MousePos, moveSpeed * Time.unscaledDeltaTime);
         }
     }
 }

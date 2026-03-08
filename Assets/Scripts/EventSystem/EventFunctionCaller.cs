@@ -39,31 +39,6 @@ public class EventFunctionCaller : MonoBehaviour
         Debug.Log("Test function was called!");
         Debug.Log($"State of test variable: {eventManager.GetVariableState("g_test_seen")}");
     }
-
-    //TEMPORARY, REMOVE LATER
-    public void UnlockCabinCards()
-    {
-        CardManager.UnlockCard("punch", addToDeck: true);
-        CardManager.UnlockCard("insult", addToDeck: true);
-        CardManager.UnlockCard("static-shock", addToDeck: true);
-        CardManager.UnlockCard("rope", addToDeck: true);
-        switch (GameManager.Instance.playerData.subclass)
-        {
-            case PlayerData.Subclass.alchemist:
-                CardManager.UnlockCard("evil-bottle", addToDeck: true);
-                break;
-            case PlayerData.Subclass.trickster:
-                CardManager.UnlockCard("smokescreen", addToDeck: true);
-                break;
-            case PlayerData.Subclass.chef:
-                CardManager.UnlockCard("can-of-beans", addToDeck: true);
-                break;
-            case PlayerData.Subclass.elementalist:
-                CardManager.UnlockCard("snowball", addToDeck: true);
-                break;
-        }
-    }
-
     public void LoadMap1Scene()
     {
         StartCoroutine(MapLoadDelayHandler(SceneTransitionManager.Scene.Map1));

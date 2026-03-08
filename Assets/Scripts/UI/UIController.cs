@@ -26,6 +26,7 @@ public class UIController : MonoSingleton<UIController>
     private const string allUnlockedHeaderMessage = "All rewards already unlocked!";
     private const string chooseOneMessage = "Choose one card.";
     private const string blankChooseMessage = "Choose up to _ cards.";
+    private const string gainedAllMessage = "Gained all of the following cards:";
     public static bool CardRewardsOpen { get; private set; } = false;
     private int currentRewardsCount = 0;
     private int choosableRewardCount = 0;
@@ -58,11 +59,7 @@ public class UIController : MonoSingleton<UIController>
     {
         if (choiceAmount < 1 || cardIds == null || cardIds.Length < 1)
         {
-            if (GameManager.Instance.DebugModeOn)
-            {
-                Debug.LogWarning(
-                    $"HandleCardRewards was called with invalid parameter! Amount {choiceAmount}, ids {cardIds}");
-            }
+            Debug.LogWarning( $"HandleCardRewards was called with invalid parameter! Amount {choiceAmount}, ids {cardIds}");
             return;
         }
 
@@ -86,15 +83,20 @@ public class UIController : MonoSingleton<UIController>
             else
                 cardRewardMessage.text = blankChooseMessage.Replace("_", choiceAmount.ToString());
         }
-        else cardRewardMessage.text = "";
+        else cardRewardMessage.text = gainedAllMessage;
 
         currentRewardsCount = realUnlockableCards.Count;
         choosableRewardCount = choiceAmount;
         selectedRewardCount = 0;
 
+        if (GameManager.Instance.DebugModeOn)
+        {
+            Debug.Log($"Total reward cards {currentRewardsCount}, choosable reward cards {choosableRewardCount}");
+        }
+
         for (int i = 0; i < rewardCards.Length; i++)
         {
-            rewardCards[i].DeselectCard();
+            rewardCards[i].SetAsDeselected();
             if (i >= realUnlockableCards.Count)
             {
                 rewardCards[i].gameObject.SetActive(false);
@@ -103,20 +105,18 @@ public class UIController : MonoSingleton<UIController>
 
             rewardCards[i].InitializeCard(realUnlockableCards[i]);
             rewardCards[i].gameObject.SetActive(true);
+            rewardCards[i].SelfButton.interactable = false;
 
-            if (currentRewardsCount >= choosableRewardCount)
-            {
-                rewardCards[i].SelectCard();
-                rewardCards[i].SelfButton.interactable = false;
-                selectedRewardCount++;
-            }
-            else
+            if (currentRewardsCount > choosableRewardCount)
             {
                 rewardCards[i].OnRewardSelected += HandleRewardSelected;
                 rewardCards[i].OnRewardDeselected += HandleRewardDeselected;
-                rewardCards[i].SelfButton.interactable = true;
             }
-
+            else
+            {
+                rewardCards[i].SetAsSelected();
+                selectedRewardCount++;
+            }
         }
 
         continueFromRewardsButton.interactable = false;
@@ -127,10 +127,10 @@ public class UIController : MonoSingleton<UIController>
             .setEaseInQuart()
             .setOnComplete(() =>
             {
-                continueFromRewardsButton.interactable = currentRewardsCount >= choosableRewardCount;
+                continueFromRewardsButton.interactable = currentRewardsCount <= choosableRewardCount;
                 foreach (CardReward cardReward in rewardCards)
                 {
-                    cardReward.SelfButton.interactable = currentRewardsCount < choosableRewardCount;
+                    cardReward.SelfButton.interactable = currentRewardsCount > choosableRewardCount;
                 }
             });
     }
@@ -181,6 +181,12 @@ public class UIController : MonoSingleton<UIController>
             {
                 wasCardAddedToDeck[i] = !CardManager.IsDeckFull;
                 CardManager.UnlockCard(rewardCards[i].CardData.id, addToDeck: true);
+                if (GameManager.Instance.DebugModeOn)
+                {
+                    string message = string.Concat("Unlocked card from rewards screen: ",
+                    rewardCards[i].CardData.id);
+                    Debug.Log(message);
+                }
             }
             rewardCards[i].OnRewardSelected -= HandleRewardSelected;
             rewardCards[i].OnRewardDeselected -= HandleRewardDeselected;
