@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using CardSystem;
 using UnityEngine;
 using UnityEngine.UI;
@@ -59,7 +58,7 @@ public class CharacterCreation : MonoBehaviour
             startingWeapon = weaponHolder.GetChild(weaponHolder.childCount - 1).GetComponent<WeaponDataHolder>().StartingWeapon
         };
 
-        CardManager.UnlockCard(playerData.StartingWeaponAsString);
+        CardManager.UnlockCard(playerData.StartingWeaponAsString, addToDeck: true);
         GameManager.Instance.playerData = playerData;
         EventManager.Instance.EventVariables.TryChangeGlobalInkVariable(EventVariables.genderKey, playerData.GenderAsString);
         EventManager.Instance.EventVariables.TryChangeGlobalInkVariable(EventVariables.subclassKey, playerData.SubclassAsString);

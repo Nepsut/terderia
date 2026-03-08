@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,10 +7,17 @@ using UnityEngine.UI;
 public class CardReward : CardVisualsOnly
 {
     [field: SerializeField] public Button SelfButton { get; private set; }
+    [SerializeField] private TMP_Text SelectedText;
     public RectTransform SelfRect { get; private set; }
     private CanvasGroup selfGroup;
+    private float selectAnimDuration = 0.32f;
+    private readonly Color32 SelectedColor = new(0x87, 0x84, 0x81, 0xff); 
+    private Color32 NotSelectedColor => Color.white;
+    private readonly Color32 SelectedTextColor = new(0x1f, 0x1f, 0x1f, 0xff);
+    private readonly Color32 NotSelectedTextColor = new(0x1f, 0x1f, 0x1f, 0x00);
     public bool IsSelected { get; private set; } = false;
     private bool isFadingOut = false;
+    private bool isAnimatingSelection = false;
     public event Action OnRewardSelected;
     public event Action OnRewardDeselected;
 
@@ -22,14 +30,61 @@ public class CardReward : CardVisualsOnly
 
     public void SelectCard()
     {
+        if (isAnimatingSelection) return;
+        isAnimatingSelection = true;
         IsSelected = !IsSelected;
-        if (IsSelected) OnRewardSelected?.Invoke();
-        else OnRewardDeselected?.Invoke();
+        if (IsSelected)
+        {
+            OnRewardSelected?.Invoke();
+            LeanTween.value(gameObject, SetButtonColor, NotSelectedColor, SelectedColor, selectAnimDuration)
+                .setEaseInQuart()
+                .setOnComplete(() =>
+                {
+                    isAnimatingSelection = false;
+                });
+            LeanTween.value(gameObject, SetTextColor, NotSelectedTextColor, SelectedTextColor, selectAnimDuration)
+                .setEaseInQuart();
+        }
+        else
+        {
+            OnRewardDeselected?.Invoke();
+            LeanTween.value(gameObject, SetButtonColor, SelectedColor, NotSelectedColor, selectAnimDuration)
+                .setEaseInQuart()
+                .setOnComplete(() =>
+                {
+                    isAnimatingSelection = false;
+                });
+            LeanTween.value(gameObject, SetTextColor, SelectedTextColor, NotSelectedTextColor, selectAnimDuration)
+                .setEaseInQuart();
+        }
     }
 
-    public void DeselectCard()
+    public void SetAsSelected()
+    {
+        IsSelected = true;
+    }
+
+    public void SetAsDeselected()
     {
         IsSelected = false;
+        SetButtonColor(NotSelectedColor);
+        SetTextColor(NotSelectedTextColor);
+    }
+
+    private void SetButtonColor(Color color)
+    {
+        var c = SelfButton.colors;
+        c.normalColor = color;
+        c.highlightedColor = color;
+        c.pressedColor = color;
+        c.selectedColor = color;
+        c.disabledColor = color;
+        SelfButton.colors = c;
+    }
+
+    private void SetTextColor(Color color)
+    {
+        SelectedText.color = color;
     }
 
     public void StartFadeOut(float fadeTime)
