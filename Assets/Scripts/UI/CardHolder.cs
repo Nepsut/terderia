@@ -79,6 +79,7 @@ public class CardHolder : MonoBehaviour
             Destroy(usedCard.gameObject);
         };
         CardManager.OnCardAddedToHand += HandleCardAddition;
+        CardManager.OnCardAddedToDeck += _ => SetDeckIndicatorValue();
         reshuffleButton.onClick.AddListener(ReshuffleHand);
         shownDeckValue = CardManager.DeckCardCount;
         deckCountIndicator.text = shownDeckValue.ToString();
@@ -109,6 +110,7 @@ public class CardHolder : MonoBehaviour
     {
         draggableObject.transform.SetParent(holderRect);
         draggableObject.transform.SetSiblingIndex(draggableObject.siblingIndex);
+        if (draggableChildren.Count == holderRect.childCount) allCardsHome = true;
     }
 
     public void ActivateHolder()
@@ -181,9 +183,10 @@ public class CardHolder : MonoBehaviour
         if (moveUp && !isInitialized)
         {
             ClearHand();
+            yield return null;
             FillHand();
+            yield return null;
             RehomeCards(CardRehomeStyle.flipAll);
-            isInitialized = true;
         }
         else layoutGroup.enabled = true;
         IsActive = moveUp;
@@ -212,13 +215,14 @@ public class CardHolder : MonoBehaviour
         draggableChildren.ForEach(child => SubscribeCardMoveEvents(child));
         shownDeckValue = CardManager.TotalCardCount;
         deckCountIndicator.text = shownDeckValue.ToString();
+        isInitialized = true;
     }
 
     public void ClearHand()
     {
         isInitialized = false;
         draggableChildren?.ForEach(child => UnsubscribeCardMoveEvents(child));
-        draggableChildren = null;
+        draggableChildren?.Clear();
         foreach (Transform child in holderRect)
         {
             Destroy(child.gameObject);
@@ -283,7 +287,7 @@ public class CardHolder : MonoBehaviour
     {
         cardRehomeTweens?.ForEach(tweenId => LeanTween.cancel(tweenId));
         cardRehomeTweens = new();
-        int cardCount = holderRect.childCount;
+        int cardCount = draggableChildren.Count;
         if (GameManager.Instance.DebugModeOn) Debug.Log($"Rehoming {cardCount} cards.");
         float firstX = centerCardX - distanceBetweenCards * (cardCount / 2);
         if (cardCount % 2 == 0) firstX += distanceBetweenCards / 2f;
@@ -349,7 +353,6 @@ public class CardHolder : MonoBehaviour
             deckCountIndicator.text = shownDeckValue == 0 ? "" : shownDeckValue.ToString();
             if (shownDeckValue <= 0) deckImage.enabled = false;
             else deckImage.enabled = true;
-
         }
 
         deckImage.sprite = shownDeckValue switch
@@ -358,5 +361,11 @@ public class CardHolder : MonoBehaviour
             2 | 3 => deckTwoLeftSprite,
             _ => deckFullSprite
         };
+    }
+
+    public void SetDeckIndicatorValue()
+    {
+        shownDeckValue = CardManager.DeckCardCount;
+        deckCountIndicator.text = shownDeckValue.ToString();
     }
 }

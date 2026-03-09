@@ -85,6 +85,7 @@ namespace CardSystem
 
         //Events
         public static event Action<CardData> OnCardAddedToHand;
+        public static event Action<CardData> OnCardAddedToDeck;
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         private void Awake()
@@ -125,6 +126,7 @@ namespace CardSystem
             if (addToDeck && !IsDeckFull)
             {
                 ActiveDeck.Add(cardId);
+                OnCardAddedToDeck?.Invoke(Cards[cardId]);
                 if (GameManager.Instance.DebugModeOn) Debug.Log($"Added unlocked card {cardId} to ActiveDeck");
             }
         }
