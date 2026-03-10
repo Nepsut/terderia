@@ -27,8 +27,10 @@ public class CardHolder : MonoBehaviour
 
     private const float cardRehomeTime = 0.32f;
     private const float cardRehomePauseTime = 0.16f;
+    private const float holderMoveQueueCheck = 0.1f;
     private readonly WaitForSeconds cardRehomeWait = new(cardRehomeTime);
     private readonly WaitForSeconds cardRehomePauseWait = new(cardRehomePauseTime);
+    private readonly WaitForSeconds holderQueueCheckWait = new(holderMoveQueueCheck);
     public const float HolderMoveDuration = 0.5f;
     private const float holderOffset = -40f;
     private const float initialCardRowY = 220f;
@@ -37,13 +39,17 @@ public class CardHolder : MonoBehaviour
     private const float centerCardX = 747.5f;
     private RectTransform selfRect;
     private List<DraggableObject> draggableChildren;
+    private bool HolderMoveAllowed => !IsMoving && !rehomeInProgress && allCardsHome && allCardsDown && moveTweenId == -1;
     private bool isInitialized = false;
     public bool IsActive { get; private set; } = false;
     public bool IsMoving { get; private set; } = false;
     private bool moveQueued = false;
     private bool moveUp = false;
     private bool allCardsHome = true;
+    private int cardsDownCount = 0;
+    private bool allCardsDown = true;
     private bool reshuffleInProgress = false;
+    private bool rehomeInProgress = false;
     private int shownDeckValue = 0;
     private float activePosY;
     private float inactivePosY;
@@ -75,7 +81,9 @@ public class CardHolder : MonoBehaviour
             DraggableObject draggableObject = usedCard.GetComponent<DraggableObject>();
             UnsubscribeCardMoveEvents(draggableObject);
             draggableChildren.Remove(draggableObject);
+
             RehomeCards(CardRehomeStyle.flipNone);
+            StartCoroutine(DelayedCardsHomeCheck());
             Destroy(usedCard.gameObject);
         };
         CardManager.OnCardAddedToHand += HandleCardAddition;
@@ -90,6 +98,8 @@ public class CardHolder : MonoBehaviour
         draggableObject.siblingIndex = draggableObject.transform.GetSiblingIndex();
         draggableObject.OnDragStart += HandleCardDragStart;
         draggableObject.OnReturn += HandleCardReturn;
+        draggableObject.OnHoverStart += HandleCardStartHover;
+        draggableObject.OnHoverEnd += HandleCardStopHover;
     }
 
     private void UnsubscribeCardMoveEvents(DraggableObject draggableObject)
@@ -113,9 +123,24 @@ public class CardHolder : MonoBehaviour
         if (draggableChildren.Count == holderRect.childCount) allCardsHome = true;
     }
 
+    private void HandleCardStartHover(DraggableObject draggableObject)
+    {
+        cardsDownCount--;
+        allCardsDown = false;
+    }
+
+    private void HandleCardStopHover(DraggableObject draggableObject)
+    {
+        cardsDownCount++;
+        if (cardsDownCount == draggableChildren.Count && cardsDownCount == holderRect.childCount)
+        {
+            allCardsDown = true;
+        }
+    }
+
     public void ActivateHolder()
     {
-        if (IsActive || IsMoving || !allCardsHome || moveTweenId != -1)
+        if (IsActive && !HolderMoveAllowed)
         {
             if (GameManager.Instance.DebugModeOn) Debug.Log("Queuing card holder activation.");
             moveQueued = true;
@@ -125,16 +150,16 @@ public class CardHolder : MonoBehaviour
 
         holderImage.enabled = false;
         if (moveManagerCoroutine != null) StopCoroutine(moveManagerCoroutine);
-        moveManagerCoroutine = null;
         if (GameManager.Instance.DebugModeOn) Debug.Log("Activating card holder.");
         moveManagerCoroutine = StartCoroutine(MoveManager(moveUp: true));
     }
 
     public void DeactivateHolder()
     {
-        if (!IsActive || IsMoving || !allCardsHome || moveTweenId != -1)
+        if (!IsActive && HolderMoveAllowed)
         {
             if (GameManager.Instance.DebugModeOn) Debug.Log("Queuing card holder deactivation.");
+            holderImage.enabled = true;
             moveQueued = true;
             moveUp = false;
             return;
@@ -142,7 +167,6 @@ public class CardHolder : MonoBehaviour
 
         holderImage.enabled = true;
         if (moveManagerCoroutine != null) StopCoroutine(moveManagerCoroutine);
-        moveManagerCoroutine = null;
         if (GameManager.Instance.DebugModeOn) Debug.Log("Deactivating card holder.");
         moveManagerCoroutine = StartCoroutine(MoveManager(moveUp: false));
     }
@@ -280,6 +304,7 @@ public class CardHolder : MonoBehaviour
         if (draggableChildren.Count == 0) return;
         if (cardRehomeCoroutine != null) StopCoroutine(cardRehomeCoroutine);
         allCardsHome = false;
+        rehomeInProgress = true;
         cardRehomeCoroutine = StartCoroutine(CardRehomeHandler(style));
     }
 
@@ -331,12 +356,28 @@ public class CardHolder : MonoBehaviour
         if (draggableChildren != null && holderRect.childCount != 0)
             cardRowY = draggableChildren[0].SelfRect.rect.y; 
         allCardsHome = true;
+        cardsDownCount = draggableChildren.Count;
+        allCardsDown = true;
         yield return null;
-        if (moveQueued && moveUp) ActivateHolder();
-        else if (moveQueued && !moveUp) DeactivateHolder();
+
+        while (moveQueued)
+        {
+            if (HolderMoveAllowed)
+            {
+                if (GameManager.Instance.DebugModeOn)
+                {
+                    Debug.Log("Trying to call queued holder movement.");
+                }
+                if (moveUp && !IsActive) ActivateHolder();
+                else if (!moveUp && IsActive) DeactivateHolder();
+            }
+            yield return holderQueueCheckWait;
+        }
+
         if (reshuffleInProgress) reshuffleInProgress = false;
         cardRehomeTweens = null;
         cardRehomeCoroutine = null;
+        rehomeInProgress = false;
     }
 
     private void CorrectDeckIndicatorByOne()
@@ -367,5 +408,17 @@ public class CardHolder : MonoBehaviour
     {
         shownDeckValue = CardManager.DeckCardCount;
         deckCountIndicator.text = shownDeckValue.ToString();
+    }
+
+    private IEnumerator DelayedCardsHomeCheck()
+    {
+        yield return null;
+        if (GameManager.Instance.DebugModeOn)
+        {
+            string message = string.Concat($"Draggable children count {draggableChildren.Count}, ",
+            $"holder children count {holderRect.childCount}. \nCards were already home: {allCardsHome}");
+            Debug.Log(message);
+        }
+        if (draggableChildren.Count == holderRect.childCount) allCardsHome = true;
     }
 }
