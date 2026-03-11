@@ -43,7 +43,8 @@ public class EventManager : MonoSingleton<EventManager>
     public Story CurrentStory { get; private set; }
     public bool IsEventActive { get; private set; } = false;
     private Dictionary<string, Sprite> eventSpriteAssets;
-    private List<GameObject> activeEventTargets;
+    private List<Collider2D> activeEventTargets;
+    private List<Collider2D> eventTargetsToHide;
     private bool isTyping = false;
     private bool choiceWasMade = false;
     private bool pendingCardUse = false;
@@ -173,13 +174,7 @@ public class EventManager : MonoSingleton<EventManager>
         CurrentStory.ChooseChoiceIndex(choiceNumber);
         pendingCardUse = false;
         choiceWasMade = true;
-        activeEventTargets.ForEach(target =>
-        {
-            foreach (Transform child in target.transform)
-            {
-                child.GetComponent<Collider2D>().enabled = false;
-            }
-        });
+        activeEventTargets.ForEach(target => target.enabled = false);
         selfTargetCollider.enabled = false;
         ContinueStory();
     }
@@ -490,13 +485,21 @@ public class EventManager : MonoSingleton<EventManager>
                 functionsToCall.Add(functionName);
                 if (GameManager.Instance.DebugModeOn) Debug.Log($"Found function tag: \"{functionName}\"");
             }
-            else if (tag.Contains("targets:"))
+            else if (tag.Contains("showtargets:"))
             {
                 activeEventTargets ??= new();
-                string targetGroupName = tag.Replace("targets:", null);
+                string targetGroupName = tag.Replace("showtargets:", null);
                 GameObject eventTarget = EventCardTargetManager.EventCardTargets[targetGroupName];
-                activeEventTargets.Add(eventTarget);
-                if (GameManager.Instance.DebugModeOn) Debug.Log($"Found targets tag: \"{targetGroupName}\"");
+                activeEventTargets.Add(eventTarget.GetComponent<Collider2D>());
+                if (GameManager.Instance.DebugModeOn) Debug.Log($"Found showtargets tag: \"{targetGroupName}\"");
+            }
+            else if (tag.Contains("hidetargets:"))
+            {
+                eventTargetsToHide ??= new();
+                string targetGroupName = tag.Replace("hidetargets:", null);
+                GameObject eventTarget = EventCardTargetManager.EventCardTargets[targetGroupName];
+                eventTargetsToHide.Add(eventTarget.GetComponent<Collider2D>());
+                if (GameManager.Instance.DebugModeOn) Debug.Log($"Found hidetargets tag: \"{targetGroupName}\"");
             }
             else if (tag.Contains("refundcard:"))
             {
@@ -542,12 +545,11 @@ public class EventManager : MonoSingleton<EventManager>
 
         activeEventTargets?.ForEach(target =>
         {
-            target.SetActive(true);
-            foreach (Transform child in target.transform)
-            {
-                child.GetComponent<Collider2D>().enabled = true;
-            }
+            target.gameObject.SetActive(true);
+            target.enabled = true;
         });
+
+        eventTargetsToHide?.ForEach(target => target.gameObject.SetActive(false));
     }
 
     private void TryCallFunctionsFromTags()
@@ -673,7 +675,7 @@ public class EventManager : MonoSingleton<EventManager>
 
     private void ClearActiveTargets()
     {
-        activeEventTargets?.ForEach(target => target.SetActive(false));
+        activeEventTargets?.ForEach(target => target.gameObject.SetActive(false));
         activeEventTargets = null;
     }
 

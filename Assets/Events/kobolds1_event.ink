@@ -11,7 +11,7 @@ After a short while of walking, you spot a strange figure in the distance. #narr
 
 Despite it being a good bit taller than you, it doesn't seem very imposing due to the way it moves. #narrator
 
-As you get even closer, you start to understand why this figure seems to struggle with moving. #narrator #targets:kobolds1
+As you get even closer, you start to understand why this figure seems to struggle with moving. #narrator #showtargets:kobolds1
 
 "Keep moving, chip." #speaker:Shady Figure
 
@@ -68,7 +68,7 @@ As you get even closer, you start to understand why this figure seems to struggl
             - else:
             "What the hell, chip! Are you literally insane!?" #speaker:Shady Figure
             The figure shifts strangely, then starts rapidly walking off. #narrator
-            You hear the figure's final words to you as it's making its exit: "let's never meet again." #narrator
+            You hear the figure's final words to you as it's making its exit: "let's not meet again." #narrator
         }
         All according to your plan. Heh. #narrator
         -> KOBOLD_EVENT_EPILOGUE("kobolds_left")
@@ -91,7 +91,7 @@ As you get even closer, you start to understand why this figure seems to struggl
         The healing properties quickly kick in, and you regain some health.
         ~ g_player_health++
     }
-    You acted so fast that the {kobolds_hostile: kobolds couldn't react in time to attack you! | figure couldn't really react, and it just looks slightly confused.} #narrator
+    You acted so fast that the {kobolds_hostile: kobolds couldn't react in time to attack you! | {kobolds_revealed: kobolds seem suspicious of whatever you just drank. | figure couldn't really react, and it just looks slightly confused.}} #narrator
     -> KOBOLDS_CARD_OPTIONS
  + Punching yourself would be a bit strange, even for you. #card #@self #!punch #refundcard:punch
     -> KOBOLDS_CARD_OPTIONS
@@ -127,8 +127,8 @@ As you get even closer, you start to understand why this figure seems to struggl
         No. You're doing this. #narrator
         You take a big swig from the bottle, and almost retch immediately. You only manage to finish it thanks to using all of your willpower. #narrator
         You feel a burn spreading through your body as the foul liquid makes its way down. This can't be good for you. #narrator
-        ~ g_player_health--
         And it isn't. You keel over, trying to make yourself smaller to somehow minimize the pain in your chest and stomach. It doesn't do much. #narrator
+        ~ g_player_health--
         ~ considered_evil_bottle = false
         {
             - kobolds_hostile:
@@ -201,11 +201,13 @@ As you get even closer, you start to understand why this figure seems to struggl
     -> HANDLE_POTION_OUTCOME
  + You form a fist with your hand, and swing at the {kobolds_revealed: kobold stack! | shady figure!} #card #@kobolds #!punch
     -> HANDLE_BONK_OUTCOME
- + "{kobolds_revealed: Are you three stacked because you're insecure about your height? Because you're all <i>really</i> short." |Your sunglasses don't fit you and the coat makes you look like a total creep!"} #card #@kobolds #!insult #speaker:You
+ + "{kobolds_revealed:Are you three stacked because you're insecure about your height? Because you're all <i>really</i> short." |Your sunglasses don't fit you and the coat makes you look like a total creep!"} #card #@kobolds #!insult #speaker:You
     -> HANDLE_INSULT_OUTCOME
  + You rub your hands together, tiny sparks forming as you do. #card #@kobolds #!static-shock
     You spring for the {kobolds_revealed: stack, | figure,} managing to land a shock directly on {kobolds_revealed: the red one's snout! | figure's face!} #narrator
     -> HANDLE_SHOCK_OUTCOME
+ + You quickly fling several loops of rope around the {kobolds_revealed: kobolds|figure}! #card #@kobolds #!rope
+    -> HANDLE_ROPE_OUTCOME
  
 -> DONE
 
@@ -216,9 +218,19 @@ As you get even closer, you start to understand why this figure seems to struggl
     The figure resumes its laborous walking, eventually fading into the distance #narrator
     -> KOBOLD_EVENT_EPILOGUE("kobolds_left")
     
+    - kobolds_hostile:
+    "Wait, I thought we were fighting! Why're you giving us gifts now!" His tail is wagging. #Speaker:Red Kobold
+    "I didn't mean to start a fight, hopefully the apple is enough to repay you." #Speaker:You
+    The kobolds chatter among themselves for a short while. #narrator
+    "We've reached a decision! You're off the hook this time, {g_player_gender == "hat": hat-thing!|wizard!}" #Speaker:Red Kobold
+    The kobolds start preparing to leave. #narrator
+    "Bye, {g_player_gender == "hat": hat-thing|wizard}. Try not to start fights with everyone you meet!" #Speaker:Red Kobold #setsprite:kobolds1>kobolds1_coat
+    You wave them off as they're leaving. #narrator
+    Hm. Seems they forgot their coat. #narrator
+    
     - else: "Whoa, thanks a bunch! We'll totally try to remember this!" #speaker:Red Kobold
     "Bye now, {g_player_gender == "hat": hat | human}!" #speaker:Red Kobold
-    The three kobolds hop off of each other, before continuing on their way. Seems they forgot their coat. #narrator
+    The three kobolds hop off of each other, before continuing on their way. Seems they forgot their coat. #narrator #setsprite:kobolds1>kobolds1_coat
     -> KOBOLD_EVENT_EPILOGUE("kobolds_left")
 }
  
@@ -326,13 +338,13 @@ As you get even closer, you start to understand why this figure seems to struggl
 === HANDLE_DAGGER_OUTCOME ===
 {
     - kobolds_hostile:
-        You swing at the stack of kobolds, landing a few strikes on the middle one, who yelps out in pain! #narrator
-        The stack quickly dismantles, and the other two rapidly carry off their wounded stack-mate. #narrator
-        As the group is escaping, the red one yells out: "We'll definitely finish you off next time!" #narrator
+        You swing at the stack of kobolds, landing a few strikes on the top one, who yelps out in pain! #narrator
+        The stack quickly dismantles, and the other two rapidly carry off their wounded stack-mate. #narrator #setsprite:kobolds1>kobolds1_defeat
+        As the group is escaping, the dark grey one yells out: "We'll definitely finish you off next time!" #narrator #hidetargets:kobolds1
         You'd like to see them try. #narrator
         -> KOBOLD_EVENT_EPILOGUE("won_fight")
     - kobolds_revealed:
-        You swing at the stack of kobolds, landing a few strikes on the middle one, who yelps out in pain! #narrator
+        You swing at the stack of kobolds, landing a few strikes on the top one, who yelps out in pain! #narrator
         ~ kobolds_hostile = true
         {
             - g_player_gender == "female":
@@ -344,8 +356,8 @@ As you get even closer, you start to understand why this figure seems to struggl
             - g_player_gender == "hat":
             "What the hell, hat!? What was that for?" #speaker:Red Kobold
         }
-        The stack quickly dismantles, and the other two rapidly carry off their wounded stack-mate. #narrator
-        As the group is escaping, the red one yells out: "We'll definitely mess you up next time!" #narrator
+        The stack quickly dismantles, and the other two prepare carry off their wounded stack-mate. #narrator #setsprite:kobolds1>kobolds1_defeat
+        As the group begins their escape, the dark grey one yells out: "We'll definitely mess you up next time!" #narrator
         You'd like to see them try. #narrator
         -> KOBOLD_EVENT_EPILOGUE("won_fight")
     - else:
@@ -373,7 +385,7 @@ Your strike connects with the head of {kobolds_revealed: the top kobold, | shady
 {
     - !kobolds_revealed:
     A fitting punishment for calling you chip, you think. #narrator
-    The figure quickly falls apart, revealing three kobolds! #narrator #setsprite:kobolds1>kobolds1_revealed
+    The figure quickly falls apart, revealing three kobolds! #narrator #setsprite:kobolds1>kobolds1_defeat
     ~ kobolds_revealed = true
     {
         - g_player_gender == "female":
@@ -389,12 +401,12 @@ Your strike connects with the head of {kobolds_revealed: the top kobold, | shady
     The remaining two kobolds quickly pick up their wounded stack-mate, preparing to run off. #narrator
     "Point taken, now get the hell out of the way!" #speaker:Dark Grey Kobold
     The two kobolds still standing sprint away from you while carrying the third. #narrator
-    As they make their escape, the dark grey one yells at you: "We'll definitely mess you up next time!" #narrator
+    As they make their escape, the dark grey one yells at you: "We'll definitely mess you up next time!" #narrator hidetargets:kobolds1
     You'd like to see them try. #narrator
     -> KOBOLD_EVENT_EPILOGUE("won_fight")
     
     - !kobolds_hostile:
-    The top kobold falls from atop the stack, unconscious. You can already see a bump forming on his head. #narrator
+    The top kobold falls from atop the stack, unconscious. You can already see a bump forming on his head. #narrator #setsprite:kobolds1>kobolds1_defeat
     ~ kobolds_hostile = true
     {
         - g_player_gender == "female":
@@ -407,14 +419,14 @@ Your strike connects with the head of {kobolds_revealed: the top kobold, | shady
         "What the hell, hat!? What was that for?" #speaker:Dark Grey Kobold
     }
     The remaining two kobolds quickly pick up their wounded stack-mate, preparing to run off. #narrator
-    As the kobolds start to make their escape, the dark grey one yells at you: "We'll definitely mess you up next time!" #narrator
+    As the kobolds start to make their escape, the dark grey one yells at you: "We'll definitely mess you up next time!" #narrator hidetargets:kobolds1
     You'd like to see them try. #narrator
     -> KOBOLD_EVENT_EPILOGUE("won_fight")
     
     - else:
-    The top kobold falls from atop the stack, unconscious. You can already see a bump forming on his head. #narrator
+    The top kobold falls from atop the stack, unconscious. You can already see a bump forming on his head. #narrator #setsprite:kobolds1>kobolds1_defeat
     The remaining two kobolds quickly pick up their wounded stack-mate, preparing to run off. #narrator
-    As the kobolds start to make their escape, the dark grey one yells at you: "We'll definitely mess you up next time!" #narrator
+    As the kobolds start to make their escape, the dark grey one yells at you: "We'll definitely mess you up next time!" #narrator #hidetargets:kobolds1
     You'd like to see them try. #narrator
     -> KOBOLD_EVENT_EPILOGUE("won_fight")
 }
@@ -424,7 +436,7 @@ Your strike connects with the head of {kobolds_revealed: the top kobold, | shady
     - !kobolds_revealed:
     "I accept your generous offer, chip", the figure says while taking the offered potion. #speaker:Shady Figure
     "I will remember this. Now keep walking, chip" #speaker:Shady Figure
-    You seem to have garnered the respect of the figure, who is now laborously walking away from you. #narrator #hidesprite:kobolds1
+    You seem to have garnered the respect of the figure, who is now laborously walking away from you. #narrator #hidestargets:kobolds1
     
     - kobolds_revealed:
     "Wow, are you sure we can take this? Thanks a lot!" #speaker:Red Kobold #setsprite:kobolds1>kobolds1_revealed
@@ -432,7 +444,7 @@ Your strike connects with the head of {kobolds_revealed: the top kobold, | shady
     The red kobold whispers something to the others, and they nod in unison. #narrator
     "Thanks for the potion!" #speaker:The Kobold Stack
     "Bye now!" #speaker:Red Kobold
-    The three kobolds hop off of each other, before continuing on their way. Seems they forgot their coat. #narrator
+    The three kobolds hop off of each other, before continuing on their way. Seems they forgot their coat. #narrator #setsprite:kobolds1>kobolds1_coat
 }
 -> KOBOLD_EVENT_EPILOGUE("kobolds_left")
 
@@ -464,10 +476,10 @@ Your strike connects with the head of {kobolds_revealed: the top kobold, | shady
 === HANDLE_SHOCK_OUTCOME ===
 {
     - kobolds_revealed:
-    The red kobold yelps loudly, falling dramatically off from on top of the stack! #narrator
+    The red kobold yelps loudly, falling dramatically off from on top of the stack! #narrator #setsprite:kobolds1>kobolds1_defeat
     The other two quickly de-stack as well, huddling around their injured friend. That should show them! #narrator
     - else:
-    The figure quickly falls apart, revealing three kobolds, one of whom seems to already be knocked out! #narrator
+    The figure quickly falls apart, revealing three kobolds, one of whom seems to already be knocked out! #narrator #setsprite:kobolds1>kobolds1_defeat
     The other two quickly huddle around their injured friend. That should show them? #narrator
 }
 {
@@ -492,32 +504,60 @@ Your strike connects with the head of {kobolds_revealed: the top kobold, | shady
 Whatever the case, seems like you've won the day! #narrator
 The dark grey and white kobolds hoist their injured stackmate above their heads and start making an exit! #narrator
 "We'll definitely get you next time, you evil wizard! Definitely!" #speaker:Dark Grey Kobold
-The kobolds skitter away, leaving you to ponder what to do next. #narrator
+The kobolds skitter away, leaving you to ponder what to do next. #narrator #hidetargets:kobolds1
 
 -> KOBOLD_EVENT_EPILOGUE("kobolds_left")
+
+=== HANDLE_ROPE_OUTCOME ===
+{
+    - kobolds_revealed:
+    The kobolds try to quickly de-stack, but they're too slow! #narrator
+    You quickly finish tying them up, dusting off your {g_player_gender == "hat": host body's} hands once you're done. #narrator #setsprite:kobolds1>kobolds1_roped
+    The kobolds mutter among each other, clearly peeved that they've been tied up so easily. #narrator
+    "Ha, caught you! And so easily too!" #speaker:You
+    "Well. Once you're done mocking us, could you untie us? This is <i>really</i> uncomfortable, especially for those two." #speaker:Red Kobold
+    "Mmm, no. You'll can repent for your actions right there." #speaker:You
+    "What actions!? {kobolds_hostile: You started it!|We weren't even doing anything!}" #speaker:Red Kobold
+    "No one calls me chip!" #speaker:You
+    They groan loudly, probably realizing they can't really talk back in this position. #narrator
+    "Well then, I'll be going. Have fun getting free!" #speaker:You
+    -> KOBOLD_EVENT_EPILOGUE("player_left")
+    
+    - else:
+    As you try to wrap the rope around the figure, its body twists alarmingly, before falling apart entirely! #narrator
+    From the coat emerge three kobolds that quickly hop back onto each other, growling at you all the while! #narrator #setsprite:kobolds1>kobolds1_attackmode
+    ~ kobolds_revealed = true
+    ~ kobolds_hostile = true
+    "What the hell was that for!? We're totally gonna mess you up for that!" #speaker:Red Kobold
+    Seems you've landed yourself in a fight! #narrator
+    -> KOBOLDS_CARD_OPTIONS
+}
 
 === KOBOLD_EVENT_EPILOGUE(exit_method) ===
 {
     - exit_method == "marshmallows":
     {
         - g_player_gender == "hat":
-        "Thanks again for the marshmallows, hat-thing! Good luck with the adventuring!" The group yells, their voices growing distant. #narrator
+        "Thanks again for the marshmallows, hat-thing! Good luck with the adventuring!" The group yells, their voices growing distant. #narrator #hidetargets:kobolds1
         - g_player_gender == "female":
-        "Thanks again for the marshmallows, kind lady! Good luck with the adventuring!" The group yells, their voices growing distant. #narrator
+        "Thanks again for the marshmallows, kind lady! Good luck with the adventuring!" The group yells, their voices growing distant. #narrator #hidetargets:kobolds1
         - g_player_gender == "male":
-        "Thanks again for the marshmallows, mister! Good luck with the adventuring!" The group yells, their voices growing distant. #narrator
+        "Thanks again for the marshmallows, mister! Good luck with the adventuring!" The group yells, their voices growing distant. #narrator #hidetargets:kobolds1
         - g_player_gender == "non-binary":
-        "Thanks again for the marshmallows, wizard-person! Good luck with the adventuring!" The group yells, their voices growing distant. #narrator
+        "Thanks again for the marshmallows, wizard-person! Good luck with the adventuring!" The group yells, their voices growing distant. #narrator #hidetargets:kobolds1
     }
     What a surprisingly nice group of kobolds. Even though the red one called you chip. #narrator
     As you prepare to leave as well, you notice a few cards where the kobolds were sitting! Did they leave these for you? #narrator
     You figure they're safer in your binder than on the ground, so you gather up the intact ones. #narrator #function:RewardCards(2, stick, deceive, soothsay, run)
-    - else: 
+    - exit_method == "kobolds_left": 
     As you prepare to leave as well, you notice a few cards on the ground! #narrator
+    You figure they're safer in your binder than on the ground, so you gather up the intact ones. #narrator #function:RewardCards(2, stick, deceive, soothsay, run)
+    - else: 
+    As you start to leave, you notice a few cards on the ground! #narrator
     You figure they're safer in your binder than on the ground, so you gather up the intact ones. #narrator #function:RewardCards(2, stick, deceive, soothsay, run)
 }
 
-You suppose there's nothing left to do here, and resume traveling. #narrator
+You suppose there's nothing left to do here, and resume traveling. #narrator #hidetargets:kobolds1
 
 #function:LoadScene(Map1)
 
