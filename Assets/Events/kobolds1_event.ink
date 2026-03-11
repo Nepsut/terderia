@@ -441,7 +441,7 @@ Your strike connects with the head of {kobolds_revealed: the top kobold, | shady
     - kobolds_hostile:
     "We're not short!" #speaker:The Kobold Stack
     "<i>So</i> insecure. #speaker:You
-    "That's it, now you're gonna get it!" #speaker:Red Kobold1>kobolds1_attackmode
+    "That's it, now you're gonna get it!" #speaker:Red Kobold #setsprite:kobolds1>kobolds1_attackmode
     The red kobold springs at you, its teeth digging right into {g_player_gender == "hat": your felted edge! | shoulder!} #narrator
     ~ g_player_health--
     You manage to tear the creature off of you, but the pain remains. Time to fight back! #narrator

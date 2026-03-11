@@ -31,6 +31,7 @@ public class EventManager : MonoSingleton<EventManager>
     [SerializeField] private GameObject speakerPanel;
     [SerializeField] private TextMeshProUGUI dialogueSpeaker;
     [SerializeField] private GameObject selfTargetObject;
+    [SerializeField] private GameObject dialogueIndicator;
     private SpriteRenderer selfTargetSprite;
     private Collider2D selfTargetCollider;
     private Color selfTargetColorClear;
@@ -114,6 +115,8 @@ public class EventManager : MonoSingleton<EventManager>
     private void ContinueStory()
     {
         if (pendingCardUse || !IsEventActive || UIController.PauseEventProgression) return;
+        
+        dialogueIndicator.SetActive(false);
 
         if (choiceWasMade && CurrentStory.canContinue)
         {
@@ -443,6 +446,7 @@ public class EventManager : MonoSingleton<EventManager>
         }
         else
         {
+            dialogueIndicator.SetActive(true);
             if (cardHolder.IsActive && !cardHolder.IsMoving) cardHolder.DeactivateHolder();
             LeanTween.alpha(selfTargetObject, 0f, selfTargetFadeTime)
                 .setEaseOutQuart()
