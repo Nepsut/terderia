@@ -26,6 +26,7 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
     public static bool DraggingOn = false;
     [HideInInspector] public Vector2 returnPosition;
     public bool IsReturnPositionSet { get; private set; } = false;
+    public bool IsAtRestPosition { get; private set; }
     private int hoverTweenId = -1;
     private int dragTweenId = -1;
     private Coroutine resetHoverCoroutine;
@@ -40,6 +41,7 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
     public virtual void OnPointerEnter(PointerEventData eventData)
     {
         _pointerOnObject = true;
+        IsAtRestPosition = false;
 
         if (hoverAllowed && (hoverOffsetHorizontal != 0f || hoverOffsetVertical != 0))
         {
@@ -139,6 +141,7 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
         yield return new WaitForSeconds(hoverAnimTime);
         hoverTweenId = -1;
         resetHoverCoroutine = null;
+        IsAtRestPosition = true;
         OnHoverEnd?.Invoke(this);
     }
 
@@ -181,6 +184,7 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
         if (SelfRect == null) return;
         returnPosition = SelfRect.anchoredPosition;
         IsReturnPositionSet = true;
+        IsAtRestPosition = true;
     }
 
     private void Awake()
