@@ -84,7 +84,7 @@ public class CardHolder : MonoBehaviour
             DraggableObject draggableObject = usedCard.GetComponent<DraggableObject>();
             UnsubscribeCardMoveEvents(draggableObject);
             draggableChildren.Remove(draggableObject);
-
+            reshuffleButton.interactable = false;
             RehomeCards(CardRehomeStyle.flipNone);
             StartCoroutine(DelayedCardsHomeCheck());
             Destroy(usedCard.gameObject);
@@ -140,14 +140,13 @@ public class CardHolder : MonoBehaviour
             $"moveTweenId = {moveTweenId}. Holder allowed to move: {HolderMoveAllowed}.");
             Debug.Log(message);
         }
+        reshuffleButton.interactable = false;
 
         if (IsActive && !HolderMoveAllowed)
         {
             if (GameManager.Instance.DebugModeOn) Debug.Log("Queuing card holder activation.");
             moveQueued = true;
             moveUp = true;
-            StartCoroutine(HandleQueuedHolderMove());
-            return;
         }
 
         holderImage.enabled = false;
@@ -166,6 +165,7 @@ public class CardHolder : MonoBehaviour
             $"moveTweenId = {moveTweenId}. Holder allowed to move: {HolderMoveAllowed}.");
             Debug.Log(message);
         }
+        reshuffleButton.interactable = false;
 
         if (!IsActive || !HolderMoveAllowed)
         {
@@ -205,10 +205,18 @@ public class CardHolder : MonoBehaviour
         moveManagerCoroutine = null;
         layoutGroup.enabled = false;
 
-        if (moveUp) LeanTween.moveY(reshuffleHolder, shuffleBgVisibleY, shuffleBgMoveDuration)
+        if (moveUp)
+        {
+            LeanTween.moveY(reshuffleHolder, shuffleBgVisibleY, shuffleBgMoveDuration)
+            .setEaseInQuart()
+            .setOnComplete(() => reshuffleButton.interactable = true);
+        }
+        else
+        {
+            reshuffleButton.interactable = false;
+            LeanTween.moveY(reshuffleHolder, shuffleBgHiddenY, shuffleBgMoveDuration)
             .setEaseInQuart();
-        else LeanTween.moveY(reshuffleHolder, shuffleBgHiddenY, shuffleBgMoveDuration)
-            .setEaseInQuart();
+        }
 
         if (moveUp && !isInitialized)
         {
@@ -267,6 +275,7 @@ public class CardHolder : MonoBehaviour
     {
         if (!allCardsHome || reshuffleInProgress || !IsActive) return;
         reshuffleInProgress = true;
+        reshuffleButton.interactable = false;
         StartCoroutine(CardReshuffleHandler());
     }
 
@@ -375,6 +384,7 @@ public class CardHolder : MonoBehaviour
         cardRehomeTweens = null;
         cardRehomeCoroutine = null;
         rehomeInProgress = false;
+        if (!moveQueued && EventManager.Instance.DialogueHasChoices) reshuffleButton.interactable = true;
     }
 
     private IEnumerator HandleQueuedHolderMove()

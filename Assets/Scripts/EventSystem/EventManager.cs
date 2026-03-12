@@ -42,6 +42,7 @@ public class EventManager : MonoSingleton<EventManager>
     //Story variables
     public Story CurrentStory { get; private set; }
     public bool IsEventActive { get; private set; } = false;
+    public bool DialogueHasChoices => CurrentStory?.currentChoices.Count > 0;
     private Dictionary<string, Sprite> eventSpriteAssets;
     private List<Collider2D> activeEventTargets;
     private List<Collider2D> eventTargetsToHide;
@@ -125,11 +126,14 @@ public class EventManager : MonoSingleton<EventManager>
             if (CurrentStory.currentChoices.Count != 0)
             {
                 pendingCardUse = true;
-                selfTargetObject.SetActive(true);
-                selfTargetSprite.color = selfTargetColorClear;
-                LeanTween.alpha(selfTargetObject, 1f, selfTargetFadeTime).setEaseInQuart();
+                if (!selfTargetObject.activeSelf)
+                {
+                    selfTargetObject.SetActive(true);
+                    selfTargetSprite.color = selfTargetColorClear;
+                    LeanTween.alpha(selfTargetObject, 1f, selfTargetFadeTime).setEaseInQuart();
+                }
                 selfTargetCollider.enabled = true;
-                cardHolder.ActivateHolder();
+                if (!cardHolder.IsActive) cardHolder.ActivateHolder();
             }
             else StartCoroutine(TypeDialogue());
         }
@@ -201,7 +205,6 @@ public class EventManager : MonoSingleton<EventManager>
 
             for (int j = 0; j < CurrentStory.currentChoices[i].tags.Count && bestMatchIndex == -1; j++)
             {
-
                 string choiceTag = CurrentStory.currentChoices[i].tags[j];
 
                 if (choiceTag.Contains('@'))
@@ -436,7 +439,7 @@ public class EventManager : MonoSingleton<EventManager>
             selfTargetSprite.color = selfTargetColorClear;
             LeanTween.alpha(selfTargetObject, 1f, selfTargetFadeTime).setEaseInQuart();
             selfTargetCollider.enabled = true;
-            cardHolder.ActivateHolder();
+            if (!cardHolder.IsActive) cardHolder.ActivateHolder();
             pendingCardUse = true;
         }
         else

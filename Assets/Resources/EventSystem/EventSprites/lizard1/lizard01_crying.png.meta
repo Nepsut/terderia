@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: 94b8242ff216d334389c501697dbff22
+guid: e63d77428a396654d8fce6745d46ed1a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7069599595177187392
-    second: lizard 01_default_0
+      213: -2459865782810815468
+    second: lizard01_crying_0
   - first:
-      213: 1700178610716881092
-    second: lizard 01_default_1
+      213: 7774774975663597798
+    second: lizard01_crying_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -116,11 +116,11 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: lizard 01_default_0
+      name: lizard01_crying_0
       rect:
         serializedVersion: 2
-        x: 24
-        y: 151
+        x: 32
+        y: 154
         width: 1402
         height: 589
       alignment: 0
@@ -131,18 +131,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0c7e731ef9cb3ed90800000000000000
-      internalID: -7069599595177187392
+      spriteID: 4145c6c7a1dccddd0800000000000000
+      internalID: -2459865782810815468
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: lizard 01_default_1
+      name: lizard01_crying_1
       rect:
         serializedVersion: 2
-        x: 289
-        y: 16
+        x: 297
+        y: 19
         width: 909
         height: 237
       alignment: 0
@@ -153,8 +153,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4c03f72407f389710800000000000000
-      internalID: 1700178610716881092
+      spriteID: 6e86609d5ac85eb60800000000000000
+      internalID: 7774774975663597798
       vertices: []
       indices: 
       edges: []
@@ -173,8 +173,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      lizard 01_default_0: -7069599595177187392
-      lizard 01_default_1: 1700178610716881092
+      lizard01_crying_0: -2459865782810815468
+      lizard01_crying_1: 7774774975663597798
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: d9b48b208e06bb34e97f7f0bdfe47025
+guid: f919f91d720338b49bd2376d4c74a12b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7751540924187327127
-    second: lizard 01_thumb_0
-  - first:
-      213: 2238443600455253277
-    second: lizard 01_thumb_1
+      213: -1108331148285764836
+    second: lizard01_fried_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -116,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: lizard 01_thumb_0
+      name: lizard01_fried_0
       rect:
         serializedVersion: 2
-        x: 27
-        y: 156
+        x: 29
+        y: 35
         width: 1402
-        height: 589
+        height: 724
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,30 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 96549ef499efc6490800000000000000
-      internalID: -7751540924187327127
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: lizard 01_thumb_1
-      rect:
-        serializedVersion: 2
-        x: 292
-        y: 21
-        width: 909
-        height: 237
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d1db1e6489c801f10800000000000000
-      internalID: 2238443600455253277
+      spriteID: c1b1dec51ba6e90f0800000000000000
+      internalID: -1108331148285764836
       vertices: []
       indices: 
       edges: []
@@ -173,8 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      lizard 01_thumb_0: -7751540924187327127
-      lizard 01_thumb_1: 2238443600455253277
+      lizard01_fried_0: -1108331148285764836
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

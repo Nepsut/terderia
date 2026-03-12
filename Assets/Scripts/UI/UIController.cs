@@ -105,6 +105,7 @@ public class UIController : MonoSingleton<UIController>
 
             rewardCards[i].InitializeCard(realUnlockableCards[i]);
             rewardCards[i].gameObject.SetActive(true);
+            rewardCards[i].ResetAlpha();
             rewardCards[i].SelfButton.interactable = false;
 
             if (currentRewardsCount > choosableRewardCount)
