@@ -29,16 +29,16 @@ As you get even closer, you start to understand why this figure seems to struggl
   }
   {
     - kobolds_hostile:
-    The kobolds seem insulted that you think you have time to snack, and they take the opportunity to attack you!
-    The red kobold springs at you, its teeth sinking into {g_player_gender == "hat": your felted form! | your flesh!} Pain spreads through you as you tear the creature off of you.
+    The kobolds seem insulted that you think you have time to snack, and they take the opportunity to attack you! #narrator
+    The red kobold springs at you, its teeth sinking into {g_player_gender == "hat": your felted form! | your flesh!} Pain spreads through you as you tear the creature off of you. #narrator
     ~ g_player_health--
   }
     -> KOBOLDS_CARD_OPTIONS
  + This might not be the time to light yourself on fire, but when has that ever stopped you? #card #@self #!bonfire
-    The {kobolds_revealed: kobolds look | figure looks} shocked as you manifest a bonfire directly at your feet!
-    The pain is immense, and the smell of burnt flesh doesn't make the experience any more pleasant.
+    The {kobolds_revealed: kobolds look | figure looks} shocked as you manifest a bonfire directly at your feet! #narrator
+    The pain is immense, and the smell of burnt flesh doesn't make the experience any more pleasant. #narrator
         ~ g_player_health--
-    The {kobolds_revealed: kobolds share a brief look among each other, and bolt away, seemingly now terrified of you! | figure stumbles for a moment, before apparently deciding to take its own advice, as it starts walking away.}
+    The {kobolds_revealed: kobolds share a brief look among each other, and bolt away, seemingly now terrified of you! | figure stumbles for a moment, before apparently deciding to take its own advice, as it starts walking away.} #narrator #hidetargets:kobolds1
     -> KOBOLD_EVENT_EPILOGUE("kobolds_left")
  + You decide to consult the smartest person you know, and you make some good points on how to handle this situation. #card #@self #!banter
     The {kobolds_revealed: kobolds look | figure looks} at you as if you were insane, seemingly too stunned to react. #narrator
@@ -228,12 +228,12 @@ As you get even closer, you start to understand why this figure seems to struggl
     -> KOBOLD_EVENT_EPILOGUE("kobolds_left")
     
     - kobolds_hostile:
-    "Wait, I thought we were fighting! Why're you giving us gifts now!" His tail is wagging. #Speaker:Red Kobold
-    "I didn't mean to start a fight, hopefully the apple is enough to repay you." #Speaker:You
+    "Wait, I thought we were fighting! Why're you giving us gifts now!" His tail is wagging. #speaker:Red Kobold
+    "I didn't mean to start a fight, hopefully the apple is enough to repay you." #speaker:You
     The kobolds chatter among themselves for a short while. #narrator
-    "We've reached a decision! You're off the hook this time, {g_player_gender == "hat": hat-thing!|wizard!}" #Speaker:Red Kobold
+    "We've reached a decision! You're off the hook this time, {g_player_gender == "hat": hat-thing!|wizard!}" #speaker:Red Kobold
     The kobolds start preparing to leave. #narrator
-    "Bye, {g_player_gender == "hat": hat-thing|wizard}. Try not to start fights with everyone you meet!" #Speaker:Red Kobold #setsprite:kobolds1>kobolds1_coat
+    "Bye, {g_player_gender == "hat": hat-thing|wizard}. Try not to start fights with everyone you meet!" #speaker:Red Kobold #setsprite:kobolds1>kobolds1_coat
     You wave them off as they're leaving. #narrator
     Hm. Seems they forgot their coat. #narrator
     
