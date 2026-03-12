@@ -99,7 +99,11 @@ public class CardReward : CardVisualsOnly
         isFadingOut = true;
 
         LeanTween.value(gameObject, value => selfGroup.alpha = value, 1f, 0f, fadeTime)
-            .setOnComplete(() => gameObject.SetActive(false))
+            .setOnComplete(() => 
+            {
+                isFadingOut = false;
+                gameObject.SetActive(false);
+            })
             .setEaseOutQuart();
     }
 }

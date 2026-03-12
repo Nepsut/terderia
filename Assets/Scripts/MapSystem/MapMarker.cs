@@ -27,6 +27,7 @@ public class MapMarker : MonoBehaviour
     public void SetAsVisited()
     {
         selfSpriteRenderer.enabled = false;
+        SceneIsSeen = true;
     }
 }
 
