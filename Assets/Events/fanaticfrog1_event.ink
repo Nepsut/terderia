@@ -288,7 +288,7 @@ This isn't going anywhere. You'll have to do something about this. #narrator
         He hops off after that, leaving you wondering what went wrong. Or right? You can't tell anymore.
         -> FROG_EVENT_EPILOGUE("frog_left")
     }
- + "Nice microclimate in this cave, huh?" #card #@frog #!banter
+ + "Nice microclimate in this cave, huh?" #card #@frog #!banter #speaker:You
     {
         - frog_hostile:
         He doesn't seem to approve of small-talk in the middle of a fight. #narrator
@@ -453,7 +453,7 @@ This isn't going anywhere. You'll have to do something about this. #narrator
         "Whoa... I think I'll go check it out! I could use a few more for my stash." #speaker:Rudibert
         "Thanks for the heads-up, {frog_gender_word()}! See you around!" #speaker:Rudibert
     }
-    He starts hopping away. Hook, line, and sinker. Nice. #narrator
+    He starts hopping away. Hook, line, and sinker. Nice. #narrator #hidetargets:fanaticfrog1
     -> FROG_EVENT_EPILOGUE("frog_left")
  + You recite some healing words, and wisps of energy start circling around Rudibert. #card #@frog #!soothsay
     {

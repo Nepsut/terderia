@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: 1bedde63f0ce8e84bba3f7630777d167
+guid: 54f74ae51f6969445bde8dbe004d30e3
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7774008588670216915
-    second: lizard01_default_0
+      213: 4718463420522846552
+    second: lizard1_default_0
   - first:
-      213: 5947583971717037799
-    second: lizard01_default_1
+      213: -8144178943364570231
+    second: lizard1_default_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -49,7 +49,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -116,7 +116,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: lizard01_default_0
+      name: lizard1_default_0
       rect:
         serializedVersion: 2
         x: 24
@@ -131,14 +131,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d25d977806c2d1490800000000000000
-      internalID: -7774008588670216915
+      spriteID: 85950f14b795b7140800000000000000
+      internalID: 4718463420522846552
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: lizard01_default_1
+      name: lizard1_default_1
       rect:
         serializedVersion: 2
         x: 289
@@ -153,8 +153,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7ee30025c101a8250800000000000000
-      internalID: 5947583971717037799
+      spriteID: 983e98596601afe80800000000000000
+      internalID: -8144178943364570231
       vertices: []
       indices: 
       edges: []
@@ -163,7 +163,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -173,8 +173,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      lizard01_default_0: -7774008588670216915
-      lizard01_default_1: 5947583971717037799
+      lizard1_default_0: 4718463420522846552
+      lizard1_default_1: -8144178943364570231
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

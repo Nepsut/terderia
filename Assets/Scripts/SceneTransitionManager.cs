@@ -104,6 +104,7 @@ public class SceneTransitionManager : MonoSingleton<SceneTransitionManager>
         //map 1 events below this point
         CabinEvent1,
         KoboldsEvent1,
-        FanaticFrogEvent1
+        FanaticFrogEvent1,
+        LizardEvent1
     }
 }

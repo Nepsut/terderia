@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: e63d77428a396654d8fce6745d46ed1a
+guid: 9188ecdf70f0941489b0dda6b7b5f196
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2459865782810815468
-    second: lizard01_crying_0
+      213: -2271918631316270075
+    second: lizard1_defeated_0
   - first:
-      213: 7774774975663597798
-    second: lizard01_crying_1
+      213: -3266851010128163816
+    second: lizard1_defeated_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -49,7 +49,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -116,11 +116,11 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: lizard01_crying_0
+      name: lizard1_defeated_0
       rect:
         serializedVersion: 2
-        x: 32
-        y: 154
+        x: 28
+        y: 156
         width: 1402
         height: 589
       alignment: 0
@@ -131,18 +131,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4145c6c7a1dccddd0800000000000000
-      internalID: -2459865782810815468
+      spriteID: 5045dcdba068870e0800000000000000
+      internalID: -2271918631316270075
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: lizard01_crying_1
+      name: lizard1_defeated_1
       rect:
         serializedVersion: 2
-        x: 297
-        y: 19
+        x: 293
+        y: 21
         width: 909
         height: 237
       alignment: 0
@@ -153,8 +153,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6e86609d5ac85eb60800000000000000
-      internalID: 7774774975663597798
+      spriteID: 81c4f279050d9a2d0800000000000000
+      internalID: -3266851010128163816
       vertices: []
       indices: 
       edges: []
@@ -163,7 +163,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -173,8 +173,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      lizard01_crying_0: -2459865782810815468
-      lizard01_crying_1: 7774774975663597798
+      lizard1_defeated_0: -2271918631316270075
+      lizard1_defeated_1: -3266851010128163816
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

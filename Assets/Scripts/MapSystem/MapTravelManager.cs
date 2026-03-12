@@ -106,6 +106,10 @@ public class MapTravelManager : MonoBehaviour
         currentMarker = travelingToMarker;
         travelingToMarker = null;
         playerSplineAnimate.Completed -= HandleTravelDone;
-        if (currentMarker.MapEvent != null) currentMarker.MapEvent.LoadSetScene();
+        if (currentMarker.MapEvent != null && !currentMarker.SceneIsSeen)
+        {
+            currentMarker.SetAsVisited();
+            currentMarker.MapEvent.LoadSetScene();
+        }
     }
 }

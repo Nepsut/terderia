@@ -409,8 +409,8 @@ Your strike connects with the head of {kobolds_revealed: the top kobold, | shady
     "No one calls me chip!" #speaker:You
     The remaining two kobolds quickly pick up their wounded stack-mate, preparing to run off. #narrator
     "Point taken, now get the hell out of the way!" #speaker:Dark Grey Kobold
-    The two kobolds still standing sprint away from you while carrying the third. #narrator
-    As they make their escape, the dark grey one yells at you: "We'll definitely mess you up next time!" #narrator hidetargets:kobolds1
+    The two kobolds still standing sprint away from you while carrying the third. #narrator #hidetargets:kobolds1
+    As they make their escape, the dark grey one yells at you: "We'll definitely mess you up next time!" #narrator
     You'd like to see them try. #narrator
     -> KOBOLD_EVENT_EPILOGUE("won_fight")
     
