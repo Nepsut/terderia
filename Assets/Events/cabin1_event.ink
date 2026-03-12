@@ -5,7 +5,7 @@ INCLUDE global_vars.ink
 //Story variables
 VAR considered_frying_bonk = false
 
-#targets:cabindoor1
+#showtargets:cabindoor1
 
 You wake in a familiar cabin. Right back where you started. #narrator
 

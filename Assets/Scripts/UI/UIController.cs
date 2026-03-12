@@ -25,7 +25,7 @@ public class UIController : MonoSingleton<UIController>
     private const string defaultHeaderMessage = "New cards unlocked!";
     private const string allUnlockedHeaderMessage = "All rewards already unlocked!";
     private const string chooseOneMessage = "Choose one card.";
-    private const string blankChooseMessage = "Choose up to _ cards.";
+    private const string blankChooseMessage = "Choose _ cards.";
     private const string gainedAllMessage = "Gained all of the following cards:";
     public static bool CardRewardsOpen { get; private set; } = false;
     private int currentRewardsCount = 0;
