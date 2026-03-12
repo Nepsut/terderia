@@ -357,7 +357,7 @@ He seems to be badly stuck. Maybe you should do something about this? #narrator
     - exit_method == "lizard_down":
     Now that the poor innocent lizard is dealt with, you decide to keep travelling. #narrator #hidetargets:lizard1
     As you're making your leave, you spot some cards on the ground! Could be the lizard's. #narrator
-    Eh, he's not around to judge. So you pocket the intact ones. #narrator #function:RewardCards(1, yell, telekinesis, spear) spear)
+    Eh, he's not around to judge. So you pocket the intact ones. #narrator #function:RewardCards(1, yell, telekinesis, spear)
     Now, time to get back to adventuring! #narrator
     
     - exit_method == "tried_helping":
