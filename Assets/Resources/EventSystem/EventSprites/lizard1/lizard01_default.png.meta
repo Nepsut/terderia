@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: 2b6ca78e291456e47851e6bcfa4d471e
+guid: 1bedde63f0ce8e84bba3f7630777d167
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 98017103755398023
-    second: lizard 01_fried_0
+      213: -7774008588670216915
+    second: lizard01_default_0
+  - first:
+      213: 5947583971717037799
+    second: lizard01_default_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +116,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: lizard 01_fried_0
+      name: lizard01_default_0
       rect:
         serializedVersion: 2
-        x: 29
-        y: 35
+        x: 24
+        y: 151
         width: 1402
-        height: 724
+        height: 589
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +131,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 78bc04b590a3c5100800000000000000
-      internalID: 98017103755398023
+      spriteID: d25d977806c2d1490800000000000000
+      internalID: -7774008588670216915
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lizard01_default_1
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 16
+        width: 909
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ee30025c101a8250800000000000000
+      internalID: 5947583971717037799
       vertices: []
       indices: 
       edges: []
@@ -148,7 +173,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      lizard 01_fried_0: 98017103755398023
+      lizard01_default_0: -7774008588670216915
+      lizard01_default_1: 5947583971717037799
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

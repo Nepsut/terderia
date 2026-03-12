@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: 38e417187acd9c645a432fe5fef978ab
+guid: 3aa2970c578e1ff4db2ad9923bd5524b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6024939857800690494
-    second: lizard 01_crying_0
+      213: 8226792179094460881
+    second: lizard01_thumb_0
   - first:
-      213: -2082889137723050103
-    second: lizard 01_crying_1
+      213: -7059718147297003054
+    second: lizard01_thumb_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -116,11 +116,11 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: lizard 01_crying_0
+      name: lizard01_thumb_0
       rect:
         serializedVersion: 2
-        x: 32
-        y: 154
+        x: 27
+        y: 156
         width: 1402
         height: 589
       alignment: 0
@@ -131,18 +131,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e3b7d4111e2ec9350800000000000000
-      internalID: 6024939857800690494
+      spriteID: 1d913e346ef6b2270800000000000000
+      internalID: 8226792179094460881
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: lizard 01_crying_1
+      name: lizard01_thumb_1
       rect:
         serializedVersion: 2
-        x: 297
-        y: 19
+        x: 292
+        y: 21
         width: 909
         height: 237
       alignment: 0
@@ -153,8 +153,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9877f776d571813e0800000000000000
-      internalID: -2082889137723050103
+      spriteID: 2d9bbffbfb7d60e90800000000000000
+      internalID: -7059718147297003054
       vertices: []
       indices: 
       edges: []
@@ -173,8 +173,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      lizard 01_crying_0: 6024939857800690494
-      lizard 01_crying_1: -2082889137723050103
+      lizard01_thumb_0: 8226792179094460881
+      lizard01_thumb_1: -7059718147297003054
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

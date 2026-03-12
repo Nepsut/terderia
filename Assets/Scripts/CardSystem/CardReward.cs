@@ -64,6 +64,12 @@ public class CardReward : CardVisualsOnly
         IsSelected = true;
     }
 
+    public void ResetAlpha()
+    {
+        if (selfGroup == null) selfGroup = GetComponent<CanvasGroup>();
+        selfGroup.alpha = 1f;
+    }
+
     public void SetAsDeselected()
     {
         IsSelected = false;

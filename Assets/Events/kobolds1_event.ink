@@ -605,6 +605,10 @@ The kobolds skitter away, leaving you to ponder what to do next. #narrator #hide
     "We would very much like some soup, {kobolds_kind_gender_word()}!" #speaker:Red Kobold
     ... #narrator
     After a while of sitting with the kobolds by a small campfire you built, the soup is finished, and the kobolds have re-stacked themselves. #narrator
+    {
+        - g_player_health < g_player_max_health:
+        ~ g_player_health++
+    }
     "Thanks for the soup, {kobolds_gender_word()}! We'll totally remember this!" #speaker:Red Kobold
     The group makes a quick exit, the red one waving at you as they go. #narrator
     -> KOBOLD_EVENT_EPILOGUE("kobolds_left")
