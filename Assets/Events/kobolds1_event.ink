@@ -236,6 +236,7 @@ As you get even closer, you start to understand why this figure seems to struggl
     "Bye, {g_player_gender == "hat": hat-thing|wizard}. Try not to start fights with everyone you meet!" #speaker:Red Kobold #setsprite:kobolds1>kobolds1_coat
     You wave them off as they're leaving. #narrator
     Hm. Seems they forgot their coat. #narrator
+    -> KOBOLD_EVENT_EPILOGUE("kobolds_left")
     
     - else: "Whoa, thanks a bunch! We'll totally try to remember this!" #speaker:Red Kobold
     "Bye now, {g_player_gender == "hat": hat | human}!" #speaker:Red Kobold

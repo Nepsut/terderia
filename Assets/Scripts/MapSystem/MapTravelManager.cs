@@ -29,13 +29,23 @@ public class MapTravelManager : MonoBehaviour
     {
         currentMarker = startingMarker;
         playerSplineAnimate.transform.position = currentMarker.transform.position;
-        inputReader.OnClickEvent += CheckIfShouldTravel;
         SceneTransitionManager.OnSceneLoadFinished += ResetMapState;
         SceneTransitionManager.OnSceneLoadStarted += HidePersistentMapItems;
+        SceneTransitionManager.OnSceneTransitionEnd += SubscribeTravelChecks;
         inputReader.EnableUiInputs();
 
         //TEMPORARY
         TravelEnabled = true;
+    }
+
+    private void SubscribeTravelChecks()
+    {
+        inputReader.OnClickEvent += CheckIfShouldTravel;
+    }
+
+    private void UnsubscribeTravelChecks()
+    {
+        inputReader.OnClickEvent -= CheckIfShouldTravel;
     }
 
     private void ResetMapState(SceneTransitionManager.Scene loadedScene)
@@ -53,7 +63,7 @@ public class MapTravelManager : MonoBehaviour
 
     private void CheckIfShouldTravel()
     {
-        if (!TravelEnabled || PlayerMoving || UIController.IsMenuOpen) return;
+        if (!TravelEnabled || PlayerMoving || UIController.IsMenuOpen || SceneTransitionManager.LoadScreenOpen) return;
 
         RaycastHit2D[] hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(MousePos), Vector2.zero);
 
@@ -108,6 +118,7 @@ public class MapTravelManager : MonoBehaviour
         playerSplineAnimate.Completed -= HandleTravelDone;
         if (currentMarker.MapEvent != null && !currentMarker.SceneIsSeen)
         {
+            UnsubscribeTravelChecks();
             currentMarker.SetAsVisited();
             currentMarker.MapEvent.LoadSetScene();
         }

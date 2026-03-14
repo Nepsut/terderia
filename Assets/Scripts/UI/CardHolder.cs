@@ -85,7 +85,8 @@ public class CardHolder : MonoBehaviour
             UnsubscribeCardMoveEvents(draggableObject);
             draggableChildren.Remove(draggableObject);
             reshuffleButton.interactable = false;
-            RehomeCards(CardRehomeStyle.flipNone);
+            RehomeCards(CardRehomeStyle.flipNone, false);
+            draggableChildren?.ForEach(child => child.DisallowMovement());
             StartCoroutine(DelayedCardsHomeCheck());
             Destroy(usedCard.gameObject);
         };
@@ -250,7 +251,11 @@ public class CardHolder : MonoBehaviour
             card.transform.GetChild(0).gameObject.SetActive(false);
         }
         draggableChildren = holderRect.GetComponentsInChildren<DraggableObject>().ToList();
-        draggableChildren.ForEach(child => SubscribeCardMoveEvents(child));
+        draggableChildren.ForEach(child => 
+        {
+            SubscribeCardMoveEvents(child);
+            child.DisallowMovement();
+        });
         shownDeckValue = CardManager.TotalCardCount;
         deckCountIndicator.text = shownDeckValue.ToString();
         isInitialized = true;
@@ -314,15 +319,15 @@ public class CardHolder : MonoBehaviour
         RehomeCards(CardRehomeStyle.flipAll);
     }
 
-    private void RehomeCards(CardRehomeStyle style)
+    private void RehomeCards(CardRehomeStyle style, bool allowMovement = true)
     {
         if (draggableChildren.Count == 0) return;
         if (cardRehomeCoroutine != null) StopCoroutine(cardRehomeCoroutine);
         rehomeInProgress = true;
-        cardRehomeCoroutine = StartCoroutine(CardRehomeHandler(style));
+        cardRehomeCoroutine = StartCoroutine(CardRehomeHandler(style, allowMovement));
     }
 
-    private IEnumerator CardRehomeHandler(CardRehomeStyle style)
+    private IEnumerator CardRehomeHandler(CardRehomeStyle style, bool allowMovement = true)
     {
         cardRehomeTweens?.ForEach(tweenId => LeanTween.cancel(tweenId));
         cardRehomeTweens = new();
@@ -373,7 +378,7 @@ public class CardHolder : MonoBehaviour
         {
             child.SetReturnPosition();
             child.enabled = true;
-            child.AllowMovement();
+            if (allowMovement) child.AllowMovement();
         });
         if (draggableChildren != null && holderRect.childCount != 0)
             cardRowY = draggableChildren[0].SelfRect.rect.y; 

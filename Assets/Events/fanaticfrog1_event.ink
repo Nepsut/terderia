@@ -112,6 +112,7 @@ This isn't going anywhere. You'll have to do something about this. #narrator
             - frog_hostile:
             -> FROG_OPPORTUNITY_ATTACK
         }
+        -> FROG_CARD_OPTIONS
     }
  + You quickly swig down your healing potion, not stopping to think if you need it or not. #card #@self #!glass-bottle
     {

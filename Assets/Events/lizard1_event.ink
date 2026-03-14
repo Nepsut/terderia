@@ -152,7 +152,7 @@ He seems to be badly stuck. Maybe you should do something about this? #narrator
     The lizard might think you're insane. But at least you won't be around to hear about it! #narrator
     -> LIZARD_EVENT_EPILOGUE("player_left")
     
-+ You start mumbling some words that sound positive. #card #@self #!glass-bottle
++ You start mumbling some words that sound positive. #card #@self #!soothsay
     {
         - g_player_health >= g_player_max_health:
         You were already at full health, but least the lizard thinks your mumbling was cool. #narrator
@@ -199,7 +199,7 @@ He seems to be badly stuck. Maybe you should do something about this? #narrator
     Anywhere is better than here! #narrator
     -> LIZARD_EVENT_EPILOGUE("player_left")
     
-+ "Lovely day isn't it?" #card #@lizard #!apple #speaker:You
++ "Lovely day isn't it?" #card #@lizard #!banter #speaker:You
     "It really is." #speaker:Unknown Lizard
     Awkward silence takes place. Maybe you should try something else? #narrator
     -> LIZARD_CARD_OPTIONS
@@ -307,7 +307,7 @@ He seems to be badly stuck. Maybe you should do something about this? #narrator
     "..." #speaker:Unknown Lizard
     -> LIZARD_EVENT_EPILOGUE("tried_helping")
 
-+ You recite healing words, and healing energies surround the lizard. #card #@self #!soothsay
++ You recite healing words, and healing energies surround the lizard. #card #@lizard #!soothsay
     {
         - lizard_health >= 2:
         He was already at full health, but least your mumbling was cool. #narrator
@@ -324,11 +324,11 @@ He seems to be badly stuck. Maybe you should do something about this? #narrator
     
 + "You are a good lizard!" #card #@lizard #!praise #speaker:You
     "Thanks!" #speaker:Unknown Lizard #setsprite:lizard1>lizard1_thumb
-    Now the lizard feels little better. How nice. #narrator
+    Now the lizard feels a little better. How nice. #narrator
     -> LIZARD_CARD_OPTIONS
 
 //hypnotize
-+ You start hypnotizing the creature. #card #@self #!hypnotize
++ You start hypnotizing the creature. #card #@lizard #!hypnotize
     Somehow you're successful, and decide to use that moment of confusion to escape. #narrator
     ->LIZARD_EVENT_EPILOGUE("player_left")
 

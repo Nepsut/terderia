@@ -10,7 +10,7 @@ VAR considered_frying_bonk = false
 You wake in a familiar cabin. Right back where you started. #narrator
 
 //TESTING LINE, REMOVE LATER
-//    -> CABIN_CARD_OPTIONS
+    -> CABIN_CARD_OPTIONS
 
 A nauseating cackle echoes in your head, sending shudders down your spine. Its mocking presence lingers in your mind. #narrator
 

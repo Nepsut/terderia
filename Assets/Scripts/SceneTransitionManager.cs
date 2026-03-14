@@ -9,7 +9,7 @@ public class SceneTransitionManager : MonoSingleton<SceneTransitionManager>
     [SerializeField] private RectTransform loadingScreen;
     [SerializeField] private GameObject continuePrompt;
     [SerializeField] private InputReader inputReader;
-    private bool loadScreenOpen = false;
+    public static bool LoadScreenOpen { get; private set; } = false;
     private const float loadFadeTime = 0.32f;
     private const float loadDelayAmount = 0.5f;
     private WaitForSeconds loadDelayWait;
@@ -39,7 +39,7 @@ public class SceneTransitionManager : MonoSingleton<SceneTransitionManager>
         continuePrompt.SetActive(false);
         inputReader.OnClickEvent -= CloseLoadingScreen;
         await FadeOutLoadScreen();
-        loadScreenOpen = false;
+        LoadScreenOpen = false;
     }
 
     private void HandleLoadCompleted()
@@ -69,12 +69,12 @@ public class SceneTransitionManager : MonoSingleton<SceneTransitionManager>
 
     public void StartTransition(Scene newScene)
     {
-        if (loadScreenOpen)
+        if (LoadScreenOpen)
         {
             Debug.LogWarning("Tried to start scene transition while one was already in progress!");
             return;
         }
-        loadScreenOpen = true;
+        LoadScreenOpen = true;
         continuePrompt.SetActive(false);
         loadingScreen.gameObject.SetActive(true);
         OnSceneTransitionStart?.Invoke(newScene);
@@ -82,7 +82,7 @@ public class SceneTransitionManager : MonoSingleton<SceneTransitionManager>
 
     public void StartTransitionAfterDelay(Scene newScene)
     {
-        if (!loadDelayActive && !loadScreenOpen)
+        if (!loadDelayActive && !LoadScreenOpen)
             StartCoroutine(TransitionStartWaiter(newScene));
     }
 
