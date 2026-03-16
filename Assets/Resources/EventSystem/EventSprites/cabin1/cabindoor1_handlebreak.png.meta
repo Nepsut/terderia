@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: bdc3e6daa856a3e4b81171a7efc15ea7
+guid: 1b960b99a55ff584798c55e01bed7eca
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1070468570353145931
-    second: kobolds_7_0
+      213: -6272327644578304813
+    second: cabindoor1_handlebreak_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -49,7 +49,7 @@ TextureImporter:
   spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 0
-  alignment: 7
+  alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: kobolds_7_0
+      name: cabindoor1_handlebreak_0
       rect:
         serializedVersion: 2
-        x: 4
-        y: 13
-        width: 805
-        height: 510
+        x: 16
+        y: 22
+        width: 74
+        height: 557
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b489e1f3e711bde00800000000000000
-      internalID: 1070468570353145931
+      spriteID: 3dc2c0e4d3734f8a0800000000000000
+      internalID: -6272327644578304813
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      kobolds_7_0: 1070468570353145931
+      cabindoor1_handlebreak_0: -6272327644578304813
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
