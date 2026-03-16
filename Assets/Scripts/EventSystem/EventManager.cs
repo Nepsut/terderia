@@ -32,10 +32,11 @@ public class EventManager : MonoSingleton<EventManager>
     [SerializeField] private TextMeshProUGUI dialogueSpeaker;
     [SerializeField] private GameObject selfTargetObject;
     [SerializeField] private GameObject dialogueIndicator;
+    [SerializeField] private Material eventTargetMaterial;
     private SpriteRenderer selfTargetSprite;
     private Collider2D selfTargetCollider;
     private Color selfTargetColorClear;
-    private const float selfTargetFadeTime = 0.32f;
+    private const float targetFadeTime = 0.32f;
     [SerializeField] private Transform eventTargetGroupHolder;
     [SerializeField] private float typeSpeed = 20f;
 
@@ -51,11 +52,16 @@ public class EventManager : MonoSingleton<EventManager>
     private bool pendingCardUse = false;
     private bool stopTyping = false;
     private bool disableInput = false;
+    public bool TargetsActive { get; private set; } = false;
 
     //Const values related to typing. Do not change if unsure.
     private const string alphaCode = "<color=#00000000>";
     private const float maxTypeTime = 0.1f;
     private const float timeBeforeChoices = 0.2f;
+
+    //Const values related to event target materials. Do not change if unsure.
+    private const string OutlineThicknessName = "_OutlineThickness";
+    private const float MaxOutlineThickness = 0.75f;
 
     //Events
     public static event Action<Card> OnCardUsed;
@@ -92,6 +98,7 @@ public class EventManager : MonoSingleton<EventManager>
         dialoguePanel.SetActive(false);
         DontDestroyOnLoad(selfTargetObject);
         selfTargetObject.SetActive(false);
+        eventTargetMaterial.SetFloat(OutlineThicknessName, 0f);
         Card.OnCardDragEnd += CheckForCardUse;
         SceneTransitionManager.OnSceneLoadStarted += ClearActiveTargets;
     }
@@ -103,7 +110,7 @@ public class EventManager : MonoSingleton<EventManager>
         IsEventActive = true;
         CurrentStory = new Story(_inkJSON.text);
         EventVariables.StartListening(CurrentStory);
-        inputReader.OnSubmitEvent += HandleSubmit;
+        // inputReader.OnSubmitEvent += HandleSubmit;
         inputReader.OnClickEvent += HandleClickWithDelay;
         dialoguePanel.SetActive(true);
 
@@ -126,13 +133,7 @@ public class EventManager : MonoSingleton<EventManager>
             if (CurrentStory.currentChoices.Count != 0)
             {
                 pendingCardUse = true;
-                if (!selfTargetObject.activeSelf)
-                {
-                    selfTargetObject.SetActive(true);
-                    selfTargetSprite.color = selfTargetColorClear;
-                    LeanTween.alpha(selfTargetObject, 1f, selfTargetFadeTime).setEaseInQuart();
-                }
-                selfTargetCollider.enabled = true;
+                ActivateTargets();
                 if (!cardHolder.IsActive) cardHolder.ActivateHolder();
             }
             else StartCoroutine(TypeDialogue());
@@ -167,7 +168,7 @@ public class EventManager : MonoSingleton<EventManager>
             cardHolder.ClearHand();
             CardManager.ReshufflePlayerHand();
         }
-        inputReader.OnSubmitEvent -= HandleSubmit;
+        // inputReader.OnSubmitEvent -= HandleSubmit;
         inputReader.OnClickEvent -= HandleClickWithDelay;
         Debug.Log($"Exited event {activeStoryName}");
     }
@@ -435,20 +436,16 @@ public class EventManager : MonoSingleton<EventManager>
 
         if (CurrentStory.currentChoices.Count != 0)
         {
-            selfTargetObject.SetActive(true);
-            selfTargetSprite.color = selfTargetColorClear;
-            LeanTween.alpha(selfTargetObject, 1f, selfTargetFadeTime).setEaseInQuart();
-            selfTargetCollider.enabled = true;
+            ActivateTargets();
             if (!cardHolder.IsActive) cardHolder.ActivateHolder();
+            else cardHolder.AllowCardDragging();
             pendingCardUse = true;
         }
         else
         {
             dialogueIndicator.SetActive(true);
-            if (cardHolder.IsActive && !cardHolder.IsMoving) cardHolder.DeactivateHolder();
-            LeanTween.alpha(selfTargetObject, 0f, selfTargetFadeTime)
-                .setEaseOutQuart()
-                .setOnComplete(() => selfTargetObject.SetActive(false));
+            if (cardHolder.IsActive) cardHolder.DeactivateHolder();
+            DeactivateTargets();
         }
     }
 
@@ -614,15 +611,15 @@ public class EventManager : MonoSingleton<EventManager>
         return _variableValue;
     }
 
-    private void HandleSubmit()
-    {
-        if (isTyping)
-        {
-            stopTyping = true;
-            return;
-        }
-        if (!disableInput && !pendingCardUse) ContinueStory();
-    }
+    // private void HandleSubmit()
+    // {
+    //     if (isTyping)
+    //     {
+    //         stopTyping = true;
+    //         return;
+    //     }
+    //     if (!disableInput && !pendingCardUse) ContinueStory();
+    // }
 
     private void HandleClickWithDelay()
     {
@@ -674,6 +671,41 @@ public class EventManager : MonoSingleton<EventManager>
         yield return wait;
         cardHolder.ClearHand();
         CardManager.ReshufflePlayerHand();
+    }
+
+    private void ActivateTargets()
+    {
+        if (!TargetsActive)
+        {
+            selfTargetObject.SetActive(true);
+            selfTargetSprite.color = selfTargetColorClear;
+            LeanTween.alpha(selfTargetObject, 1f, targetFadeTime).setEaseInQuart();
+
+            LeanTween.value(gameObject, value =>
+                {
+                    eventTargetMaterial.SetFloat(OutlineThicknessName, value);
+                }, 0f, MaxOutlineThickness, targetFadeTime)
+                .setEaseInQuart();
+        }
+        TargetsActive = true;
+        selfTargetCollider.enabled = true;
+    }
+
+    private void DeactivateTargets()
+    {
+        if (!TargetsActive) return;
+
+        TargetsActive = false;
+        LeanTween.alpha(selfTargetObject, 0f, targetFadeTime)
+            .setEaseOutQuart()
+            .setOnComplete(() => selfTargetObject.SetActive(false));
+
+        
+        LeanTween.value(gameObject, value =>
+            {
+                eventTargetMaterial.SetFloat(OutlineThicknessName, value);
+            }, MaxOutlineThickness, 0f, targetFadeTime)
+            .setEaseInQuart();
     }
 
     private void ClearActiveTargets()

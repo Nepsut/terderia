@@ -437,7 +437,7 @@ This isn't going anywhere. You'll have to do something about this. #narrator
         He flinches back violently, probably surprised that such a cool stick is capable of such violence! #narrator
         -> FROG_COUNTER_ATTACK
     }
- + "Hey did you know that there's like a whole forest of those mushrooms a short walk south of the cave?" #card #@frog #!deceive
+ + "Hey did you know that there's like a whole forest of those mushrooms a short walk south of the cave?" #card #@frog #!deceive #speaker:You
     {
         - frog_hostile:
         "Hah, sounds too good to be true!" #speaker:Rudibert

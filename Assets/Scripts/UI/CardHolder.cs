@@ -131,6 +131,11 @@ public class CardHolder : MonoBehaviour
         if (draggableChildren.Count == holderRect.childCount) allCardsHome = true;
     }
 
+    public void AllowCardDragging()
+    {
+        draggableChildren?.ForEach(child => child.AllowMovement());
+    }
+
     public void ActivateHolder()
     {
         if (GameManager.Instance.DebugModeOn)
@@ -227,7 +232,11 @@ public class CardHolder : MonoBehaviour
             yield return null;
             RehomeCards(CardRehomeStyle.flipAll);
         }
-        else layoutGroup.enabled = true;
+        else
+        {
+            layoutGroup.enabled = true;
+            AllowCardDragging();
+        }
         IsActive = moveUp;
         IsMoving = false;
     }

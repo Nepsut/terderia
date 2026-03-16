@@ -113,7 +113,7 @@ After looking around for {perhaps a bit too long, | a short while,} you decide t
     {g_player_class == "trickster": Lucky for you, you've grown accustomed to this kind of work, and the lock pops open in no time. | It takes a few attempts, and as you're about to give up, the lock finally clicks open. } #narrator #setsprite:cabindoor1>cabindoor1_open
     -> CABIN_EPILOGUE("unlock")
  + You heft the frying pan in your hand, determined to pop the handle straight off the door, and the lock with it. #card #@cabindoor1 #!frying-pan
-    You slam the frying pan on the handle, and it pops off exactly as planned, though the impact leaves your hand slightly sore. #narrator #setsprite:cabindoor1>cabindoor1_open
+    You slam the frying pan on the handle, and it pops off exactly as planned, though the impact leaves your hand slightly sore. #narrator #setsprite:cabindoor1>cabindoor1_handlebreak
     -> CABIN_EPILOGUE("force_unlock")
  + You give your dagger a quick spin before unleashing a flurry of strikes at the door! #card #@cabindoor1 #!dagger
     "..." #speaker:Door
@@ -145,7 +145,7 @@ After looking around for {perhaps a bit too long, | a short while,} you decide t
  === STAFF_BONK_RESULTS(success) ===
  {
     - success:
-    After your hands feel normal again, you poke the door open with the staff. #narrator #setsprite:cabindoor1>cabindoor1_open
+    After your hands feel normal again, you poke the door open with the staff. #narrator #setsprite:cabindoor1>cabindoor1_handlebreak
     -> CABIN_EPILOGUE("force_unlock")
     - else:
     -> CABIN_CARD_OPTIONS

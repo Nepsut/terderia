@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: bdc3e6daa856a3e4b81171a7efc15ea7
+guid: f8b46b31a4a97bd4797a08629f66e27a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1070468570353145931
-    second: kobolds_7_0
+      213: 8934452343064166140
+    second: fanatic_frog_04_0
+  - first:
+      213: 7464568186577951613
+    second: fanatic_frog_04_1
+  - first:
+      213: -7603918346607020664
+    second: fanatic_frog_04_2
+  - first:
+      213: -2670132107372289077
+    second: fanatic_frog_04_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -75,7 +84,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 2
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -113,13 +122,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: kobolds_7_0
+      name: fanatic_frog_04_0
       rect:
         serializedVersion: 2
-        x: 4
+        x: 195
         y: 13
-        width: 805
-        height: 510
+        width: 878
+        height: 640
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +137,74 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b489e1f3e711bde00800000000000000
-      internalID: 1070468570353145931
+      spriteID: cfefefab11d8dfb70800000000000000
+      internalID: 8934452343064166140
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fanatic_frog_04_1
+      rect:
+        serializedVersion: 2
+        x: 430
+        y: 639
+        width: 31
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7b19aa7739779760800000000000000
+      internalID: 7464568186577951613
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fanatic_frog_04_2
+      rect:
+        serializedVersion: 2
+        x: 437
+        y: 650
+        width: 67
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 885b9611d84797690800000000000000
+      internalID: -7603918346607020664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fanatic_frog_04_3
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 167
+        width: 189
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc3a5bccef8c1fad0800000000000000
+      internalID: -2670132107372289077
       vertices: []
       indices: 
       edges: []
@@ -148,7 +223,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      kobolds_7_0: 1070468570353145931
+      fanatic_frog_04_0: 8934452343064166140
+      fanatic_frog_04_1: 7464568186577951613
+      fanatic_frog_04_2: -7603918346607020664
+      fanatic_frog_04_3: -2670132107372289077
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
