@@ -438,6 +438,7 @@ public class EventManager : MonoSingleton<EventManager>
         {
             ActivateTargets();
             if (!cardHolder.IsActive) cardHolder.ActivateHolder();
+            else cardHolder.AllowCardDragging();
             pendingCardUse = true;
         }
         else
