@@ -17,6 +17,8 @@ namespace CardSystem
         public readonly AreaOfEffect areaOfEffect;
         public readonly List<string> otherTags;
         public readonly Sprite sprite;
+        public readonly AudioClip audioClip;
+        public bool HasAudio => audioClip != null;
 
         public CardData(int index, string name, string id, string description, CardType cardType,
         SpellSchool spellSchool = SpellSchool.none, DamageType damageType = DamageType.none, 
@@ -36,6 +38,8 @@ namespace CardSystem
             this.otherTags = otherTags ?? new();
             sprite = Resources.Load<Sprite>($"CardSystem/CardSprites/{id}");
             if (sprite == null) Debug.LogWarning($"Sprite for card {this.id} couldn't be found and wasn't set.");
+            audioClip = Resources.Load<AudioClip>($"CardSystem/CardSFX/{id}");
+            if (audioClip == null) Debug.LogWarning($"SFX for card {this.id} couldn't be found and wasn't set.");
         }
 
         public enum CardType
