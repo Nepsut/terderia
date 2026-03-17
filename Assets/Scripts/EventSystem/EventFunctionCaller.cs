@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using CardSystem;
 using UnityEngine;
 
 
@@ -13,13 +12,15 @@ public class EventFunctionCaller : MonoBehaviour
     //Misc setting variables
     private const float eventEndTimeSeconds = 0.5f;
 
-    private EventVariables eventVariables => EventManager.Instance.EventVariables;
-    private EventManager eventManager => EventManager.Instance;
+    private EventVariables EventVariables => EventManager.Instance.EventVariables;
+    private EventManager EventManager => EventManager.Instance;
 
     public Dictionary<string, EventFunction> EventFunctionDict { get; private set; } = new()
     {
         {nameof(RewardCards), new RewardCards()},
-        {nameof(LoadScene), new LoadScene()}
+        {nameof(LoadScene), new LoadScene()},
+        {nameof(DisplayCutscene), new DisplayCutscene()},
+        {nameof(EndCutscene), new EndCutscene()}
     };
 
     public bool FunctionExists(string funcName)
@@ -37,7 +38,7 @@ public class EventFunctionCaller : MonoBehaviour
     public void TestFunction()
     {
         Debug.Log("Test function was called!");
-        Debug.Log($"State of test variable: {eventManager.GetVariableState("g_test_seen")}");
+        Debug.Log($"State of test variable: {EventManager.GetVariableState("g_test_seen")}");
     }
     public void LoadMap1Scene()
     {

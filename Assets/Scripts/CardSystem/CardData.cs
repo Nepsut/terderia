@@ -39,7 +39,8 @@ namespace CardSystem
             sprite = Resources.Load<Sprite>($"CardSystem/CardSprites/{id}");
             if (sprite == null) Debug.LogWarning($"Sprite for card {this.id} couldn't be found and wasn't set.");
             audioClip = Resources.Load<AudioClip>($"CardSystem/CardSFX/{id}");
-            if (audioClip == null) Debug.LogWarning($"SFX for card {this.id} couldn't be found and wasn't set.");
+            if (audioClip == null && GameManager.Instance.DebugModeOn)
+                Debug.Log($"SFX for card {this.id} couldn't be found and wasn't set.");
         }
 
         public enum CardType
