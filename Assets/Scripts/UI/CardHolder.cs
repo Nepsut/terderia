@@ -173,7 +173,7 @@ public class CardHolder : MonoBehaviour
         }
         reshuffleButton.interactable = false;
 
-        if (!IsActive || !HolderMoveAllowed)
+        if ((!IsActive) || !HolderMoveAllowed)
         {
             if (GameManager.Instance.DebugModeOn) Debug.Log("Queuing card holder deactivation.");
             holderImage.enabled = true;
@@ -416,7 +416,13 @@ public class CardHolder : MonoBehaviour
                 {
                     Debug.Log("Trying to call queued holder movement.");
                 }
-                if (moveUp && !IsActive) ActivateHolder();
+                if ((moveUp && IsActive) || (!moveUp && !IsActive))
+                {
+                    if (GameManager.Instance.DebugModeOn)
+                        Debug.Log("Cancelling queued CardHolder move: destination reached!");
+                    yield break;
+                }
+                else if (moveUp && !IsActive) ActivateHolder();
                 else if (!moveUp && IsActive) DeactivateHolder();
             }
         }

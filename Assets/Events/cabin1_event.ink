@@ -10,7 +10,7 @@ VAR considered_frying_bonk = false
 You wake in a familiar cabin. Right back where you started. #narrator
 
 //TESTING LINE, REMOVE LATER
-    -> CABIN_CARD_OPTIONS
+//    -> CABIN_CARD_OPTIONS
 
 A nauseating cackle echoes in your head, sending shudders down your spine. Its mocking presence lingers in your mind. #narrator
 
@@ -18,11 +18,11 @@ You knew the risks, of course. But what self-respecting wizard would miss the ch
 
 ... #narrator
 
-Just days ago you were chasing after a champion of the god of trickery that decided to mess with your home. #narrator
+Just days ago you were chasing after a champion of the god of trickery that decided to mess with your home village. #narrator #function:DisplayCutscene(OpeningCutscene, 0)
 
-{g_player_class == "trickster": Your home is your playground after all. | You'd rather have peace in the region after all.} #narrator
+{g_player_class == "trickster": This village is your playground after all. | You'd rather have peace in the region after all.} #narrator
 
-Eventually you caught up to the troublemaker, and despite their divine backing you managed to eke out a victory. #narrator
+Eventually you caught up to the troublemaker, and despite their divine backing you managed to eke out a victory. #narrator #function:EndCutscene
 
 {g_player_class == "trickster": Not wanting to miss the chance of learning the tricks of used by a champion, you got to experimenting. | Wanting to avoid incidents like this in the future, you decided to experiment with the now-dead champion's source of power.} #narrator
 

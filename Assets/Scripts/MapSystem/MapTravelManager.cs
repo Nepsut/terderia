@@ -13,6 +13,7 @@ public class MapTravelManager : MonoBehaviour
     private MapMarker travelingToMarker = null;
     private Vector2 MousePos => UIController.MousePosition;
     private static MapTravelManager firstCopy;
+    private bool inputsSubscribed = false;
 
     //Map movement logic variables
     public bool TravelEnabled { get; private set; } = false;
@@ -29,22 +30,42 @@ public class MapTravelManager : MonoBehaviour
     {
         currentMarker = startingMarker;
         playerSplineAnimate.transform.position = currentMarker.transform.position;
-        SceneTransitionManager.OnSceneLoadFinished += ResetMapState;
-        SceneTransitionManager.OnSceneLoadStarted += HidePersistentMapItems;
-        SceneTransitionManager.OnSceneTransitionEnd += SubscribeTravelChecks;
+        SubscribeSceneLoadEvents();
         inputReader.EnableUiInputs();
 
         //TEMPORARY
         TravelEnabled = true;
     }
 
+    private void SubscribeSceneLoadEvents()
+    {
+        SceneTransitionManager.OnSceneLoadFinished += ResetMapState;
+        SceneTransitionManager.OnSceneLoadStarted += HidePersistentMapItems;
+        SceneTransitionManager.OnSceneTransitionEnd += SubscribeTravelChecks;
+    }
+
+    private void UnsubscribeSceneLoadEvents()
+    {
+        SceneTransitionManager.OnSceneLoadFinished -= ResetMapState;
+        SceneTransitionManager.OnSceneLoadStarted -= HidePersistentMapItems;
+        SceneTransitionManager.OnSceneTransitionEnd -= SubscribeTravelChecks;
+    }
+
     private void SubscribeTravelChecks()
     {
+        if (inputsSubscribed) return;
+        if (GameManager.Instance.DebugModeOn)
+            Debug.Log("Subscribed map travel events");
+        inputsSubscribed = true;
         inputReader.OnClickEvent += CheckIfShouldTravel;
     }
 
     private void UnsubscribeTravelChecks()
     {
+        if (!inputsSubscribed) return;
+        if (GameManager.Instance.DebugModeOn)
+            Debug.Log("Unsubscribed map travel events");
+        inputsSubscribed = false;
         inputReader.OnClickEvent -= CheckIfShouldTravel;
     }
 

@@ -38,12 +38,27 @@ public class UIController : MonoSingleton<UIController>
     private WaitForSeconds cardToDeckWait;
     private const float rewardPanelFadeTime = 0.32f;
 
+    [Header("Cutscene management")]
+    [SerializeField] private Image cutsceneImage;
+    [SerializeField] private CanvasGroup cutsceneGroup;
+    private RectTransform cutsceneImageRect;
+    [SerializeField] private string[] cutsceneFolderNames;
+    private Dictionary<string, Sprite[]> cutsceneSprites;
+    public bool IsCutsceneActive { get; private set; } = false;
+    private const float cutsceneFadeTime = 0.32f;
+
     public InputReader MainInputReader => inputReader;
     private static Vector2 _mousePos;
     public static Vector2 MousePosition => _mousePos;
     public static bool IsMenuOpen { get; private set; } = false;
 
     public static bool PauseEventProgression => CardRewardsOpen;
+
+    private void Awake()
+    {
+        cutsceneImageRect = cutsceneImage.GetComponent<RectTransform>();
+        LoadCutsceneSprites();
+    }
 
     private void Start()
     {
@@ -53,6 +68,7 @@ public class UIController : MonoSingleton<UIController>
         continueFromRewardsButton.onClick.AddListener(HandleRewardsContinue);
         continueFromRewardsRect = continueFromRewardsButton.GetComponent<RectTransform>();
         cardRewardBackground.gameObject.SetActive(false);
+        cutsceneGroup.gameObject.SetActive(false);
     }
 
     public void HandleCardRewards(int choiceAmount, string[] cardIds)
@@ -242,5 +258,87 @@ public class UIController : MonoSingleton<UIController>
         cardRewardPanelFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
         cardRewardBackground.gameObject.SetActive(false);
         CardRewardsOpen = false;
+    }
+
+    public void RunCutscene(string cutsceneName, int cutsceneFrame)
+    {
+        if (!cutsceneSprites.ContainsKey(cutsceneName))
+        {
+            Debug.LogError($"Tried to display nonexistent cutscene {cutsceneName}. Check for typos!");
+            return;
+        }
+        else if (cutsceneSprites[cutsceneName].Length - 1 < cutsceneFrame)
+        {
+            string error = string.Concat($"Cutscene {cutsceneName} does not have {cutsceneFrame} frames! ",
+            $"Real count (starting from 0): {cutsceneSprites[cutsceneName].Length - 1}");
+            Debug.LogError(error);
+            return;
+        }
+
+        if (IsCutsceneActive)
+        {
+            LeanTween.value(gameObject, value =>
+                {
+                    cutsceneGroup.alpha = value;
+                }, 1f, 0f, cutsceneFadeTime)
+                .setEaseInQuart()
+                .setOnComplete(() =>
+                {
+                    cutsceneImage.sprite = cutsceneSprites[cutsceneName][cutsceneFrame];
+                });
+            LeanTween.value(gameObject, value =>
+                {
+                    cutsceneGroup.alpha = value;
+                }, 0f, 1f, cutsceneFadeTime)
+                .setEaseInQuart()
+                .setDelay(cutsceneFadeTime);
+        }
+        else
+        {
+            cutsceneGroup.alpha = 0f;
+            cutsceneGroup.gameObject.SetActive(true);
+            LeanTween.value(gameObject, value =>
+                {
+                    cutsceneGroup.alpha = value;
+                }, 0f, 1f, cutsceneFadeTime)
+                .setEaseInQuart();
+        }
+        IsCutsceneActive = true;
+    }
+
+    public void EndCutscene()
+    {
+        if (!IsCutsceneActive) return;
+
+        LeanTween.value(gameObject, value =>
+            {
+                cutsceneGroup.alpha = value;
+            }, 1f, 0f, cutsceneFadeTime)
+            .setEaseInQuart()
+            .setOnComplete(() =>
+            {
+                cutsceneGroup.gameObject.SetActive(false);
+            });
+
+        IsCutsceneActive = false;
+    }
+
+    private void LoadCutsceneSprites()
+    {
+        cutsceneSprites = new();
+        foreach (string folderName in cutsceneFolderNames)
+        {
+            cutsceneSprites.Add(folderName, Resources.LoadAll<Sprite>($"Cutscenes/{folderName}"));
+        }
+        if (GameManager.Instance.DebugModeOn)
+        {
+            foreach (var kvp in cutsceneSprites)
+            {
+                foreach (Sprite sprite in kvp.Value)
+                {
+                    Debug.Log($"Successfully loaded cutscene sprite {sprite.name}");
+                }
+            }
+        }
     }
 }

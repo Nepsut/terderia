@@ -589,7 +589,9 @@ public class EventManager : MonoSingleton<EventManager>
                 }
             }
 
-            if (!eventFunctionCaller.TryCallEventFunction(funcToCall, funcParams.ToArray()))
+            object[] paramsAsArray = funcParams?.ToArray();
+
+            if (!eventFunctionCaller.TryCallEventFunction(funcToCall, paramsAsArray))
             {
                 if (GameManager.Instance.DebugModeOn)
                 {

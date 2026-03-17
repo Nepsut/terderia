@@ -11,6 +11,35 @@ public abstract class EventFunction
     public abstract bool TryExecute(object[] args = null);
 }
 
+public class DisplayCutscene : EventFunction
+{
+    public override bool TryExecute(object[] args = null)
+    {
+        //If we didn't get enough args to figure out what cutscene to play
+        //and at what frame, log error and return
+        if (args == null || args.Length != 2 || args[0] is not string || args[1] is not int)
+        {
+            Debug.LogError($"DisplayCutscene call did not have proper args!");
+            return false;
+        }
+        UIController.Instance.RunCutscene((string)args[0], (int)args[1]);
+        return true;
+    }
+}
+
+public class EndCutscene : EventFunction
+{
+    public override bool TryExecute(object[] args = null)
+    {
+        if (args != null)
+        {
+            Debug.LogWarning($"EndCutscene should not be called with parameters!");
+        }
+        UIController.Instance.EndCutscene();
+        return true;
+    }
+}
+
 //UnlockCards expects all parameters to be strings
 public class RewardCards : EventFunction
 {
