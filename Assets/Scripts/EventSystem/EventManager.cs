@@ -28,10 +28,15 @@ public class EventManager : MonoSingleton<EventManager>
     [SerializeField] private CardHolder cardHolder;
     [SerializeField] private GameObject dialoguePanel;
     [SerializeField] private TextMeshProUGUI dialogueText;
+    [SerializeField] private TextMeshProUGUI cutsceneText;
+    private TextMeshProUGUI usedText => UIController.IsCutsceneActive ? cutsceneText : dialogueText;
     [SerializeField] private GameObject speakerPanel;
     [SerializeField] private TextMeshProUGUI dialogueSpeaker;
     [SerializeField] private GameObject selfTargetObject;
-    [SerializeField] private GameObject dialogueIndicator;
+    [SerializeField] private GameObject dialogueReadyIndicator;
+    [SerializeField] private GameObject cutsceneReadyIndicator;
+    private GameObject TextReadyIndicator => UIController.IsCutsceneActive ? 
+        cutsceneReadyIndicator : dialogueReadyIndicator;
     [SerializeField] private Material eventTargetMaterial;
     private SpriteRenderer selfTargetSprite;
     private Collider2D selfTargetCollider;
@@ -125,7 +130,8 @@ public class EventManager : MonoSingleton<EventManager>
     {
         if (pendingCardUse || !IsEventActive || UIController.PauseEventProgression) return;
         
-        dialogueIndicator.SetActive(false);
+        dialogueReadyIndicator.SetActive(false);
+        cutsceneReadyIndicator.SetActive(false);
 
         if (choiceWasMade && CurrentStory.canContinue)
         {
@@ -156,6 +162,7 @@ public class EventManager : MonoSingleton<EventManager>
 
         dialoguePanel.SetActive(false);
         dialogueText.text = "Dialogue Text";
+        cutsceneText.text = "Cutscene Text";
         dialogueSpeaker.text = "Speaker";
         IsEventActive = false;
         if (cardHolder.IsActive)
@@ -370,12 +377,9 @@ public class EventManager : MonoSingleton<EventManager>
     {
         isTyping = true;
         dialogueText.text = "";
+        cutsceneText.text = "";
+
         string originalText = CurrentStory.Continue();
-        if (originalText == null || originalText == "")
-        {
-            dialoguePanel.SetActive(false);
-        }
-        else dialoguePanel.SetActive(true);
         string displayedText;
         int alphaIndex = 0;
         WaitForSeconds realTypeTime = new(maxTypeTime / typeSpeed);
@@ -388,6 +392,13 @@ public class EventManager : MonoSingleton<EventManager>
             CardManager.TryAddCardToHand(cardToRefund);
             cardToRefund = "";
         }
+
+        if (originalText == null || originalText == "" || UIController.IsCutsceneActive)
+        {
+            dialoguePanel.SetActive(false);
+        }
+        else dialoguePanel.SetActive(true);
+
         // voiceSource.Play();
 
         bool skippingRichText = false;
@@ -396,9 +407,13 @@ public class EventManager : MonoSingleton<EventManager>
         {
             if (stopTyping)
             {
-                dialogueText.text = originalText;
+                usedText.text = originalText;
                 stopTyping = false;
                 break;
+            }
+            while (UIController.IsCutsceneFadeActive)
+            {
+                yield return realTypeTime;
             }
 
             if (c == '<')
@@ -421,9 +436,9 @@ public class EventManager : MonoSingleton<EventManager>
             else
             {
                 alphaIndex++;
-                dialogueText.text = originalText;
-                displayedText = dialogueText.text.Insert(alphaIndex, alphaCode);
-                dialogueText.text = displayedText;
+                usedText.text = originalText;
+                displayedText = usedText.text.Insert(alphaIndex, alphaCode);
+                usedText.text = displayedText;
                 yield return realTypeTime;
             }
         }
@@ -443,7 +458,7 @@ public class EventManager : MonoSingleton<EventManager>
         }
         else
         {
-            dialogueIndicator.SetActive(true);
+            TextReadyIndicator.SetActive(true);
             if (cardHolder.IsActive) cardHolder.DeactivateHolder();
             DeactivateTargets();
         }
@@ -630,7 +645,7 @@ public class EventManager : MonoSingleton<EventManager>
 
     private void HandleClick()
     {
-        if (DraggableObject.DraggingOn) return;
+        if (DraggableObject.DraggingOn || UIController.IsCutsceneFadeActive) return;
 
         if (isTyping)
         {

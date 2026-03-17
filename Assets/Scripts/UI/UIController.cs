@@ -44,8 +44,9 @@ public class UIController : MonoSingleton<UIController>
     private RectTransform cutsceneImageRect;
     [SerializeField] private string[] cutsceneFolderNames;
     private Dictionary<string, Sprite[]> cutsceneSprites;
-    public bool IsCutsceneActive { get; private set; } = false;
-    private const float cutsceneFadeTime = 0.32f;
+    public static bool IsCutsceneActive { get; private set; } = false;
+    public static bool IsCutsceneFadeActive { get; private set; } = false;
+    private const float cutsceneFadeTime = 0.72f;
 
     public InputReader MainInputReader => inputReader;
     private static Vector2 _mousePos;
@@ -275,33 +276,37 @@ public class UIController : MonoSingleton<UIController>
             return;
         }
 
+        IsCutsceneFadeActive = true;
         if (IsCutsceneActive)
         {
-            LeanTween.value(gameObject, value =>
-                {
-                    cutsceneGroup.alpha = value;
-                }, 1f, 0f, cutsceneFadeTime)
+            LeanTween.alpha(cutsceneImageRect, 0f, cutsceneFadeTime)
                 .setEaseInQuart()
                 .setOnComplete(() =>
                 {
                     cutsceneImage.sprite = cutsceneSprites[cutsceneName][cutsceneFrame];
                 });
-            LeanTween.value(gameObject, value =>
-                {
-                    cutsceneGroup.alpha = value;
-                }, 0f, 1f, cutsceneFadeTime)
+            LeanTween.alpha(cutsceneImageRect, 1f, cutsceneFadeTime)
                 .setEaseInQuart()
-                .setDelay(cutsceneFadeTime);
+                .setDelay(cutsceneFadeTime)
+                .setOnComplete(() =>
+                {
+                    IsCutsceneFadeActive = false;
+                });
         }
         else
         {
             cutsceneGroup.alpha = 0f;
             cutsceneGroup.gameObject.SetActive(true);
+            cutsceneImage.sprite = cutsceneSprites[cutsceneName][cutsceneFrame];
             LeanTween.value(gameObject, value =>
                 {
                     cutsceneGroup.alpha = value;
                 }, 0f, 1f, cutsceneFadeTime)
-                .setEaseInQuart();
+                .setEaseInQuart()
+                .setOnComplete(() =>
+                {
+                    IsCutsceneFadeActive = false; 
+                });
         }
         IsCutsceneActive = true;
     }
@@ -309,6 +314,8 @@ public class UIController : MonoSingleton<UIController>
     public void EndCutscene()
     {
         if (!IsCutsceneActive) return;
+
+        IsCutsceneFadeActive = true;
 
         LeanTween.value(gameObject, value =>
             {
@@ -318,6 +325,7 @@ public class UIController : MonoSingleton<UIController>
             .setOnComplete(() =>
             {
                 cutsceneGroup.gameObject.SetActive(false);
+                IsCutsceneFadeActive = false;
             });
 
         IsCutsceneActive = false;
