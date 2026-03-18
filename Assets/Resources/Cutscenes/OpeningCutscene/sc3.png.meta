@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7c22c4ae577a6eb4fb01ece2fa108888
+guid: 81153e264998254489675b9a9d90400b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4220525028536340827
-    second: kappa01_hiding_0
+      213: -2624647463821943873
+    second: sc3_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: kappa01_hiding_0
+      name: sc3_0
       rect:
         serializedVersion: 2
-        x: 13
-        y: 13
-        width: 1013
-        height: 350
+        x: 0
+        y: 0
+        width: 1845
+        height: 883
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b51dd83f621529a30800000000000000
-      internalID: 4220525028536340827
+      spriteID: fbb5342a901639bd0800000000000000
+      internalID: -2624647463821943873
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      kappa01_hiding_0: 4220525028536340827
+      sc3_0: -2624647463821943873
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

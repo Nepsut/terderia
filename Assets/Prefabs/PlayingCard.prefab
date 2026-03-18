@@ -1811,7 +1811,7 @@ GameObject:
   - component: {fileID: 141550074531387336}
   - component: {fileID: 5116562130086741721}
   - component: {fileID: 4418341304106892212}
-  - component: {fileID: 9007414738560122124}
+  - component: {fileID: 4112652959949463611}
   m_Layer: 5
   m_Name: PlayingCard
   m_TagString: Untagged
@@ -1896,7 +1896,7 @@ MonoBehaviour:
   hoverAnimTime: 0.32
   siblingIndex: 0
   returnPosition: {x: 0, y: 0}
---- !u!114 &9007414738560122124
+--- !u!114 &4112652959949463611
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1905,9 +1905,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8305410616723020502}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9074fdd3a7da9774f88531a1fac7ef49, type: 3}
+  m_Script: {fileID: 11500000, guid: e040b70ae25561848b4f77cb2eb08542, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TestCard
+  m_EditorClassIdentifier: Assembly-CSharp::Card
   titleText: {fileID: 6798618699203906099}
   descriptionText: {fileID: 6944662600541325905}
   damageText: {fileID: 1443642951866995924}

@@ -103,7 +103,7 @@ public class UIController : MonoSingleton<UIController>
         else cardRewardMessage.text = gainedAllMessage;
 
         currentRewardsCount = realUnlockableCards.Count;
-        choosableRewardCount = choiceAmount;
+        choosableRewardCount = choiceAmount < realUnlockableCards.Count ? choiceAmount : realUnlockableCards.Count;
         selectedRewardCount = 0;
 
         if (GameManager.Instance.DebugModeOn)
@@ -286,7 +286,7 @@ public class UIController : MonoSingleton<UIController>
                     cutsceneImage.sprite = cutsceneSprites[cutsceneName][cutsceneFrame];
                 });
             LeanTween.alpha(cutsceneImageRect, 1f, cutsceneFadeTime)
-                .setEaseInQuart()
+                .setEaseOutQuart()
                 .setDelay(cutsceneFadeTime)
                 .setOnComplete(() =>
                 {
@@ -302,7 +302,7 @@ public class UIController : MonoSingleton<UIController>
                 {
                     cutsceneGroup.alpha = value;
                 }, 0f, 1f, cutsceneFadeTime)
-                .setEaseInQuart()
+                .setEaseOutQuart()
                 .setOnComplete(() =>
                 {
                     IsCutsceneFadeActive = false; 

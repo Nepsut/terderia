@@ -6,6 +6,7 @@ VAR g_player_gender = "default"
 
 //Variables for tracking if player has seen an event for the first time or not.
 VAR g_first_cabin_seen = false
+VAR g_kappa_seen = false
 
 //Variables for tracking if player has experienced non-standard card behaviors before
 VAR g_bonfire_marshmallows_seen = false
@@ -16,7 +17,24 @@ VAR g_tried_help_lizard_soldier = false
 VAR g_got_lizard_message = false
 
 
-//Global functions
+// Functions for managing player stats
+
+///returns -1 if did not heal, 0 if healed partially, 1 if healed fully
+=== function try_heal_player(amount) ===
+{
+    - g_player_health == g_player_max_health:
+    ~ return -1
+    
+    - g_player_health + amount > g_player_max_health:
+    ~ g_player_health = g_player_max_health
+    ~ return 0
+    
+    - else:
+    ~ g_player_health += amount
+    ~ return 1
+}
+
+// fucking PRONOUNS /j
 === function player_pronoun ===
 { g_player_gender:
     - "female":

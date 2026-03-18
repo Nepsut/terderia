@@ -409,18 +409,18 @@ public class CardHolder : MonoBehaviour
 
             if (GameManager.Instance.DebugModeOn)
                 Debug.Log("Running queued CardHolder move check.");
-            
+            if ((moveUp && IsActive) || (!moveUp && !IsActive))
+            {
+                if (GameManager.Instance.DebugModeOn)
+                    Debug.Log("Cancelling queued CardHolder move: destination reached!");
+                yield break;
+            }
+
             if (HolderMoveAllowed)
             {
                 if (GameManager.Instance.DebugModeOn)
                 {
                     Debug.Log("Trying to call queued holder movement.");
-                }
-                if ((moveUp && IsActive) || (!moveUp && !IsActive))
-                {
-                    if (GameManager.Instance.DebugModeOn)
-                        Debug.Log("Cancelling queued CardHolder move: destination reached!");
-                    yield break;
                 }
                 else if (moveUp && !IsActive) ActivateHolder();
                 else if (!moveUp && IsActive) DeactivateHolder();

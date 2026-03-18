@@ -26,23 +26,23 @@ Eventually you caught up to the troublemaker, and despite their divine backing y
 
 {g_player_class == "trickster": Not wanting to miss the chance of learning the tricks used by a champion, you got to experimenting. | Wanting to avoid incidents like this in the future, you decided to experiment with the now-dead champion's source of power.} #narrator
 
-Perhaps unsurprisingly, the backer of said champion wasn't exactly a fan of your antics. #narrator
+Perhaps unsurprisingly, the backer of said champion wasn't exactly a fan of your antics. #narrator #function:DisplayCutscene(OpeningCutscene, 2)
 
-So, it played a trick on you. #narrator #function:EndCutscene
+So, it played a trick on you. #narrator
 
-"Have fun sorting this mess out!" it said amidst a cackling laugh, its {g_player_class == "trickster": somehow familiar} power tearing your spellbook apart. #narrator
+"Have fun sorting this mess out!" it said amidst a cackling laugh, its {g_player_class == "trickster": somehow familiar} power tearing your spellbook apart. #narrator #function:DisplayCutscene(OpeningCutscene, 3)
 
 "But worry not, your precious book can still be restored", it said, with a mischievous smile creeping in your mind. #narrator
 
-"You see, I enjoy a good card game! Gather your deck and meet me back at the peak of this mountain." #narrator
+"You see, I enjoy a good card game! Gather your deck and meet me back at the peak of this mountain." #narrator #function:DisplayCutscene(OpeningCutscene, 4)
 
 "If you manage to be entertaining enough, I'll even consider putting your little spellbook back to how it was!" #narrator
 
-"But for now, I think I'll help you out just a little, to make sure you don't go dying on the way back to your little cabin." #narrator
+"But for now, I think I'll help you out just a little, to make sure you don't go dying on the way back to your little cabin." #narrator #function:DisplayCutscene(OpeningCutscene, 5)
 
 "Nighty-night, {g_player_gender == "hat": little hat! Though I'm not exactly sure how a hat sleeps. | little hero.}" #narrator
 
-... #narrator
+... #narrator #function:EndCutscene
 
 And so you ended up back here. #narrator
 

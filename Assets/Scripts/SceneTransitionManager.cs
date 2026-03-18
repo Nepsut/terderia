@@ -105,6 +105,7 @@ public class SceneTransitionManager : MonoSingleton<SceneTransitionManager>
         CabinEvent1,
         KoboldsEvent1,
         FanaticFrogEvent1,
-        LizardEvent1
+        LizardEvent1,
+        KappaEvent1
     }
 }

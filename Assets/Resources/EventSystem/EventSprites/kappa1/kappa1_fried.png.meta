@@ -1,19 +1,10 @@
 fileFormatVersion: 2
-guid: 9e0aa0d154e6c144f93cfdde1fbdad6e
+guid: 68427ea19e4e68f498c9c61512156b59
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8489820252021176572
-    second: tutorialBoxDetail_0
-  - first:
-      213: 8817634093901644516
-    second: tutorialBoxDetail_1
-  - first:
-      213: 1247137464590082360
-    second: tutorialBoxDetail_2
-  - first:
-      213: 5820599149328034913
-    second: tutorialBoxDetail_3
+      213: 8795598075906214873
+    second: kappa01_fried_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -57,8 +48,8 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 1
   spriteExtrude: 1
-  spriteMeshType: 1
-  alignment: 0
+  spriteMeshType: 0
+  alignment: 7
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
@@ -122,35 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: tutorialBoxDetail_0
+      name: kappa01_fried_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 4
-        width: 20
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 4074c5736791e2a80800000000000000
-      internalID: -8489820252021176572
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tutorialBoxDetail_1
-      rect:
-        serializedVersion: 2
-        x: 21
+        x: 13
         y: 13
-        width: 28
-        height: 42
+        width: 1013
+        height: 307
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -159,52 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4e281669d778e5a70800000000000000
-      internalID: 8817634093901644516
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tutorialBoxDetail_2
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 0
-        width: 10
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 83129fa9ae8be4110800000000000000
-      internalID: 1247137464590082360
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tutorialBoxDetail_3
-      rect:
-        serializedVersion: 2
-        x: 34
-        y: 0
-        width: 12
-        height: 12
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 16c63a3661ce6c050800000000000000
-      internalID: 5820599149328034913
+      spriteID: 9dbcf7559dd301a70800000000000000
+      internalID: 8795598075906214873
       vertices: []
       indices: 
       edges: []
@@ -223,10 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      tutorialBoxDetail_0: -8489820252021176572
-      tutorialBoxDetail_1: 8817634093901644516
-      tutorialBoxDetail_2: 1247137464590082360
-      tutorialBoxDetail_3: 5820599149328034913
+      kappa01_fried_0: 8795598075906214873
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

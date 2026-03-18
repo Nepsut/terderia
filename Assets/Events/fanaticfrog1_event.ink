@@ -235,6 +235,10 @@ This isn't going anywhere. You'll have to do something about this. #narrator
         "Whoa... That's so pretty. Super impressive, {frog_gender_word()}! #speaker:Rudibert
     }
     -> FROG_CARD_OPTIONS
+ + You consider the spear in your hand. You can't really think of a way to use it on yourself. #card #@self #!spear #refundcard:spear
+    -> FROG_CARD_OPTIONS
+ + You know better than to try to use telekinesis on yourself. You've heard the horror-stories after all. #card #@self #!telekinesis #refundcard:telekinesis
+    ->FROG_CARD_OPTIONS
     
 ////// FROG TARGET OPTIONS START //////
 
@@ -355,7 +359,7 @@ This isn't going anywhere. You'll have to do something about this. #narrator
         -> FROG_COUNTER_ATTACK
     }
  + Your fingers spark with electricity as you ready a static shock. #card #@frog #!static-shock
-    You inch closer to Rudibert, and unleash a devastatic static shock directly on his snout!
+    You inch closer to Rudibert, and unleash a devastating static shock directly on his snout!
     ~frog_health--
     {
         - frog_health == 0:
@@ -471,6 +475,43 @@ This isn't going anywhere. You'll have to do something about this. #narrator
         He's mesmerized by the healing wisps encircling him. Though there doesn't seem to be anything to heal. #narrator
         "Pretty spell, {frog_gender_word()}!" #speaker:Rudibert
         Well at least he liked it. #narrator
+        -> FROG_CARD_OPTIONS
+    }
+ + The spear pops into your hand, and you start dashing at Rudibert, determined to sink it into him! #card #@frog #!spear
+    ~ frog_health--
+    {
+        - frog_health == 0:
+        Rudibert collapses to the ground, motionless. Seems you've won! #narrator #setsprite:fanaticfrog1>fanaticfrog1_defeated
+        -> FROG_EVENT_EPILOGUE("won_fight")
+        - else:
+        Rudibert flinches back violently, taking a few hops backwards as he does! #narrator
+        -> FROG_COUNTER_ATTACK
+    }
+ + <b>"RRRRRRRHHHHAAAAA!!!"</b> #card #@self #@frog #!yell
+    Rudibert flinches backwards, probably surprised that you started yelling out of nowhere. #narrator
+    {
+        - frog_hostile:
+        -> FROG_OPPORTUNITY_ATTACK
+        - else:
+        "What's wrong with you?! Is everything okay?" #speaker:Rudibert
+        Seems you've thoroughly confused him. #narrator
+        "Yeah, perfectly fine! Just had to let that out." #speaker:You
+        "Riiight. Well. Warn me next time, please?" #speaker:You
+        "Sure thing!" #speaker:You
+        What to do now... #narrator
+        -> FROG_CARD_OPTIONS
+    }
+ + You cast the spell, targeting Rudibert's hat. This'll show him! #card #@frog #!telekinesis
+    As the hat starts lifting off of his head, he quickly grabs hold of it! Seems like he's going for a ride then too! #narrator
+    ...Or he would be, if he was lighter. At this load, your mind quickly buckles, as you're unable to lift such a heavy load! #narrator
+    {
+        - frog_hostile:
+        "You fiend! Attacking me is one thing, but targeting my precious hat is unforgivable!" #speaker:Rudibert
+        -> FROG_OPPORTUNITY_ATTACK
+        - else:
+        "You're lucky that failed, otherwise I'd have had to defend the honor of my precious hat and slay you!" #speaker:Rudibert
+        "Now no more tricks, or I'll have to do something I'll regret!" #speaker:Rudibert
+        Yeesh, way to take things too seriously! #narrator
         -> FROG_CARD_OPTIONS
     }
  

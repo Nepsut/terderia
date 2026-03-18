@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: a759badc0c8f3494fa5c915e7e936ebf
+guid: 070ab7740a9c88d49a33a684a7469529
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3376245717367138560
-    second: kappa01_happy_0
+      213: 6592030103558702408
+    second: sc6_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: kappa01_happy_0
+      name: sc6_0
       rect:
         serializedVersion: 2
-        x: 13
-        y: 13
-        width: 1013
-        height: 554
+        x: 0
+        y: 0
+        width: 1845
+        height: 883
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0092a128795dade20800000000000000
-      internalID: 3376245717367138560
+      spriteID: 8454c4ff3789b7b50800000000000000
+      internalID: 6592030103558702408
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      kappa01_happy_0: 3376245717367138560
+      sc6_0: 6592030103558702408
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

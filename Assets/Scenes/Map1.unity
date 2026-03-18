@@ -7286,7 +7286,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2740187013292117636, guid: 7152fa23552513943bf4bad94bc39740, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2986955886881566351, guid: 7152fa23552513943bf4bad94bc39740, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7328,6 +7328,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4488677606260920272, guid: 7152fa23552513943bf4bad94bc39740, type: 3}
+      propertyPath: <MapEvent>k__BackingField
+      value: 
+      objectReference: {fileID: 11400000, guid: ec0e7ca981e2d524398ec7d13bb76b71, type: 2}
     - target: {fileID: 4488677606260920272, guid: 7152fa23552513943bf4bad94bc39740, type: 3}
       propertyPath: <NeighborMarkers>k__BackingField.Array.size
       value: 3

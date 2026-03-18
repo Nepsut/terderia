@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: bbb1e93add49b2e4e8faf7c204defc9a
+guid: 294ce496de2e27a41a87d86d6b873f04
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1815684716333533119
-    second: kappa01_shocked_0
+      213: -6459543968445520521
+    second: sc0_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: kappa01_shocked_0
+      name: sc0_0
       rect:
         serializedVersion: 2
-        x: 13
-        y: 13
-        width: 1013
-        height: 424
+        x: 0
+        y: 0
+        width: 1845
+        height: 883
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: fb78a2d21ab923910800000000000000
-      internalID: 1815684716333533119
+      spriteID: 775a9cd1cf61b56a0800000000000000
+      internalID: -6459543968445520521
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      kappa01_shocked_0: 1815684716333533119
+      sc0_0: -6459543968445520521
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
