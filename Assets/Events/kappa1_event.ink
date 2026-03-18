@@ -352,7 +352,7 @@ You wait a few moments for the kappa to re-emerge, then a few more moments. Afte
     "Sorry fer taking a while, it's tough to grab these tiny things with my paws. Now, have a look, {kappa_gender_word()}! #speaker:The Kappa #function:RewardCards(4, dagger, staff, glass-bottle, frying-pan)
     After browsing through the cards, you thank the kappa. #narrator
     "Don't mention it, {kappa_gender_word()}! Thanks fer the trade!" #speaker:The Kappa
-    After thanking you, the kappa dips back into its puddle. Seems your business is concluded? #narrator
+    After thanking you, the kappa dips back into its puddle. Seems your business is concluded? #narrator #setsprite:kappa1>kappa1_hiding
     You dust yourself off, and ready yourself for more adventuring! #narrator
     - exit_method == "decent_goodie":
     "Now, seems like ya can make use of these cards I found. I'm gonna show ya a few, and ya can pick yer favorite out of 'em. Deal?" #speaker:The Kappa
@@ -362,7 +362,7 @@ You wait a few moments for the kappa to re-emerge, then a few more moments. Afte
     "Sorry fer taking a while, it's tough to grab these tiny things with my paws. Now, take yer pick, {kappa_gender_word()}! #speaker:The Kappa #function:RewardCards(1, dagger, staff, glass-bottle, frying-pan)
     After making your choice, you thank the kappa.
     "Don't mention it, {kappa_gender_word()}! Thanks fer the trade!" #speaker:The Kappa
-    After thanking you, the kappa dips back into its puddle. Seems your business is concluded? #narrator
+    After thanking you, the kappa dips back into its puddle. Seems your business is concluded? #narrator #setsprite:kappa1>kappa1_hiding
     You dust yourself off, and ready yourself for more adventuring! #narrator
     - exit_method == "player_left":
     You've made your choice, so you keep running. #narrator

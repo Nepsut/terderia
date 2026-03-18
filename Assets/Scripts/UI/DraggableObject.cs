@@ -164,13 +164,16 @@ public class DraggableObject : MonoBehaviour, IPointerEnterHandler, IPointerExit
         if (hoverTweenId != -1) LeanTween.cancel(hoverTweenId);
     }
 
-    public void DisallowMovement()
+    public void DisallowMovement(bool stopMovement = true)
     {
         draggingAllowed = false;
         hoverAllowed = false;
-        StopAllCoroutines();
-        if (dragTweenId != -1) LeanTween.cancel(dragTweenId);
-        if (hoverTweenId != -1) LeanTween.cancel(hoverTweenId);
+        if (stopMovement)
+        {
+            StopAllCoroutines();
+            if (dragTweenId != -1) LeanTween.cancel(dragTweenId);
+            if (hoverTweenId != -1) LeanTween.cancel(hoverTweenId);
+        }
     }
 
     public void AllowMovement()
