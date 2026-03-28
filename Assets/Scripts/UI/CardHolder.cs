@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +61,10 @@ public class CardHolder : MonoBehaviour
     private Coroutine moveManagerCoroutine;
     private List<int> cardRehomeTweens;
     private Coroutine cardRehomeCoroutine;
+
+    //Events
+    public static event Action OnHolderActivateStart;
+    public static event Action OnHolderActivateDone;
 
     private enum CardRehomeStyle
     {
@@ -196,7 +201,11 @@ public class CardHolder : MonoBehaviour
         moveQueued = false;
         if (moveTweenId != -1) LeanTween.cancel(moveTweenId);
 
-        if (moveUp) moveTweenId = LeanTween.moveY(selfRect, activePosY, HolderMoveDuration).setEaseInOutCubic().id;
+        if (moveUp)
+        {
+            moveTweenId = LeanTween.moveY(selfRect, activePosY, HolderMoveDuration).setEaseInOutCubic().id;
+            OnHolderActivateStart?.Invoke();
+        }
         else moveTweenId = LeanTween.moveY(selfRect, inactivePosY, HolderMoveDuration).setEaseInOutCubic().id;
         layoutGroup.enabled = true;
         yield return new WaitForSeconds(HolderMoveDuration);
@@ -216,7 +225,11 @@ public class CardHolder : MonoBehaviour
         {
             LeanTween.moveY(reshuffleHolder, shuffleBgVisibleY, shuffleBgMoveDuration)
             .setEaseInQuart()
-            .setOnComplete(() => reshuffleButton.interactable = true);
+            .setOnComplete(() => 
+            {
+                reshuffleButton.interactable = true;
+                OnHolderActivateDone?.Invoke();
+            });
         }
         else
         {

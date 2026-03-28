@@ -70,6 +70,7 @@ public class EventManager : MonoSingleton<EventManager>
 
     //Events
     public static event Action<Card> OnCardUsed;
+    public static event Action OnEventStart;
 
     //DEBUG VARIABLES. DO NOT TOUCH IF UNSURE.
     private string activeStoryName;
@@ -115,7 +116,6 @@ public class EventManager : MonoSingleton<EventManager>
         IsEventActive = true;
         CurrentStory = new Story(_inkJSON.text);
         EventVariables.StartListening(CurrentStory);
-        // inputReader.OnSubmitEvent += HandleSubmit;
         inputReader.OnClickEvent += HandleClickWithDelay;
         dialoguePanel.SetActive(true);
 
@@ -123,6 +123,7 @@ public class EventManager : MonoSingleton<EventManager>
 
         //continue story prints dialogue so it's called here
         ContinueStory();
+        OnEventStart?.Invoke();
     }
 
     //dialogue printer
@@ -645,7 +646,7 @@ public class EventManager : MonoSingleton<EventManager>
 
     private void HandleClick()
     {
-        if (DraggableObject.DraggingOn || UIController.IsCutsceneFadeActive) return;
+        if (DraggableObject.DraggingOn || UIController.IsCutsceneFadeActive || TutorialManager.TutorialActive) return;
 
         if (isTyping)
         {
