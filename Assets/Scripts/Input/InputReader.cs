@@ -44,6 +44,8 @@ public class InputReader : ScriptableObject, InputMap.IUIActions
     public event Action<Vector2> OnNavigateEvent;
     public event Action<Vector2> OnPointEvent;
     public event Action<Vector2> OnScrollEvent;
+    public event Action OnScrollDown;
+    public event Action OnScrollUp;
     public event Action OnSubmitEvent;
     public event Action OnSubmitReleaseEvent;
 
@@ -103,7 +105,11 @@ public class InputReader : ScriptableObject, InputMap.IUIActions
 
     public void OnScrollWheel(InputAction.CallbackContext context)
     {
-        OnScrollEvent?.Invoke(obj: context.ReadValue<Vector2>());
+        Vector2 scrollVec = context.ReadValue<Vector2>();
+        OnScrollEvent?.Invoke(obj: scrollVec);
+
+        if (scrollVec.y < 0) OnScrollDown?.Invoke();
+        else if (scrollVec.y > 0) OnScrollUp?.Invoke();
     }
 
     public void OnSubmit(InputAction.CallbackContext context)
