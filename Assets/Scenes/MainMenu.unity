@@ -6632,7 +6632,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Subclass
+  m_text: 'Wizard
+
+    Subclass'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f158d0acc1db27841964c73dcfc492d1, type: 2}
   m_sharedMaterial: {fileID: 8332616211161439700, guid: f158d0acc1db27841964c73dcfc492d1, type: 2}
