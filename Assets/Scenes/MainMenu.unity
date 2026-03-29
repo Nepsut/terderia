@@ -3712,11 +3712,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardSystem.CardManager
   cardTsvAsset: {fileID: 4900000, guid: 129c8bdfdaea2af41bbb731dc5cca27f, type: 3}
-  <CardbaseSpeech>k__BackingField: {fileID: -5010665353707348256, guid: 7ca3aa932c94196428e534b483edad6c, type: 3}
-  <CardbaseSpell>k__BackingField: {fileID: 7576896440268618701, guid: 7f2c1f626a728d946b9f6dda8b931775, type: 3}
-  <CardbaseUtility>k__BackingField: {fileID: 280863330209250088, guid: cfa39b823e6ac8f4bbf06937ff424b37, type: 3}
-  <CardbaseWeapon>k__BackingField: {fileID: -1962502561165727969, guid: 70e2b9e9878a6c94c9bfac3782ffa90a, type: 3}
-  <CardbaseNull>k__BackingField: {fileID: 777460120139099270, guid: 68ebf1cbe73680542a840dbf430c11c4, type: 3}
+  <CardbaseSpeech>k__BackingField: {fileID: 21300000, guid: 7ca3aa932c94196428e534b483edad6c, type: 3}
+  <CardbaseSpell>k__BackingField: {fileID: 21300000, guid: 7f2c1f626a728d946b9f6dda8b931775, type: 3}
+  <CardbaseUtility>k__BackingField: {fileID: 21300000, guid: cfa39b823e6ac8f4bbf06937ff424b37, type: 3}
+  <CardbaseWeapon>k__BackingField: {fileID: 21300000, guid: 70e2b9e9878a6c94c9bfac3782ffa90a, type: 3}
+  <CardbaseNull>k__BackingField: {fileID: 21300000, guid: 68ebf1cbe73680542a840dbf430c11c4, type: 3}
   <Cardback>k__BackingField: {fileID: 6267419426496717902, guid: db07728df4b967b40aa6fb28f20a6759, type: 3}
   <DamageTypeBlunt>k__BackingField: {fileID: 21300000, guid: c1a4f94265a09d74ca9109a2ed8547a5, type: 3}
   <DamageTypeCutting>k__BackingField: {fileID: 21300000, guid: 55a01a6421e6f9946b723c5178343f2a, type: 3}
@@ -12428,7 +12428,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
-  m_AdditionalShaderChannelsFlag: 1
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
