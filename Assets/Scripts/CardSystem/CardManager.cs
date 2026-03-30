@@ -184,7 +184,7 @@ namespace CardSystem
             return true;
         }
 
-        private void RemoveCardFromHand(Card card)
+        private void RemoveCardFromHand(PlayingCard card)
         {
             if (PlayerHand.Contains(card.CardData))
             {
