@@ -92,7 +92,7 @@ public class CardHolder : MonoBehaviour
             draggableChildren.Remove(draggableObject);
             reshuffleButton.interactable = false;
             allCardsHome = false;
-            DisallowCardDragging();
+            DisallowCardDragging(false);
             RehomeCards(CardRehomeStyle.flipNone, true);
             StartCoroutine(DelayedCardsHomeCheck());
             Destroy(usedCard.gameObject);
@@ -143,9 +143,9 @@ public class CardHolder : MonoBehaviour
         draggableChildren?.ForEach(child => child.AllowMovement());
     }
 
-    public void DisallowCardDragging()
+    public void DisallowCardDragging(bool stopMovement)
     {
-        draggableChildren?.ForEach(child => child.DisallowMovement());
+        draggableChildren?.ForEach(child => child.DisallowMovement(stopMovement));
     }
 
     public void ActivateHolder()
@@ -263,7 +263,7 @@ public class CardHolder : MonoBehaviour
 
     private void HandleCardAddition(CardData addedCard)
     {
-        DisallowCardDragging();
+        DisallowCardDragging(false);
         StartCoroutine(HandleCardAdditionWaits(addedCard));
     }
 
@@ -363,7 +363,11 @@ public class CardHolder : MonoBehaviour
     private void RehomeCards(CardRehomeStyle style, bool allowMovement = true)
     {
         if (draggableChildren.Count == 0) return;
-        if (cardRehomeCoroutine != null) StopCoroutine(cardRehomeCoroutine);
+        if (cardRehomeCoroutine != null)
+        {
+            if (GameManager.Instance.DebugModeOn) Debug.Log($"Stopping previous RehomeCards coroutine.");
+            StopCoroutine(cardRehomeCoroutine);
+        }
         rehomeInProgress = true;
 
         cardRehomeCoroutine = StartCoroutine(CardRehomeHandler(style, allowMovement));
@@ -372,15 +376,14 @@ public class CardHolder : MonoBehaviour
     private IEnumerator CardRehomeHandler(CardRehomeStyle style, bool allowMovement = true)
     {
         cardRehomeTweens?.ForEach(tweenId => LeanTween.cancel(tweenId));
-        DisallowCardDragging();
+        DisallowCardDragging(false);
         cardRehomeTweens = new();
 
         while (!allCardsHome)
         {
             if (GameManager.Instance.DebugModeOn) Debug.Log($"Waiting to rehome cards.");
             yield return rehomeQueueCheckWait;
-            if (draggableChildren.Count == holderRect.childCount) allCardsHome = true;
-            else allCardsHome = false;
+            allCardsHome = draggableChildren.Count == holderRect.childCount;
         }
         
         allCardsHome = false;
@@ -416,25 +419,23 @@ public class CardHolder : MonoBehaviour
         }
 
         yield return cardRehomeWait;
-        layoutGroup.enabled = false;
         if (draggableChildren.Count == holderRect.childCount) allCardsHome = true;
+        layoutGroup.enabled = false;
         if (allCardsHome) layoutGroup.enabled = true;
         yield return null;
-        draggableChildren?.ForEach(child =>
-        {
-            child.SetReturnPosition();
-            child.enabled = true;
-        });
         if (draggableChildren != null && holderRect.childCount != 0)
             cardRowY = draggableChildren[0].SelfRect.rect.y;
+        if (allCardsHome) layoutGroup.enabled = true;
         yield return null;
 
         if (reshuffleInProgress) reshuffleInProgress = false;
         cardRehomeTweens = null;
         cardRehomeCoroutine = null;
         rehomeInProgress = false;
+        draggableChildren?.ForEach(child => child.SetReturnPosition());
         if (allowMovement) AllowCardDragging();
         if (!moveQueued && EventManager.Instance.DialogueHasChoices) reshuffleButton.interactable = true;
+        if (GameManager.Instance.DebugModeOn) Debug.Log("Card rehoming complete");
     }
 
     private IEnumerator HandleQueuedHolderMove()
