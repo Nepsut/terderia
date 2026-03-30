@@ -4,13 +4,13 @@ using UnityEngine.UI;
 
 [RequireComponent(typeof(DraggableObject))]
 [RequireComponent(typeof(Image))]
-public class Card : CardVisualsOnly
+public class PlayingCard : CardVisualsOnly
 {
     public Image SelfImage { get; private set; }
     private DraggableObject selfDraggable;
 
-    public static event Action<Card> OnCardDragStart;
-    public static event Action<Card> OnCardDragEnd;
+    public static event Action<PlayingCard> OnCardDragStart;
+    public static event Action<PlayingCard> OnCardDragEnd;
 
     private void Awake()
     {

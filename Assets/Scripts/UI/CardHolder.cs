@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CardSystem;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -91,7 +92,7 @@ public class CardHolder : MonoBehaviour
             draggableChildren.Remove(draggableObject);
             reshuffleButton.interactable = false;
             allCardsHome = false;
-            draggableChildren?.ForEach(child => child.DisallowMovement(false));
+            DisallowCardDragging();
             RehomeCards(CardRehomeStyle.flipNone, true);
             StartCoroutine(DelayedCardsHomeCheck());
             Destroy(usedCard.gameObject);
@@ -140,6 +141,11 @@ public class CardHolder : MonoBehaviour
     public void AllowCardDragging()
     {
         draggableChildren?.ForEach(child => child.AllowMovement());
+    }
+
+    public void DisallowCardDragging()
+    {
+        draggableChildren?.ForEach(child => child.DisallowMovement());
     }
 
     public void ActivateHolder()
@@ -257,7 +263,7 @@ public class CardHolder : MonoBehaviour
 
     private void HandleCardAddition(CardData addedCard)
     {
-        draggableChildren?.ForEach(child => child.DisallowMovement(false));
+        DisallowCardDragging();
         StartCoroutine(HandleCardAdditionWaits(addedCard));
     }
 
@@ -269,7 +275,7 @@ public class CardHolder : MonoBehaviour
             else allCardsHome = false;
             yield return rehomeQueueCheckWait;
         }
-        Card card = Instantiate(cardPrefab, deckRect.transform.position, Quaternion.identity, holderRect).GetComponent<Card>();
+        PlayingCard card = Instantiate(cardPrefab, deckRect.transform.position, Quaternion.identity, holderRect).GetComponent<PlayingCard>();
         card.InitializeCard(addedCard);
         SubscribeCardMoveEvents(card.GetComponent<DraggableObject>());
         draggableChildren = holderRect.GetComponentsInChildren<DraggableObject>().ToList();
@@ -280,7 +286,7 @@ public class CardHolder : MonoBehaviour
     {
         foreach (CardData cardData in CardManager.PlayerHand)
         {
-            Card card = Instantiate(cardPrefab, deckRect.transform.position, Quaternion.identity, holderRect).GetComponent<Card>();
+            PlayingCard card = Instantiate(cardPrefab, deckRect.transform.position, Quaternion.identity, holderRect).GetComponent<PlayingCard>();
             card.InitializeCard(cardData);
             card.SelfImage.sprite = CardManager.Instance.Cardback;
             card.transform.GetChild(0).gameObject.SetActive(false);
@@ -326,7 +332,7 @@ public class CardHolder : MonoBehaviour
 
         foreach (DraggableObject draggable in draggableChildren)
         {
-            draggable.DisallowMovement();
+            draggable.DisallowMovement(true);
             draggable.transform.SetParent(cardClearingParent);
             LeanTween.move(draggable.gameObject, deckRect.transform.position, cardRehomeTime)
                 .setEaseInQuart();
@@ -359,13 +365,14 @@ public class CardHolder : MonoBehaviour
         if (draggableChildren.Count == 0) return;
         if (cardRehomeCoroutine != null) StopCoroutine(cardRehomeCoroutine);
         rehomeInProgress = true;
+
         cardRehomeCoroutine = StartCoroutine(CardRehomeHandler(style, allowMovement));
     }
 
     private IEnumerator CardRehomeHandler(CardRehomeStyle style, bool allowMovement = true)
     {
         cardRehomeTweens?.ForEach(tweenId => LeanTween.cancel(tweenId));
-        draggableChildren?.ForEach(child => child.DisallowMovement(false));
+        DisallowCardDragging();
         cardRehomeTweens = new();
 
         while (!allCardsHome)
@@ -399,7 +406,7 @@ public class CardHolder : MonoBehaviour
                                     .setOnComplete(() => 
                                     {
                                         draggableChildren[i].transform.GetChild(0).gameObject.SetActive(true);
-                                        draggableChildren[i].GetComponent<Card>().ResetBackgroundImage();
+                                        draggableChildren[i].GetComponent<PlayingCard>().ResetBackgroundImage();
                                     }).id);
                 cardRehomeTweens.Add(LeanTween.scaleX(draggableChildren[i].gameObject, 1f, cardRehomeTime / 2f)
                                     .setEaseInOutQuart()
@@ -410,23 +417,23 @@ public class CardHolder : MonoBehaviour
 
         yield return cardRehomeWait;
         layoutGroup.enabled = false;
-        layoutGroup.enabled = true;
+        if (draggableChildren.Count == holderRect.childCount) allCardsHome = true;
+        if (allCardsHome) layoutGroup.enabled = true;
         yield return null;
         draggableChildren?.ForEach(child =>
         {
             child.SetReturnPosition();
             child.enabled = true;
-            if (allowMovement) child.AllowMovement();
         });
         if (draggableChildren != null && holderRect.childCount != 0)
-            cardRowY = draggableChildren[0].SelfRect.rect.y; 
-        allCardsHome = true;
+            cardRowY = draggableChildren[0].SelfRect.rect.y;
         yield return null;
 
         if (reshuffleInProgress) reshuffleInProgress = false;
         cardRehomeTweens = null;
         cardRehomeCoroutine = null;
         rehomeInProgress = false;
+        if (allowMovement) AllowCardDragging();
         if (!moveQueued && EventManager.Instance.DialogueHasChoices) reshuffleButton.interactable = true;
     }
 

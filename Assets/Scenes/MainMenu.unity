@@ -10927,7 +10927,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: You can use cards either on yourself via the "self"-circle, or any targets
+  m_text: You can use cards either on yourself via the "self"-circle, or on any targets
     highlighted with a light golden outline.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a506416f4a49c2340841eaaeeb21bd5d, type: 2}

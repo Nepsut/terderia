@@ -69,7 +69,7 @@ public class EventManager : MonoSingleton<EventManager>
     private const float MaxOutlineThickness = 0.75f;
 
     //Events
-    public static event Action<Card> OnCardUsed;
+    public static event Action<PlayingCard> OnCardUsed;
     public static event Action OnEventStart;
 
     //DEBUG VARIABLES. DO NOT TOUCH IF UNSURE.
@@ -105,7 +105,7 @@ public class EventManager : MonoSingleton<EventManager>
         DontDestroyOnLoad(selfTargetObject);
         selfTargetObject.SetActive(false);
         eventTargetMaterial.SetFloat(OutlineThicknessName, 0f);
-        Card.OnCardDragEnd += CheckForCardUse;
+        PlayingCard.OnCardDragEnd += CheckForCardUse;
         SceneTransitionManager.OnSceneLoadStarted += ClearActiveTargets;
     }
 
@@ -355,7 +355,7 @@ public class EventManager : MonoSingleton<EventManager>
         return;
     }
 
-    private void CheckForCardUse(Card usedCard)
+    private void CheckForCardUse(PlayingCard usedCard)
     {
         if (!IsEventActive) return;
 

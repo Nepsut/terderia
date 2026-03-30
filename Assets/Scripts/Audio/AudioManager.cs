@@ -13,7 +13,7 @@ public class AudioManager : MonoSingleton<AudioManager>
         EventManager.OnCardUsed += HandleCardSfx;
     }
 
-    private void HandleCardSfx(Card card)
+    private void HandleCardSfx(PlayingCard card)
     {
         CardData data = card.CardData;
 
