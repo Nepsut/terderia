@@ -90,7 +90,7 @@ After looking around for {perhaps a bit too long, | a short while,} you decide t
         - g_player_health >= g_player_health:
         Using it now would be a waste, perhaps its better to save it for later. #narrator #refundcard:glass-bottle
         - else:
-        You down the potion, and feel its healing properties take effect. #narrator
+        You down the potion, and feel its healing properties take effect. #narrator #function:PlayCardSfx(glass-bottle)
         {
             - g_player_health == g_player_max_health - 1:
             ~ g_player_health++

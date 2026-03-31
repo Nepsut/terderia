@@ -114,7 +114,7 @@ This isn't going anywhere. You'll have to do something about this. #narrator
         }
         -> FROG_CARD_OPTIONS
     }
- + You quickly swig down your healing potion, not stopping to think if you need it or not. #card #@self #!glass-bottle
+ + You quickly swig down your healing potion, not stopping to think if you need it or not. #card #@self #!glass-bottle #function:PlayCardSfx(glass-bottle)
     {
         - g_player_health < g_player_max_health - 1:
         ~ g_player_health += 2

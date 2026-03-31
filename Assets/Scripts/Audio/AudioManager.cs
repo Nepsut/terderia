@@ -1,23 +1,32 @@
-using CardSystem;
 using UnityEngine;
 
 public class AudioManager : MonoSingleton<AudioManager>
 {
-    [SerializeField] private AudioClip speechCardClip, utilityCardClip, weaponCardClip,
+    [Header("Audio Sources")]
+    [SerializeField] private AudioSource musicSource, sfxSource;
+
+    [Header("Generic SFX clips")]
+    [SerializeField] private AudioClip damagePlayerClip;
+    [SerializeField] private AudioClip healPlayerClip, impactClip;
+
+    [Header("Card SFX clips")]
+    [SerializeField] private AudioClip speechCardClip;
+    [SerializeField] private AudioClip utilityCardClip, weaponCardClip,
         iceCardClip, fireCardClip, poisonCardClip, earthCardClip, lightningCardClip,
         cuttingCardClip, bluntCardClip, healingCardClip;
-        
+    
 
     private void Start()
     {
-        EventManager.OnCardUsed += HandleCardSfx;
+        GameManager.OnPlayerHealthLoss += _ => PlaySfx(damagePlayerClip);
+        GameManager.OnPlayerHealthGain += _ => PlaySfx(healPlayerClip);
     }
 
-    private void HandleCardSfx(PlayingCard card)
+    public void PlaySfx(AudioClip clip)
     {
-        CardData data = card.CardData;
+        if (clip == null) return;
 
-        //if data.HasAudio, use data.audioClip
-        //if not, use a fitting clip from this script
+        if (GameManager.Instance.DebugModeOn) Debug.Log($"Playing SFX with clip {clip.name}.");
+        sfxSource.PlayOneShot(clip);
     }
 }

@@ -141,7 +141,7 @@ public class EventManager : MonoSingleton<EventManager>
             {
                 pendingCardUse = true;
                 ActivateTargets();
-                if (!cardHolder.IsActive) cardHolder.ActivateHolder();
+                cardHolder.ActivateHolder();
             }
             else StartCoroutine(TypeDialogue());
         }
@@ -453,7 +453,7 @@ public class EventManager : MonoSingleton<EventManager>
         if (CurrentStory.currentChoices.Count != 0)
         {
             ActivateTargets();
-            if (!cardHolder.IsActive) cardHolder.ActivateHolder();
+            if (!cardHolder.IsActive || (cardHolder.IsActive && cardHolder.IsMoving)) cardHolder.ActivateHolder();
             // else cardHolder.AllowCardDragging();
             pendingCardUse = true;
         }

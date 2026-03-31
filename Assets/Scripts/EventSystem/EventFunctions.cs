@@ -11,6 +11,27 @@ public abstract class EventFunction
     public abstract bool TryExecute(object[] args = null);
 }
 
+public class PlayCardSfx : EventFunction
+{
+    public override bool TryExecute(object[] args = null)
+    {
+        if (args == null || args.Length != 1 || args[0] is not string)
+        {
+            Debug.LogWarning("Tried to call PlaySfx function from event with erronous parameters!");
+            return false;
+        }
+        string cardId = (string)args[0];
+        if (!CardManager.Cards.ContainsKey(cardId))
+        {
+            Debug.LogWarning("Tried to call PlaySfx function with erronous card ID!");
+            return false;
+        }
+        AudioManager.Instance.PlaySfx(CardManager.Cards[cardId].audioClip);
+        if (GameManager.Instance.DebugModeOn) Debug.Log($"Playing card SFX for card {cardId}");
+        return true;
+    }
+}
+
 public class DisplayCutscene : EventFunction
 {
     public override bool TryExecute(object[] args = null)
