@@ -20,7 +20,8 @@ public class EventFunctionCaller : MonoBehaviour
         {nameof(RewardCards), new RewardCards()},
         {nameof(LoadScene), new LoadScene()},
         {nameof(DisplayCutscene), new DisplayCutscene()},
-        {nameof(EndCutscene), new EndCutscene()}
+        {nameof(EndCutscene), new EndCutscene()},
+        {nameof(PlayCardSfx), new PlayCardSfx()}
     };
 
     public bool FunctionExists(string funcName)

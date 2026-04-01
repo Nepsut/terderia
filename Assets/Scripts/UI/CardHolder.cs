@@ -160,7 +160,7 @@ public class CardHolder : MonoBehaviour
         }
         reshuffleButton.interactable = false;
 
-        if (IsActive && !HolderMoveAllowed)
+        if (IsActive)
         {
             if (GameManager.Instance.DebugModeOn) Debug.Log("Queuing card holder activation.");
             moveQueued = true;
@@ -433,7 +433,7 @@ public class CardHolder : MonoBehaviour
         cardRehomeCoroutine = null;
         rehomeInProgress = false;
         draggableChildren?.ForEach(child => child.SetReturnPosition());
-        if (allowMovement) AllowCardDragging();
+        if (allowMovement && !moveQueued) AllowCardDragging();
         if (!moveQueued && EventManager.Instance.DialogueHasChoices) reshuffleButton.interactable = true;
         if (GameManager.Instance.DebugModeOn) Debug.Log("Card rehoming complete");
     }

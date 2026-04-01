@@ -114,7 +114,7 @@ This isn't going anywhere. You'll have to do something about this. #narrator
         }
         -> FROG_CARD_OPTIONS
     }
- + You quickly swig down your healing potion, not stopping to think if you need it or not. #card #@self #!glass-bottle
+ + You quickly swig down your healing potion, not stopping to think if you need it or not. #card #@self #!glass-bottle #function:PlayCardSfx(glass-bottle)
     {
         - g_player_health < g_player_max_health - 1:
         ~ g_player_health += 2
@@ -323,7 +323,7 @@ This isn't going anywhere. You'll have to do something about this. #narrator
     ~frog_health--
     {
         - frog_health == 0:
-        He seems to succumb to his wounds, and collapses to the ground. You've won. #narrator
+        He seems to succumb to his wounds, and collapses to the ground. You've won. #narrator #setsprite:fanaticfrog1>fanaticfrog1_defeated
         -> FROG_EVENT_EPILOGUE("won_fight")
         - else:
         He squeaks loudly, hopping backwards as he does. Seems you've dealt him a serious blow! #narrator

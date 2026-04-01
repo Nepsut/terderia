@@ -39,8 +39,36 @@ namespace CardSystem
             sprite = Resources.Load<Sprite>($"CardSystem/CardSprites/{id}");
             if (sprite == null) Debug.LogWarning($"Sprite for card {this.id} couldn't be found and wasn't set.");
             audioClip = Resources.Load<AudioClip>($"CardSystem/CardSFX/{id}");
-            if (audioClip == null && GameManager.Instance.DebugModeOn)
-                Debug.Log($"SFX for card {this.id} couldn't be found and wasn't set.");
+            if (audioClip != null) return;
+            
+            if (GameManager.Instance.DebugModeOn)
+                Debug.Log($"SFX for card {this.id} couldn't be found, setting best generic audio.");
+            
+            if (cardType == CardType.speech)
+                audioClip = AudioManager.Instance.SpeechCardSfx;
+            else if (cardType == CardType.utility)
+                audioClip = AudioManager.Instance.UtilityCardSfx;
+            else if (damageType == DamageType.fire)
+                audioClip = AudioManager.Instance.FireCardSfx;
+            else if (damageType == DamageType.ice)
+                audioClip = AudioManager.Instance.IceCardSfx;
+            else if (damageType == DamageType.lightning)
+                audioClip = AudioManager.Instance.LightningCardSfx;
+            else if (damageType == DamageType.earth)
+                audioClip = AudioManager.Instance.EarthCardSfx;
+            else if (damageType == DamageType.poison)
+                audioClip = AudioManager.Instance.PoisonCardSfx;
+            else if (damageType == DamageType.cutting)
+                audioClip = AudioManager.Instance.CuttingCardSfx;
+            else if (damageType == DamageType.blunt)
+                audioClip = AudioManager.Instance.BluntCardSfx;
+
+            if (audioClip == null)
+            Debug.LogWarning($"Could not find a valid generic replacement SFX for card {this.id}!");
+        }
+
+        private void SetFittingSfx()
+        {
         }
 
         public enum CardType
