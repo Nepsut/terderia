@@ -154,6 +154,7 @@ MonoBehaviour:
   <CardbaseUtility>k__BackingField: {fileID: 280863330209250088, guid: cfa39b823e6ac8f4bbf06937ff424b37, type: 3}
   <CardbaseWeapon>k__BackingField: {fileID: -1962502561165727969, guid: 70e2b9e9878a6c94c9bfac3782ffa90a, type: 3}
   <CardbaseNull>k__BackingField: {fileID: 777460120139099270, guid: 68ebf1cbe73680542a840dbf430c11c4, type: 3}
+  <Cardback>k__BackingField: {fileID: 0}
   <DamageTypeBlunt>k__BackingField: {fileID: 21300000, guid: c1a4f94265a09d74ca9109a2ed8547a5, type: 3}
   <DamageTypeCutting>k__BackingField: {fileID: 21300000, guid: 55a01a6421e6f9946b723c5178343f2a, type: 3}
   <DamageTypeEarth>k__BackingField: {fileID: 21300000, guid: 3ae50ef89d396c240a5c959758a32d34, type: 3}
@@ -311,6 +312,9 @@ MonoBehaviour:
   cardAnimParent: {fileID: 0}
   cardDeckRect: {fileID: 0}
   continueFromRewardsButton: {fileID: 0}
+  cutsceneImage: {fileID: 0}
+  cutsceneGroup: {fileID: 0}
+  cutsceneFolderNames: []
 --- !u!4 &364468967
 Transform:
   m_ObjectHideFlags: 0
@@ -770,6 +774,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EventCaller
   eventAsset: {fileID: 4900000, guid: 264a4c42fa43e0947aaf25267ef070f7, type: 3}
+  eventMusic: {fileID: 8300000, guid: e89ffc657f2b4a547bf68c2bc5622f90, type: 3}
   targetsToActivateOnStart:
   - cabindoor1
 --- !u!1660057539 &9223372036854775807

@@ -485,6 +485,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EventCaller
   eventAsset: {fileID: 4900000, guid: 62a1d9fef6dc16a43be73febdeeb45a9, type: 3}
+  eventMusic: {fileID: 0}
   targetsToActivateOnStart: []
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

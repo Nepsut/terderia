@@ -3,17 +3,22 @@ using UnityEngine;
 public class EventCaller : MonoBehaviour
 {
     [SerializeField] private TextAsset eventAsset;
+    [Tooltip("Leave null to not change music for event")]
+    [SerializeField] private AudioClip eventMusic;
     [SerializeField] private string[] targetsToActivateOnStart;
 
     private void Start()
     {
         SceneTransitionManager.OnSceneTransitionEnd += CallEventStart;
 
-        if (targetsToActivateOnStart == null) return;
+        if (eventMusic != null) AudioManager.Instance.ChangeMusic(eventMusic);
 
-        foreach (string targetName in targetsToActivateOnStart)
+        if (targetsToActivateOnStart != null)
         {
-            EventCardTargetManager.EventCardTargets[targetName].SetActive(true);
+            foreach (string targetName in targetsToActivateOnStart)
+            {
+                EventCardTargetManager.EventCardTargets[targetName].SetActive(true);
+            }
         }
     }
 

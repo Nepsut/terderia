@@ -75,7 +75,7 @@ After looking around for {perhaps a bit too long, | a short while,} you decide t
         For a moment you consider smashing your head in, but refrain this time. #narrator #refundcard:frying-pan
         ~ considered_frying_bonk = true
         - else:
-        The temptation to {g_player_gender =="hat": test the durability of your host body | crack your skull open} with the frying pan proves too much, and you smash it on your head with surprising force! #narrator
+        The temptation to {g_player_gender =="hat": test the durability of your host body | crack your skull open} with the frying pan proves too much, and you smash it on your head with surprising force! #narrator #function:PlayCardSfx(frying-pan)
         ~ g_player_health--
         ~ considered_frying_bonk = false
     }
@@ -83,7 +83,7 @@ After looking around for {perhaps a bit too long, | a short while,} you decide t
  + You spin the dagger in your hand, and decide on a round of five-finger-fillet. #card #@self #!dagger
     "I have all my fingers..." #speaker:You
     {~ As your pace quickens, you eventually fumble and stab your finger. -> FILLET_RESULTS(true)| You quicken your pace as you go, but even after a good 30 seconds of intense finger-filleting, you haven't yet hit yourself. -> FILLET_RESULTS(false)} #narrator
- + The staff feels comfortable in your hand, but nothing useful happens. #card #@self #!staff
+ + The staff feels comfortable in your hand, but nothing useful happens. #card #@self #!staff #refundcard:staff
     -> CABIN_CARD_OPTIONS
  + You consider the potion in your hand. #card #@self #!glass-bottle
     {

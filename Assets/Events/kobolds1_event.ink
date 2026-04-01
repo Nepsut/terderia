@@ -224,7 +224,7 @@ As you get even closer, you start to understand why this figure seems to struggl
 {
     - !kobolds_revealed:
     "I accept your generous offer, chip. Good luck on your travels." #speaker:Shady Figure
-    The figure resumes its laborous walking, eventually fading into the distance #narrator
+    The figure resumes its laborous walking, eventually fading into the distance #narrator #hidetargets:kobolds1
     -> KOBOLD_EVENT_EPILOGUE("kobolds_left")
     
     - kobolds_hostile:
@@ -321,7 +321,7 @@ As you get even closer, you start to understand why this figure seems to struggl
     - else:
     "Uhm. I guess it is?" #speaker:Red Kobold
     You and the kobold stack both shuffle awkwardly. #narrator
-    "Good talk", you say while already walking away to escape the awkwardness. #narrator
+    "Good talk", you say while already walking away to escape the awkwardness. #narrator #hidetargets:kobolds1
     "You too", a kobold replies before you hear a slap behind you. #narrator
     What a horribly awkward encounter. Hopefully they'll also try to forget about it. #narrator
 }
@@ -367,7 +367,7 @@ As you get even closer, you start to understand why this figure seems to struggl
             "What the hell, hat!? What was that for?" #speaker:Red Kobold
         }
         The stack quickly dismantles, and the other two prepare carry off their wounded stack-mate. #narrator #setsprite:kobolds1>kobolds1_defeat
-        As the group begins their escape, the dark grey one yells out: "We'll definitely mess you up next time!" #narrator
+        As the group begins their escape, the dark grey one yells out: "We'll definitely mess you up next time!" #narrator #hidetargets:kobolds1
         You'd like to see them try. #narrator
         -> KOBOLD_EVENT_EPILOGUE("won_fight")
     - else:
@@ -540,7 +540,7 @@ The kobolds skitter away, leaving you to ponder what to do next. #narrator #hide
     "What actions!? {kobolds_hostile: You started it!|We weren't even doing anything!}" #speaker:Red Kobold
     "No one calls me chip!" #speaker:You
     They groan loudly, probably realizing they can't really talk back in this position. #narrator
-    "Well then, I'll be going. Have fun getting free!" #speaker:You
+    "Well then, I'll be going. Have fun getting free!" #speaker:You #hidetargets:kobolds1
     -> KOBOLD_EVENT_EPILOGUE("player_left")
     
     - else:
@@ -611,7 +611,7 @@ The kobolds skitter away, leaving you to ponder what to do next. #narrator #hide
         ~ g_player_health++
     }
     "Thanks for the soup, {kobolds_gender_word()}! We'll totally remember this!" #speaker:Red Kobold
-    The group makes a quick exit, the red one waving at you as they go. #narrator
+    The group makes a quick exit, the red one waving at you as they go. #narrator #hidetargets:kobolds1
     -> KOBOLD_EVENT_EPILOGUE("kobolds_left")
     
     - else:
@@ -620,7 +620,7 @@ The kobolds skitter away, leaving you to ponder what to do next. #narrator #hide
     "I'll take it. Thanks chip." #speaker:Shady Figure
     "I thought we could sha-" #speaker:You
     The figure takes the can from your hand, and immediately starts walking away. #narrator
-    "I won't forget about this, chip," it says while leaving. #speaker:Shady Figure
+    "I won't forget about this, chip," it says while leaving. #speaker:Shady Figure #hidetargets:kobolds1
     You're a bit stunned by the boldness of this guy, but you don't care enough to chase it down just for some soup. #narrator
     Oh well. #narrator
     -> KOBOLD_EVENT_EPILOGUE("kobolds_left")
